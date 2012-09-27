@@ -1,12 +1,7 @@
         DEVICE ZXSPECTRUM128
 
 			org #6000
-;startCode
-
-;			include "plug01.asm"
 			include "cli.asm"
-
-;endCode nop
 
 	;DISPLAY "startCode is:",/A,startCode
 	;DISPLAY "endCode is:",/A,endCode
@@ -20,6 +15,8 @@
 	;DISPLAY "cliHistory addr:",/A,cliHistory
 	;DISPLAY "upKey addr:",/A,upKey
 	;DISPLAY "leftKey addr:",/A,leftKey
-	DISPLAY "callFromExt addr:",/A,callFromExt
+	;DISPLAY "callFromExt addr:",/A,callFromExt
+	;DISPLAY "pluginExit addr:",/A,pluginExit
+	;DISPLAY "test addr:",/A,test
 
-	SAVEBIN "../bin/CLI.WMF", startCode, endCode-startCode
+	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode

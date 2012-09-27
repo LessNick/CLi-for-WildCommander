@@ -14,16 +14,16 @@ calcLen		ld		a,(hl)
 			cp		#00					; end as zero
 			jr		z,calcVal
 			cp		"0"
-			jr		c,wrongWalue
+			jr		c,wrongValue
 			cp		"9"+1
-			jr		nc,wrongWalue
+			jr		nc,wrongValue
 			inc		b
 			inc		hl
 			jr		calcLen
 
 calcVal		ld		a,b
 			cp		#00
-			jr		z,wrongWalue
+			jr		z,wrongValue
 
 			ld		(calcEnd+1),a
 			ld		b,#00
@@ -73,7 +73,7 @@ calcEnd		ld		a,#00
 			xor		a					; ok
 			ret
 
-wrongWalue	ld		hl,#0000
+wrongValue	ld		hl,#0000
 			ld		a,#ff				; error!
 			ret
 ;-------------------------------------------

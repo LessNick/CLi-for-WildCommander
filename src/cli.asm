@@ -4,7 +4,7 @@
 wcKernel	equ		#6006
 termWidth	equ		80
 termHeight	equ		30
-defaultCol	equ		%11011111
+defaultCol	equ		%01011111
 cursorType	equ		"_"
 iBufferSize	equ		255
 historySize	equ		10
@@ -62,7 +62,7 @@ pluginStart	push	ix
 			cp		#00					; вызов из меню запуска плагинов
 			jr		z,callFromExt
 			cp		#03					; вызов из меню запуска плагинов
-			jr		z,callFromMenu
+			jp		z,callFromMenu
 			jp		pluginExit
 
 callFromExt
@@ -70,13 +70,6 @@ callFromExt
 			ld		(scriptLength+2),de
 
 			call	cliInit
-
-			ld		hl,scriptAddr
-			ld		de,scriptAddr+1
-			ld		bc,#3fff
-			xor		a
-			ld		(scriptAddr),a
-			ldir
 
 			ld		bc,(scriptLength+2)
 			ld		a,b
@@ -97,20 +90,47 @@ callExt_01	cp		#20
 			jr		c,callExt_02
 			ld		b,#20
 
-callExt_02	ld		a,LOAD512
+callExt_02	ld		a,c
+			cp		#00
+			jr		z,callExt_02a
+			inc		b
+callExt_02a
+			ld		a,LOAD512
 			ld		hl,scriptAddr
 			push	hl
 			call	wcKernel
+callExt_Loop_
+			call	clearIBuffer
 			pop		hl
+			ld		de,iBuffer	
+callExt_Loop
+			ld		a,(hl)
+			cp		#00					;end file ?
+			jp		z,pluginExit
+			;jp		z,$
+			cp		#0d					;end string?
+			jr		z,callExt_03
+			ld		(de),a
+			inc		hl
+			inc		de
+			jr		callExt_Loop
 
-			;ld		a,2
-			;out		(254),a
-			ei
-extLoop		halt
-			ld		a,ESC
-			call	wcKernel
-			call	nz,pluginExit
-			jr		extLoop
+callExt_03	inc		hl
+			ld		a,(hl)
+			cp		#0a
+			jr		nz,callExt_03a
+			inc		hl
+callExt_03a
+			push	hl
+			xor		a					; сброс флагов
+			ld		hl,cmdTable
+			ld		de,iBuffer
+			call	parser
+			cp		#ff
+			jr		nz,callExt_03b
+			ld		hl,errorMsg
+			call	printStr
+callExt_03b	jr		callExt_Loop_
 
 ;---------------------------------------
 			; Устанавливаем CLI-палитру
@@ -478,7 +498,6 @@ deleteKey	ld		a,(iBufferPos)
 			call	getPrevPos
 			ld		a," "
 			call	printChar
-			;call	getPrevPos
 			ret
 
 ;---------------------------------------
@@ -527,13 +546,43 @@ printStr	xor		a
 			ld		(strLen),a
 printStrLoop
 			ld		a,(hl)
-			cp		#00					; Управляющий код: 0 - выход
+			cp		"\\"
+			jr		nz,skipCode
+
+			inc		hl
+			ld		a,(hl)
+			cp		"x"
+			jr		nz,skipCode_00
+			inc		hl
+			call	hex2int
+			dec		hl
+			jr		skipCode
+
+skipCode_00	cp		"n"
+			jr		nz,skipCode_01
+			ld		a,#0d
+			jr		skipCode
+
+skipCode_01	dec		hl					; no esc code simple backslash
+			ld		a,"\\"
+
+skipCode	cp		#00					; Управляющий код: 0 - выход
 			jp		z,printStrExit
+
 			cp		16					; Управляющий код: 16 - ink
 			jr		nz,skipChar_01
 			inc		hl
 			ld		a,(hl)
-			cp		16					; 16 - default color
+			cp		"\\"
+			jr		nz,nextCode16
+			inc		hl
+			ld		a,(hl)
+			cp		"x"
+			jr		nz,printStrLoop
+			inc		hl
+			call	hex2int
+			dec		hl
+nextCode16	cp		16					; 16 - default color
 			jr		nz,notDef_01
 			ld		a,defaultCol
 notDef_01	and		%00001111
@@ -549,7 +598,16 @@ skipChar_01
 			jr		nz,skipChar_02
 			inc		hl
 			ld		a,(hl)
-			cp		16					; 16 - default color
+			cp		"\\"
+			jr		nz,nextCode17
+			inc		hl
+			ld		a,(hl)
+			cp		"x"
+			jr		nz,printStrLoop
+			inc		hl
+			call	hex2int
+			dec		hl
+nextCode17	cp		16					; 16 - default color
 			jr		nz,notDef_02
 			ld		a,defaultCol
 			and		%11110000
@@ -565,7 +623,7 @@ isDef_01	ld		c,a
 			or		c
 			ld		(curColor),a
 			inc		hl
-			jr		printStrLoop
+			jp		printStrLoop
 skipChar_02
 			cp		13					; Управляющий код: 13 - new line (enter)
 			jr		nz,skipChar_03
@@ -592,7 +650,7 @@ skipChar_03
 			or		b
 			ld		(curColor),a
 			inc		hl
-			jr		printStrLoop
+			jp		printStrLoop
 skipChar_04				
 			push	hl
 			call	printChar
@@ -605,7 +663,8 @@ skipFinal	pop		hl
 			jp		printStrLoop
 printStrExit
 			ld		a,(strLen)
-			ret							; print string len
+			ret									; print string len
+
 ;---------------------------------------
 			;ld		a,"A"
 printChar	ld		hl,(curPosAddr)				; печать символа
@@ -775,8 +834,6 @@ echoString	ex		de,hl
 			call	printStr
 			pop		hl
 			call	printStr
-			ld		hl,endMsg
-			call	printStr
 			ret
 ;---------------------------------------
 testPassed	ld		hl,passedMsg
@@ -802,7 +859,9 @@ clLoop		push	bc
 ;---------------------------------------
 			include "parser.asm"
 			include "str2int.asm"
+			include "hex2int.asm"
 ;---------------------------------------
+codeBuff	db		"  ",#00
 scriptLength
 			dw		#0000,#0000
 storeKey	db		#00
@@ -832,7 +891,7 @@ cliPal
 			dw		%0010000000010000	; 3.dark violet
 			dw		%0000001000000000	; 4.green
 			;dw		%0000001000010000	; 5.teal
-			dw		%0000000100001000	; 5.darkest teal
+			dw		%0000000100010000	; 5.dark teal
 			;dw		%0100001000000000	; 6.olive
 			dw		%0110000100000000	; 6.orange
 			dw		%0110001000010000	; 7.light beige
@@ -845,11 +904,11 @@ cliPal
 			dw		%0110000000011000	;11.fuchsia
 			dw		%0000001100000000	;12.lime
 			;dw		%0000001100011000	;13.aqua
-			dw		%0000000100010000	;13.dark teal
+			dw		%0000001000011000	;13.teal
 			dw		%0110001100000000	;14.yellow
 			dw		%0110001100011000	;15.white
 
-welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.01",#0d
+welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.01 Build ",#0d
 			db		16,7,"2012 (C) Breeze\\Fishbone Crew",#0d
 
 readyMsg	db		#0d,16,16,"1>"
@@ -873,7 +932,7 @@ passedMsg	db		#0d
 
 cursor_01	db		16,15,cursorType,16,16,#00
 cursor_02	db		16,8,cursorType,16,16,#00
-cursor_03	db		16,13,cursorType,16,16,#00
+cursor_03	db		16,5,cursorType,16,16,#00
 cursor_04	db		16,16," ",16,16,#00
 
 curAnimPos	db		#00
@@ -932,26 +991,6 @@ cliHistory	ds	iBufferSize, #00
 			ds	iBufferSize, #00
 			ds	iBufferSize, #00
 			ds	iBufferSize, #00
-
-			;db		16,00,"00.Command Line Interface(CLI) v0.01",#0d
-			;db		16,01,"01.Command Line Interface(CLI) v0.01",#0d
-			;db		16,02,"02.Command Line Interface(CLI) v0.01",#0d
-			;db		16,03,"03.Command Line Interface(CLI) v0.01",#0d
-			;db		16,04,"04.Command Line Interface(CLI) v0.01",#0d
-			;db		17,7
-			;db		16,05,"05.Command Line Interface(CLI) v0.01",#0d
-			;db		17,16												; default
-			;db		16,06,"06.Command Line Interface(CLI) v0.01",#0d
-			;db		16,07,"07.Command Line Interface(CLI) v0.01",#0d
-			;db		16,08,"08.Command Line Interface(CLI) v0.01",#0d
-			;db		16,09,"09.Command Line Interface(CLI) v0.01",#0d
-			;db		16,10,"10.Command Line Interface(CLI) v0.01",#0d
-			;db		16,11,"11.Command Line Interface(CLI) v0.01",#0d
-			;db		16,12,"12.Command Line Interface(CLI) v0.01",#0d
-			;db		16,13,"13.Command Line Interface(CLI) v0.01",#0d
-			;db		16,14,"14.Command Line Interface(CLI) v0.01",#0d
-			;db		16,15,"15.Command Line Interface(CLI) v0.01",#0d
-			;db		#00
 pluginEnd
 ;---------------------------------------
 	ENT

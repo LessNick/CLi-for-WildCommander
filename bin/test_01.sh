@@ -1,7 +1,5 @@
-################################
-# This is script test #01
-################################
-
 echo hello world!
 
-pause 0
+sleep 0
+
+### always new line at end !!! ###
