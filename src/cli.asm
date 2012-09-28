@@ -48,7 +48,7 @@ startCode
 
 			; +165 Имя плагина
 			;    	 ********************************
-			db		"Command Line Interface v0.01    "
+			db		"Command Line Interface          "
 
 			db		#03					; +197 Тип условий при которых должен вызываться плагин:
 										; 	   #00 - только по расширению
@@ -154,9 +154,21 @@ cliInit		ld		hl,cliPal
 			call	clearIBuffer
 			ret
 
+cliInitDev	ld		d,#00					; окрываем поток с устройством (#00 = инициализация, #ff = сброс в root)
+			ld		b,DEVSDZX				; устройство 
+			ld		a,STREAM
+			call	wcKernel
+			ret		z						; если устройство найдено
+
+			ld		hl,wrongDevMsg			; иначе сообщить об ошибке
+			call	printStr
+			ret
+
 ;---------------------------------------
 callFromMenu
 			call	cliInit
+			call	cliInitDev
+
 cliStart			
 			ld		hl,welcomeMsg
 			call	printStr
@@ -864,20 +876,38 @@ clLoop		push	bc
 			ret
 
 ;---------------------------------------
-listDir		ld		d,#00					; окрываем поток с устройством (пока всегда #00)
-			ld		b,DEVSDZX				; устройство 
-			ld		a,STREAM
-			call	wcKernel
-			jp		nz,lsError				; если устройство не найдено
+listDir		;ld		d,#00					; окрываем поток с устройством (пока всегда #00)
+			;ld		b,DEVSDZX				; устройство 
+			;ld		a,STREAM
+			;call	wcKernel
+			;jp		nz,lsError				; если устройство не найдено
 			;ld		a,GIPAGPL
 			;call	wcKernel
 
-			ld		hl,endMsg
+lsPathCount	ld		a,#00					; path counter
+			cp		#00
+			jr		nz,lsNotRoot
+
+			ld		d,#ff					; окрываем поток с устройством (#00 = инициализация, #ff = сброс в root)
+			ld		bc,#ffff				; устройство (#ffff = не создавать заново, использовать текущий поток)
+			ld		a,STREAM
+			call	wcKernel
+			jr		lsBegin
+
+lsNotRoot	ld		hl,rootSearch
+			ld		a,FENTRY
+			call	wcKernel
+			jp		z,lsCantReadDir
+
+lsBegin		ld		hl,endMsg
 			call	printStr
 			
 			xor		a
 			ld		(lsCount+1),a
-			
+
+			ld		a,GFILE
+			call	wcKernel
+
 lsReadAgain	call	clearBuffer
 
 			ld		hl,bufferAddr
@@ -900,12 +930,6 @@ lsLoop		ld		a,(hl)
 			jr		z,lsSkip+1
 
 			push	hl
-;			ld		de,file83Msg+2
-;			ld		bc,8
-;			ldir
-;			inc		de
-;			ld		bc,3
-;			ldir
 			call	lsCopyName
 
 			bit		4,(ix+11)
@@ -969,10 +993,6 @@ lsLoadNext	xor		a
 			ld		(itemsCount+1),a
 			jp 		lsReadAgain
 
-lsError		ld		hl,wrongDevMsg
-			call	printStr
-			ret
-
 clearBuffer	ld		hl,bufferAddr
 			ld		de,bufferAddr+1
 			ld		bc,#1fff
@@ -1010,6 +1030,65 @@ lsCopySkip	inc		b						; счётчик символов всего (позиц�
 			ld		(de),a
 			inc		de
 			jr		lsCopyLoop
+
+lsCantReadDir
+			ld		hl,cantReadDirMsg
+			call	printStr
+			ret
+
+;---------------------------------------
+changeDir	ex		de,hl				; hl params
+			push	hl
+			ld		hl,entrySearch
+			ld		de,entrySearch+1
+			ld		bc,13
+			xor		a
+			ld		(hl),a
+			ldir
+			pop		hl
+			ld		de,entrySearch
+			ld		a,FLAGDIR			; directory
+
+cdLoop		ld		(de),a
+			inc		de
+			ld		a,(hl)
+			inc		hl
+			cp		#00
+			jr		nz,cdLoop
+
+			ld		hl,entrySearch
+			ld		a,FENTRY
+			call	wcKernel
+			jr		z,cdNotFound
+
+			ld		a,GDIR
+			call	wcKernel
+
+			ld		hl,entrySearch+1
+			ld		a,(hl)
+			cp		"."
+			jr		nz,cdIncPath
+			inc		hl
+			ld		a,(hl)
+			cp		"."
+			jr		nz,cdSkipPath
+
+			ld		a,(lsPathCount)
+			cp		#00
+			jr		z,cdSkipPath
+			dec		a
+			ld		(lsPathCount),a
+			jr		cdSkipPath
+cdIncPath	ld		a,(lsPathCount)
+			inc		a
+			ld		(lsPathCount),a
+
+cdSkipPath	xor		a					; no error
+			ret
+cdNotFound
+			ld		hl,dirNotFoundMsg
+			call	printStr
+			ret
 
 ;---------------------------------------
 			include "parser.asm"

@@ -18,6 +18,9 @@
 	;DISPLAY "callFromExt addr:",/A,callFromExt
 	;DISPLAY "pluginExit addr:",/A,pluginExit
 	;DISPLAY "test addr:",/A,test
-	DISPLAY "listDir addr:",/A,listDir
+	;DISPLAY "listDir addr:",/A,listDir
+	;DISPLAY "changeDir addr:",/A,changeDir
+	;DISPLAY "cliInit addr:",/A,cliInit
+	;DISPLAY "cdLoop addr:",/A,cdLoop
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode

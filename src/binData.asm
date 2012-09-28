@@ -27,7 +27,7 @@ cliPal
 			;dw		%0100000000000000	; 2.maroon
 			dw		%0110000100010000	; 2.amiga pink
 			;dw		%0100000000010000	; 3.purple
-			dw		%0010000000010000	; 3.dark violet
+			dw		%0110001000011000	; 3.dark violet
 			dw		%0000001000000000	; 4.green
 			;dw		%0000001000010000	; 5.teal
 			dw		%0000000100010000	; 5.dark teal
@@ -73,7 +73,21 @@ wrongDevMsg	db		#0d
 			db		16,10,"Error! Wrong device ID.",#0d,#0d
 			db		#00
 
+dirNotFoundMsg
+			db		#0d
+			db		16,10,"Error! Directory not found.",#0d,#0d
+			db		#00
+
+cantReadDirMsg
+			db		#0d
+			db		16,10,"Error! Can't read directory.",#0d,#0d
+			db		#00
+
 file83Msg	db		16,15,"             ",#00
+
+entrySearch	ds		14,#00
+
+rootSearch	db		FLAGDIR,".",#00
 
 cursor_01	db		16,15,cursorType,16,16,#00
 cursor_02	db		16,8,cursorType,16,16,#00
@@ -125,6 +139,14 @@ cmdTable
 			db		"ls"					; Command
 			db		"*"						; 1 byte
 			dw		listDir					; 2 bytes
+
+			db		"dir"					; Command
+			db		"*"						; 1 byte
+			dw		listDir					; 2 bytes
+
+			db		"cd"					; Command
+			db		"*"						; 1 byte
+			dw		changeDir				; 2 bytes
 
 			db		#00						; table end marker
 
