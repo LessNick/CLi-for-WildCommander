@@ -117,9 +117,9 @@ TMRKNXT		equ	#37		; reserved ???
 
 STREAM		equ	#39		; работа с потоками
 						; i:D - номер потока (0/1)
-DEVSDZX		equ	#00		;   B - устройство: 0-SD(ZC)
-DEVNEMOM	equ	#01		;					1-Nemo IDE Master
-DEVNEMOS	equ	#02		;					2-Nemo IDE Slave
+						;   B - устройство: 0-SD(ZC)
+						;					1-Nemo IDE Master
+						;					2-Nemo IDE Slave
 						;   C - раздел (не учитывается)
 						;   BC=#FFFF: включает поток из D (не возвращает флагов)
 						;	          иначе создает/пересоздает поток.
@@ -221,6 +221,6 @@ KBSCN		equ	#2A		; опрос клавишь
 						; 	     A=#FF - buffer end
 ;			equ	#2b
 ;			equ	#2c
-ANYK		equ	#2d		; (any key)
-USPO		equ	#2e		; ???
-NUSP		equ	#2f		; (waiting for any key)
+ANYK		equ	#2d		; any key
+USPO		equ	#2e		; pause for keyboard ready (recomended for NUSP)
+NUSP		equ	#2f		; waiting for any key

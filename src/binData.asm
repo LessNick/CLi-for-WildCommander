@@ -47,42 +47,6 @@ cliPal
 			dw		%0110001100000000	;14.yellow
 			dw		%0110001100011000	;15.white
 
-welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.02",#0d
-			db		16,7,"2012 (C) Breeze\\Fishbone Crew",#0d
-
-readyMsg	db		#0d,16,16,"1>"
-			db		#00
-
-errorMsg	db		#0d
-			db		16,10,"Error! Unknown command.",#0d,#0d
-			db		#00
-
-errorParMsg	db		#0d
-			db		16,10,"Error! Wrong parameters.",#0d,#0d
-			db		#00
-
-anyKeyMsg	db		#0d
-			db		16,7,"Press any key to continue.",#0d
-endMsg		db		#0d,#00
-
-passedMsg	db		#0d
-			db		16,4,"Passed! ;)",#0d,#0d
-			db		#00
-
-wrongDevMsg	db		#0d
-			db		16,10,"Error! Wrong device ID.",#0d,#0d
-			db		#00
-
-dirNotFoundMsg
-			db		#0d
-			db		16,10,"Error! Directory not found.",#0d,#0d
-			db		#00
-
-cantReadDirMsg
-			db		#0d
-			db		16,10,"Error! Can't read directory.",#0d,#0d
-			db		#00
-
 file83Msg	db		16,15,"             ",#00
 
 entrySearch	ds		14,#00
@@ -108,47 +72,6 @@ curAnim		dw		cursor_01
 			dw		cursor_02
 			db		5
 			dw		#00
-
-;---------------------------------------
-; Command table below with all jump vectors.
-cmdTable
-			db		"exit"					; Command
-			db		"*"						; 1 byte
-			dw		closeCli				; 2 bytes
-
-			db		"cls"					; Command
-			db		"*"						; 1 byte
-			dw		clearScreen				; 2 bytes
-
-			db		"pwd"					; Command
-			db		"*"						; 1 byte
-			dw		pathWorkDir				; 2 bytes
-
-			db		"sleep"					; Command
-			db		"*"						; 1 byte
-			dw		sleepSeconds			; 2 bytes
-
-			db		"echo"					; Command
-			db		"*"						; 1 byte
-			dw		echoString				; 2 bytes
-
-			db		"test"					; Command
-			db		"*"						; 1 byte
-			dw		testPassed				; 2 bytes
-			
-			db		"ls"					; Command
-			db		"*"						; 1 byte
-			dw		listDir					; 2 bytes
-
-			db		"dir"					; Command
-			db		"*"						; 1 byte
-			dw		listDir					; 2 bytes
-
-			db		"cd"					; Command
-			db		"*"						; 1 byte
-			dw		changeDir				; 2 bytes
-
-			db		#00						; table end marker
 
 historyPos	db		#00
 

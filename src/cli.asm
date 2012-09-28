@@ -1,63 +1,6 @@
 ; CLI (Command Line Interface) Plugin
 ; (C) breeze/fishbone crew 2012
 ;---------------------------------------
-wcKernel	equ		#6006
-termWidth	equ		80
-termHeight	equ		30
-defaultCol	equ		%01011111
-cursorType	equ		"_"
-iBufferSize	equ		255
-historySize	equ		10
-bufferAddr	equ		#0000
-colorDir	equ		15					; white
-colorFile	equ		8					; silver
-colorRO		equ		1					; navy
-colorHidden	equ		13					; teal
-colorSystem	equ		2					; amiga pink
-colorArch	equ		3					; dark violet
-
-			include "wcKernel.h.asm"
-
-			include "tsConf.h.asm"
-
-			org		#6000
-startCode
-			; Заголовок (Описатель) плагина
-			ds		16					; +00 reserved
-			db		"WildCommanderMDL"	; +16 WildCommanderMDL
-			db		#02					; +32 Версия формата
-			db 		#00					; +33 reserved
-			db		#01					; +34 Количество страниц
-			db		#00					; +35 номер страницы, которая будет включаться в #8000!
-
-			;dw		#00, #01			; +36 +0 - Номер страницы +1 - Размер блока (512b)
-			db		#00, (pluginEnd - pluginStart) / 512 + 1
-			db		#00,#00
-			db		#00,#00
-			db		#00,#00
-			db		#00,#00
-			db		#00,#00
-
-			ds		16					; +48 - reserved
-
-			db		"SH "				; +64 блок расширений "TXT", "WRD" и т.д.
-			ds		31*3				;
-			db		#00					; +160 #00
-
-			dw		#6000, #0000		; +161 максимальный размер файла (определяет, какие файлы не нужно передавать)
-
-			; +165 Имя плагина
-			;    	 ********************************
-			db		"Command Line Interface          "
-
-			db		#03					; +197 Тип условий при которых должен вызываться плагин:
-										; 	   #00 - только по расширению
-										; 	   #01 - сразу после загрузки плагина
-										; 	   #02 - по таймеру скринсейвера
-										; 	   #03 - из меню запуска
-			db		#00					; +198 reserved
-
-;---------------------------------------
 			org		#6200
 
 			DISP	#8000
@@ -65,78 +8,11 @@ startCode
 ; Начало основного кода плагина
 
 pluginStart	push	ix
-			cp		#00					; вызов из меню запуска плагинов
-			jr		z,callFromExt
+			cp		#00					; вызов по расширению
+			jp		z,callFromExt
 			cp		#03					; вызов из меню запуска плагинов
 			jp		z,callFromMenu
 			jp		pluginExit
-
-callFromExt
-			ld		(scriptLength),hl
-			ld		(scriptLength+2),de
-
-			call	cliInit
-
-			ld		bc,(scriptLength+2)
-			ld		a,b
-			or		c
-			jr		z,callExt_00
-			ld		b,#20				; 32 * 512 = 16384 (#4000)
-			jr		callExt_01
-
-callExt_00	ld		bc,(scriptLength)
-			xor		a
-			srl		b
-			ld		a,b
-			cp		#00
-			jr		nz,callExt_01
-			ld		b,#01				; 1 block 512b
-
-callExt_01	cp		#20
-			jr		c,callExt_02
-			ld		b,#20
-
-callExt_02	ld		a,c
-			cp		#00
-			jr		z,callExt_02a
-			inc		b
-callExt_02a
-			ld		a,LOAD512
-			ld		hl,bufferAddr
-			push	hl
-			call	wcKernel
-callExt_Loop_
-			call	clearIBuffer
-			pop		hl
-			ld		de,iBuffer	
-callExt_Loop
-			ld		a,(hl)
-			cp		#00					;end file ?
-			jp		z,pluginExit
-			;jp		z,$
-			cp		#0d					;end string?
-			jr		z,callExt_03
-			ld		(de),a
-			inc		hl
-			inc		de
-			jr		callExt_Loop
-
-callExt_03	inc		hl
-			ld		a,(hl)
-			cp		#0a
-			jr		nz,callExt_03a
-			inc		hl
-callExt_03a
-			push	hl
-			xor		a					; сброс флагов
-			ld		hl,cmdTable
-			ld		de,iBuffer
-			call	parser
-			cp		#ff
-			jr		nz,callExt_03b
-			ld		hl,errorMsg
-			call	printStr
-callExt_03b	jr		callExt_Loop_
 
 ;---------------------------------------
 			; Устанавливаем CLI-палитру
@@ -144,7 +20,7 @@ cliInit		ld		hl,cliPal
 			call	initPal
 
 			; Включаем текстовый режим и подготавливаем окружение
-			call	setTxtMode
+			call	txtModeInit
 
 			; Предварительно очищаем экран
 			call	clearTxt
@@ -154,10 +30,8 @@ cliInit		ld		hl,cliPal
 			call	clearIBuffer
 			ret
 
-cliInitDev	ld		d,#00					; окрываем поток с устройством (#00 = инициализация, #ff = сброс в root)
-			ld		b,DEVSDZX				; устройство 
-			ld		a,STREAM
-			call	wcKernel
+cliInitDev	ld		b,deviceSDZC			; устройство SD-Card Z-Controller
+			call	openStream
 			ret		z						; если устройство найдено
 
 			ld		hl,wrongDevMsg			; иначе сообщить об ошибке
@@ -177,34 +51,25 @@ cliStart
 mainLoop	halt
 			call	getInput
 
-			ld		a,ENKE
-			call	wcKernel
+			call	checkKeyEnter
 			call	nz,enterKey
 
-			ld		a,BSPC
-			call	wcKernel
+			call	checkKeyDel
 			call	nz,deleteKey
 
-			ld		a,UPPP
-			call	wcKernel
+			call	checkKeyUp
 			call	nz,upKey
 
-			ld		a,DWWW
-			call	wcKernel
+			call	checkKeyDown
 			call	nz,downKey
 
-			ld		a,LFFF
-			call	wcKernel
+			call	checkKeyLeft
 			call	nz,leftKey
 
-			ld		a,RGGG
-			call	wcKernel
+			call	checkKeyRight
 			call	nz,rightKey
 
-			ld		a,#00			; #00 - учитывает SHIFT
-			ex		af,af'
-			ld		a,KBSCN
-			call	wcKernel
+			call	getKeyWithShift
 			call	nz,printKey
 
 			jr		mainLoop
@@ -221,47 +86,38 @@ pluginExit
 			ret
 
 ;---------------------------------------
-setTxtMode
+txtModeInit
 			; Включаем страницу со страндартным фонтом WC
 			ld		a,#ff
-			call	switchPage
-			; Копируем в #0000			
+			call	setRamPage
+
+			; Сохраняем копию шрифта в #0000			
 			ld		hl,#c000
 			ld		de,#0000
 			ld		bc,2048
 			ldir
 
 			; Включаем страницу с нашим фонтом
-										; включение страницы из видео буферов
-			ld		a,#01				; #00-#0F - страницы из 1го видео буфера
-			ex		af,af'				; #10-#1F - страницы из 2го видео буфера
-			ld		a,MNGCVPL
-			call	wcKernel
-			; Восстанавливаем из #0000
+			ld		a,#01
+			call	setVideoPage
+
+			; Клонируем шрифт из #0000
 			ld		hl,#0000
 			ld		de,#c000
 			ld		bc,2048
 			ldir
 
 			; Включаем страницу с нашим текстовым режимом
-										; включение страницы из видео буферов
-			ld		a,#00				; #00-#0F - страницы из 1го видео буфера
-			ex		af,af'				; #10-#1F - страницы из 2го видео буфера
-			ld		a,MNGCVPL
-			call	wcKernel
+			ld		a,#00
+			call	setVideoPage
 
 			; Переключаем видео на наш текстовый режим
 			ld		a,#01				; #01 - 1й видео буфер (16 страниц)
-			ex		af,af'
-			ld		a,MNGV_PL
-			call	wcKernel
+			call	setTxtMode
 
 			; На всякий случай переключаем разрешайку на 320x240 TXT
 			ld		a,%10000011
-			ex		af,af'
-			ld		a,GVmod
-			call	wcKernel
-			ret
+			jp		setVideoMode
 
 ;---------------------------------------
 ; Очистка текстового экрана
@@ -304,18 +160,6 @@ setBorder
         	ret
 
 ;---------------------------------------
-; Восстановление видеорежима для WC
-restoreWC	ld		a,#00				; #00 - основной экран (тхт)
-			ex		af,af'
-			ld		a,MNGV_PL
-			jp		wcKernel
-
-;---------------------------------------
-switchPage	ex		af,af'				; A' - номер страницы (от 0)
-			ld		a,MNGC_PL			; #FE - первый текстовый экран (в нём панели)
-			jp		wcKernel			; #FF - страница с фонтом (1го текстового экрана)
-
-;---------------------------------------
 			;ld		hl,zxPal
 initPal		ld		bc,FMAddr
 			ld 		a,%00010000			; Разрешить приём данных для палитры (?) Bit 4 - FM_EN установлен
@@ -335,6 +179,7 @@ palLoop		push	hl
 			xor		a					; Запретить, Bit 4 - FM_EN сброшен
 			out		(c),a
 			ret
+
 ;---------------------------------------
 upKey		ld		a,(historyPos)
 			cp		#00
@@ -410,7 +255,6 @@ leftKey		ld		a,(iBufferPos)
 			ld		a," "
 leftKey_00	call	printChar		
 			pop 	af
-			;dec		a
 			ld		(iBufferPos),a
 			ld		a,(curPosX)
 			dec		a
@@ -442,7 +286,6 @@ rightKey	ld		a,(iBufferPos)
 			ld		a," "
 rightKey_00	call	printChar		
 			pop 	af
-			;inc		a
 			ld		(iBufferPos),a
 			ld		a,(curPosX)
 			inc		a
@@ -545,7 +388,8 @@ printKey	ld		hl,iBuffer
 buffOverload
 			pop		af
 			ld		a,#02
-			call	setBorder						
+			call	setBorder
+			ei						
 			halt
 			call	restBorder
 			ret
@@ -810,40 +654,6 @@ closeCli	pop		af					; skip sp ret
 clearScreen	call	clearTxt
 			call	printInit
 			ret
-;---------------------------------------
-pathWorkDir
-			ret
-
-;---------------------------------------
-sleepSeconds
-			ex		de,hl				; hl params
-			call	str2int
-			cp		#ff					; wrong params
-			jr		nz,sleep_00
-			ld		hl,errorParMsg
-			call	printStr
-			ret
-
-sleep_00	ld		a,l
-			cp		#00
-			jr		nz,sleep_01
-			ld		hl,anyKeyMsg
-			call	printStr
-
-			halt
-			ld		a,NUSP				; wait 4 anykey
-			call	wcKernel
-			jr		sleep_02
-
-sleep_01	ld		b,a
-sleep_01a	push	bc
-			ld		b,50
-sleep_01b	halt
-			djnz	sleep_01b
-			pop		bc
-			djnz	sleep_01a
-sleep_02
-			ret
 
 ;---------------------------------------
 echoString	ex		de,hl
@@ -851,10 +661,6 @@ echoString	ex		de,hl
 			ld		hl,endMsg
 			call	printStr
 			pop		hl
-			call	printStr
-			ret
-;---------------------------------------
-testPassed	ld		hl,passedMsg
 			call	printStr
 			ret
 
@@ -876,225 +682,92 @@ clLoop		push	bc
 			ret
 
 ;---------------------------------------
-listDir		;ld		d,#00					; окрываем поток с устройством (пока всегда #00)
-			;ld		b,DEVSDZX				; устройство 
-			;ld		a,STREAM
-			;call	wcKernel
-			;jp		nz,lsError				; если устройство не найдено
-			;ld		a,GIPAGPL
-			;call	wcKernel
-
-lsPathCount	ld		a,#00					; path counter
-			cp		#00
-			jr		nz,lsNotRoot
-
-			ld		d,#ff					; окрываем поток с устройством (#00 = инициализация, #ff = сброс в root)
-			ld		bc,#ffff				; устройство (#ffff = не создавать заново, использовать текущий поток)
-			ld		a,STREAM
-			call	wcKernel
-			jr		lsBegin
-
-lsNotRoot	ld		hl,rootSearch
-			ld		a,FENTRY
-			call	wcKernel
-			jp		z,lsCantReadDir
-
-lsBegin		ld		hl,endMsg
-			call	printStr
-			
-			xor		a
-			ld		(lsCount+1),a
-
-			ld		a,GFILE
-			call	wcKernel
-
-lsReadAgain	call	clearBuffer
-
-			ld		hl,bufferAddr
-			ld		b,#01					; 1 block 512b
-			ld		a,LOAD512
-			call	wcKernel
-
-			ld		hl,bufferAddr
-
-lsLoop		ld		a,(hl)
-			cp		#00
-			jp		z,lsEnd					; если #00 конец записей
-
-			push	hl
-			pop		ix
-			bit		3,(ix+11)
-			jr		nz,lsSkip+1				; если 1, то запись это ID тома
-			ld		a,(hl)
-			cp		#e5
-			jr		z,lsSkip+1
-
-			push	hl
-			call	lsCopyName
-
-			bit		4,(ix+11)
-			jr		z,lsNext_00			; если 1, то каталог
-			ld		a,colorDir
-			jr		lsNext
-
-lsNext_00	bit		0,(ix+11)
-			jr		z,lsNext_01			; если 1, то файл только для чтения
-			ld		a,colorRO
-			jr		lsNext
-
-lsNext_01	bit		1,(ix+11)
-			jr		z,lsNext_02			; если 1, то файл скрытый
-			ld		a,colorHidden
-			jr		lsNext
-
-lsNext_02	bit		2,(ix+11)
-			jr		z,lsNext_03			; если 1, то файл системный
-			ld		a,colorSystem
-			jr		lsNext
-
-lsNext_03	bit		5,(ix+11)
-			jr		z,lsNext_04			; если 1, то файл системный
-			ld		a,colorArch
-			jr		lsNext
-
-lsNext_04	ld		a,colorFile			; в противном случает - обычный файл
-
-lsNext		ld		(file83Msg+1),a
-			ld		hl,file83Msg
-			call	printStr
-
-lsCount		ld		a,#00
-			inc		a
-			ld		(lsCount+1),a
-			cp		#06
-			jr		nz,lsSkip
-			xor		a
-			ld		(lsCount+1),a
-			ld		hl,endMsg
-			call	printStr
-
-lsSkip		pop		hl
-
-itemsCount	ld		a,#00
-			inc		a
-			ld		(itemsCount+1),a
-			cp		16						; 16 записей на сектор
-			jr		z,lsLoadNext
-
-			ld		bc,32					; 32 byte = 1 item
-			add		hl,bc
-			jp		lsLoop
-
-lsEnd		ld		hl,endMsg
-			call	printStr
-			ret
-
-lsLoadNext	xor		a
-			ld		(itemsCount+1),a
-			jp 		lsReadAgain
-
-clearBuffer	ld		hl,bufferAddr
-			ld		de,bufferAddr+1
-			ld		bc,#1fff
-			xor		a
-			ld		(hl),a
-			ldir
-			ret
-
-lsCopyName	push	hl
-			ld		hl,file83Msg+2
-			ld		de,file83Msg+3
-			ld		bc,12
-			ld		a," "
-			ld		(hl),a
-			ldir
-			pop		hl
-			ld		de,file83Msg+2
-			ld		b,#00
-lsCopyLoop	ld		a,(hl)
-			cp		" "
-			jr		z,lsCopySkip
-			ld		(de),a
-			inc		de
-lsCopySkip	inc		b						; счётчик символов всего (позиция)
-			inc		hl
-			ld		a,b
-			cp		11
-			ret		z
-			cp		8						; 8.3
-			jr		nz,lsCopyLoop
-			ld		a,(hl)
-			cp		" "
-			ret		z
-			ld		a,"."
-			ld		(de),a
-			inc		de
-			jr		lsCopyLoop
-
-lsCantReadDir
-			ld		hl,cantReadDirMsg
-			call	printStr
-			ret
-
-;---------------------------------------
-changeDir	ex		de,hl				; hl params
-			push	hl
+prepareEntry
+			push	hl,af
 			ld		hl,entrySearch
 			ld		de,entrySearch+1
 			ld		bc,13
 			xor		a
 			ld		(hl),a
 			ldir
+			pop		af
 			pop		hl
 			ld		de,entrySearch
-			ld		a,FLAGDIR			; directory
 
-cdLoop		ld		(de),a
+entryLoop	ld		(de),a
 			inc		de
 			ld		a,(hl)
 			inc		hl
 			cp		#00
-			jr		nz,cdLoop
+			ret		z
+			cp		97					; a
+			jr		c,entryLoop
+			cp		123					; }
+			jr		nc,entryLoop
+			sub		#20
+			jr		entryLoop
 
-			ld		hl,entrySearch
-			ld		a,FENTRY
-			call	wcKernel
-			jr		z,cdNotFound
+;---------------------------------------
+showHelp	ld		hl,helpMsg
+			call	printStr
+			ld		hl,cmdTable
 
-			ld		a,GDIR
-			call	wcKernel
-
-			ld		hl,entrySearch+1
-			ld		a,(hl)
-			cp		"."
-			jr		nz,cdIncPath
-			inc		hl
-			ld		a,(hl)
-			cp		"."
-			jr		nz,cdSkipPath
-
-			ld		a,(lsPathCount)
+			ld		c,0
+helpAgain	ld		b,13
+helpLoop	ld		a,(hl)
 			cp		#00
-			jr		z,cdSkipPath
-			dec		a
-			ld		(lsPathCount),a
-			jr		cdSkipPath
-cdIncPath	ld		a,(lsPathCount)
-			inc		a
-			ld		(lsPathCount),a
+			jr		z,helpExit
+			cp		"*"
+			jr		nz,helpSkip
+			inc		hl
+			inc		hl
+			inc		hl
+			push	hl
 
-cdSkipPath	xor		a					; no error
-			ret
-cdNotFound
-			ld		hl,dirNotFoundMsg
+helpSpace	ld		a," "
+			push	bc
+			call	printChar
+			call	getNextPos
+			pop		bc
+			djnz	helpSpace
+			pop		hl
+			inc		c
+			ld		a,c
+			cp		6
+			jr		nz,helpAgain
+			ld		c,0
+			push	hl,bc
+			ld		hl,endMsg
+			call	printStr
+			pop		bc,hl
+			jr		helpAgain
+
+helpSkip	push	hl,bc
+			call	printChar
+			call	getNextPos
+			pop		bc,hl
+			inc		hl
+			dec		b
+			jr		helpLoop
+
+helpExit	ld		hl,endMsg-1
 			call	printStr
 			ret
 
 ;---------------------------------------
+			include "api.asm"
+			include	"pwd.asm"
+			include	"sleep.asm"
+			include	"ls.asm"
+			include	"cd.asm"
+			include	"sh.asm"
 			include "parser.asm"
 			include "str2int.asm"
 			include "hex2int.asm"
 ;---------------------------------------
+			include "messages.asm"
+			include "commands.asm"
+
 			include "binData.asm"
 pluginEnd
 ;---------------------------------------

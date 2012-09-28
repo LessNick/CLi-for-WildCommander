@@ -1,6 +1,26 @@
         DEVICE ZXSPECTRUM128
 
 			org #6000
+
+wcKernel	equ		#6006
+termWidth	equ		80
+termHeight	equ		30
+defaultCol	equ		%01011111
+cursorType	equ		"_"
+iBufferSize	equ		255
+historySize	equ		10
+bufferAddr	equ		#0000
+colorDir	equ		15					; white
+colorFile	equ		8					; silver
+colorRO		equ		1					; navy
+colorHidden	equ		13					; teal
+colorSystem	equ		2					; amiga pink
+colorArch	equ		3					; dark violet
+
+			include "wcKernel.h.asm"
+			include "tsConf.h.asm"
+
+			include "pluginHead.asm"
 			include "cli.asm"
 
 	;DISPLAY "startCode is:",/A,startCode
@@ -22,5 +42,9 @@
 	;DISPLAY "changeDir addr:",/A,changeDir
 	;DISPLAY "cliInit addr:",/A,cliInit
 	;DISPLAY "cdLoop addr:",/A,cdLoop
+	;DISPLAY "helpSpace addr:",/A,helpSpace
+	;DISPLAY "shellExecute addr:",/A,shellExecute
+	;DISPLAY "shExt_01 addr:",/A,shExt_01
+	;DISPLAY "pluginStart addr:",/A,pluginStart
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
