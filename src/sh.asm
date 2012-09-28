@@ -1,7 +1,7 @@
 shellExecute
 			ex		de,hl				; hl params
 
-			ld		a,FLAGFILE			; file
+			ld		a,flagFile			; file
 			call	prepareEntry
 			
 			ld		hl,entrySearch

@@ -30,12 +30,30 @@ cliInit		ld		hl,cliPal
 			call	clearIBuffer
 			ret
 
-cliInitDev	ld		b,deviceSDZC			; устройство SD-Card Z-Controller
+cliInitDev	call	initPath
+
+			ld		b,deviceSDZC			; устройство SD-Card Z-Controller
 			call	openStream
 			ret		z						; если устройство найдено
 
+			ld		a,"?"
+			ld		(pathString),a
+
 			ld		hl,wrongDevMsg			; иначе сообщить об ошибке
 			call	printStr
+			ret
+
+initPath	ld		hl,pathString
+			ld		de,pathString+1
+			ld		bc,pathStrSize-1
+			xor		a
+			ld		(hl),a
+			ldir
+			
+			ld		bc,#0001
+			ld		(pathStrPos),bc
+			ld		a,"/"
+			ld		(pathString),a
 			ret
 
 ;---------------------------------------
@@ -304,6 +322,10 @@ enterKey	ld		a,(storeKey)
 enterKey_00	call	printChar
 			xor		a
 			ld		(storeKey),a
+
+			ld		a,(iBuffer)
+			cp		#00					; simple enter
+			jr		z,enterReady	
 
 			ld		a,(historyPos)
 			ld		hl,iBufferSize		;hl * a
@@ -700,6 +722,8 @@ entryLoop	ld		(de),a
 			inc		hl
 			cp		#00
 			ret		z
+			cp		"/"
+			ret		z
 			cp		97					; a
 			jr		c,entryLoop
 			cp		123					; }
@@ -755,8 +779,13 @@ helpExit	ld		hl,endMsg-1
 			ret
 
 ;---------------------------------------
+pathWorkDir	ld		hl,endMsg
+			call	printStr
+			ld		hl,pathString
+			call	printStr
+			ret
+;---------------------------------------
 			include "api.asm"
-			include	"pwd.asm"
 			include	"sleep.asm"
 			include	"ls.asm"
 			include	"cd.asm"

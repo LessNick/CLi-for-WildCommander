@@ -1,8 +1,11 @@
 ; CLI (Command Line Interface) API
 
-deviceSDZC		equ	#00							; 0-SD(ZC)
-deviceNemoM		equ	#01							; Nemo IDE Master
-deviceNemoS		equ	#02							; Nemo IDE Slave
+wcKernel		equ		#6006					; WildCommander API
+deviceSDZC		equ		#00						; 0-SD(ZC)
+deviceNemoM		equ		#01						; Nemo IDE Master
+deviceNemoS		equ		#02						; Nemo IDE Slave
+flagFile		equ		#00						; flag:#00 - file
+flagDir			equ		#10						;      #10 - dir
 ;---------------------------------------
 openStream		ld		d,#00					; окрываем поток с устройством (#00 = инициализация, #ff = сброс в root)
 				ld		a,STREAM

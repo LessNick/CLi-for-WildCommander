@@ -51,7 +51,7 @@ file83Msg	db		16,15,"             ",#00
 
 entrySearch	ds		14,#00
 
-rootSearch	db		FLAGDIR,".",#00
+rootSearch	db		flagDir,".",#00
 
 cursor_01	db		16,15,cursorType,16,16,#00
 cursor_02	db		16,8,cursorType,16,16,#00
@@ -85,3 +85,7 @@ cliHistory	ds		iBufferSize, #00
 			ds		iBufferSize, #00
 			ds		iBufferSize, #00
 			ds		iBufferSize, #00
+
+pathStrPos	dw		#0000
+pathString	ds		pathStrSize,#00
+			db		#00

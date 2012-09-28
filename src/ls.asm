@@ -16,6 +16,7 @@ lsBegin		ld		hl,endMsg
 			
 			xor		a
 			ld		(lsCount+1),a
+			ld		(itemsCount+1),a
 
 			call	setFileBegin
 

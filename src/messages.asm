@@ -1,6 +1,6 @@
 ; CLi System messages
 
-welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.03",#0d
+welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.04",#0d
 			db		16,7,"2012 (C) Breeze\\Fishbone Crew",#0d,#0d
 			db		16,13,"Type ",20," help ",20," to display the full list of commands.",#0d
 
@@ -45,3 +45,8 @@ cantReadDirMsg
 helpMsg		db		#0d,#0d
 			db		16,13,"Available commands(embedded):",16,16
 			db		#0d,#00
+
+wrongPathMsg
+			db		#0d
+			db		16,10,"Error! Wrong path.",#0d,#0d
+			db		#00

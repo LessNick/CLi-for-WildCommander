@@ -2,7 +2,6 @@
 
 			org #6000
 
-wcKernel	equ		#6006
 termWidth	equ		80
 termHeight	equ		30
 defaultCol	equ		%01011111
@@ -10,6 +9,8 @@ cursorType	equ		"_"
 iBufferSize	equ		255
 historySize	equ		10
 bufferAddr	equ		#0000
+pathStrSize	equ		255*4
+
 colorDir	equ		15					; white
 colorFile	equ		8					; silver
 colorRO		equ		1					; navy
@@ -38,7 +39,7 @@ colorArch	equ		3					; dark violet
 	;DISPLAY "callFromExt addr:",/A,callFromExt
 	;DISPLAY "pluginExit addr:",/A,pluginExit
 	;DISPLAY "test addr:",/A,test
-	;DISPLAY "listDir addr:",/A,listDir
+	DISPLAY "listDir addr:",/A,listDir
 	;DISPLAY "changeDir addr:",/A,changeDir
 	;DISPLAY "cliInit addr:",/A,cliInit
 	;DISPLAY "cdLoop addr:",/A,cdLoop
@@ -46,5 +47,6 @@ colorArch	equ		3					; dark violet
 	;DISPLAY "shellExecute addr:",/A,shellExecute
 	;DISPLAY "shExt_01 addr:",/A,shExt_01
 	;DISPLAY "pluginStart addr:",/A,pluginStart
+	DISPLAY "cdSplitPath addr:",/A,cdSplitPath
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode

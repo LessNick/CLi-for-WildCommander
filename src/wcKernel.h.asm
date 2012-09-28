@@ -136,8 +136,8 @@ MKFILE		equ	#3a		; создание файла в активном катало�
 
 FENTRY		equ	#3b		; поиск файла/каталога в активной директории
 						; i:HL - flag(1),name(1-12),#00
-FLAGFILE	equ	#00		; 		 flag:#00 - file
-FLAGDIR		equ	#10		;		      #10 - dir
+						; 		 flag:#00 - file
+						;		      #10 - dir
 						;		 name:"NAME.TXT","DIR"...
 						; o: Z - entry not found
 						;    NZ - CALL GFILE/GDIR for activating file/dir
