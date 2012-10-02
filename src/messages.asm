@@ -1,6 +1,6 @@
 ; CLi System messages
 
-welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.04",#0d
+welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.05",#0d
 			db		16,7,"2012 (C) Breeze\\Fishbone Crew",#0d,#0d
 			db		16,13,"Type ",20," help ",20," to display the full list of commands.",#0d
 
@@ -8,11 +8,11 @@ readyMsg	db		#0d,16,16,"1>"
 			db		#00
 
 errorMsg	db		#0d
-			db		16,10,"Error! Unknown command.",#0d,#0d
+			db		16,10,"Error! Unknown command.",#0d
 			db		#00
 
 errorParMsg	db		#0d
-			db		16,10,"Error! Wrong parameters.",#0d,#0d
+			db		16,10,"Error! Wrong parameters.",#0d
 			db		#00
 
 anyKeyMsg	db		#0d

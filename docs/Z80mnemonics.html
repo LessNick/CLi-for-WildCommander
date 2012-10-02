@@ -1,0 +1,1332 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-ca">
+<meta http-equiv="Content-Type"
+content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Z80 Instruction Set</title>
+</head>
+
+<body bgcolor="#FFFFD5" link="#008000" vlink="#008000"
+alink="#008000">
+
+<h1 align="center">Z80 Instruction Set<br>
+By ???</h1>
+
+<p align="center"><font face="Courier">Z80 Instruction set summary<br>
+<br>
+Table A-3. Z80 Mnemonics and Operations in Alphabetical Order<br>
+&nbsp;</font></p>
+
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" height="189">
+  <tr>
+    <td width="16%" height="19">Mnemonic</td>
+    <td width="19%" height="19">Operation</td>
+    <td width="14%" height="19">CZPSNH</td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">Len</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">Tim</span></font></td>
+    <td width="35%" height="19">Comments</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">ADC A,r<br>
+    ADC A,(HL) <br>
+    ADC A,n<br>
+    ADC A,(ii+n)<br>
+    ADC HL,rr </font></td>
+    <td width="19%" height="19"><font face="Courier">A:=A+r+CY<br>
+    A:=A+(HL)+CY<br>
+    A:=A+n+CY<br>
+    A:=A+(ii+n)+CY<br>
+    HL:=HL+rr+CY </font></td>
+    <td width="14%" height="19"><font face="Courier">**V*0*<br>
+    <br>
+    <br>
+    <br>
+    **V*0*</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1<br>
+    1<br>
+    2<br>
+    3<br>
+    2</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    7<br>
+    7<br>
+    19<br>
+    15</span></font></td>
+    <td width="35%" height="19"><font face="Courier">r - A,B,C,D,E,H,L<br>
+    <br>
+    n - byte (0..FF)<br>
+    ii - IX,IY<br>
+    rr - BC,DE,HL,SP</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">ADC A,r<br>
+    ADC A,(HL) <br>
+    ADC A,n<br>
+    ADC A,(ii+n)<br>
+    ADC HL,rr<br>
+    ADD IX,ry<br>
+    ADD IY,rx</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=A+r<br>
+    A:=A+(HL)<br>
+    A:=A+n<br>
+    A:=A+(ii+n)<br>
+    HL:=HL+rr<br>
+    X:=IX+px<br>
+    IY:=IY+py</font></td>
+    <td width="14%" height="19"><font face="Courier">**V*0*<br>
+    <br>
+    <br>
+    <br>
+    *...0x<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font style="font-size: 12pt" face="Courier">1<br>
+    1<br>
+    2<br>
+    3<br>
+    1<br>
+    2<br>
+    2</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    7<br>
+    7<br>
+    19<br>
+    11<br>
+    15<br>
+    15</span></font></td>
+    <td width="35%" height="19"><br>
+    <br>
+    <br>
+    <br>
+    <font face="Courier">ry - BC,DE,SP,IY</font><br>
+    <font face="Courier">rx - BC,DE,SP,IX</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">AND r<br>
+    AND (HL)<br>
+    AND n<br>
+    AND (ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=A and r<br>
+    A:=A and (HL)<br>
+    A:=A and n<br>
+    A:=A and (ii+n)</font></td>
+    <td width="14%" height="19"><font face="Courier">0*P*01<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font style="font-size: 12pt" face="Courier">1<br>
+    1<br>
+    2<br>
+    3</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    7<br>
+    7<br>
+    19</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">BIT b,r<br>
+    BIT b,(HL)<br>
+    BIT b,(ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">Z:=not rb<br>
+    Z:=not (HL)b<br>
+    Z:=not (ii+n)b</font></td>
+    <td width="14%" height="19"><font face="Courier">.*xx01<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+    2<br>
+    4</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">8<br>
+    12<br>
+    20</span></font></td>
+    <td width="35%" height="19"><font face="Courier">b - bit number (0..7)<br>
+    xb - bit b of<br>
+    &nbsp;&nbsp;&nbsp;location x</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">CALL nn<br>
+    CALL cc,nn<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">PUSH PC;PC:=nn<br>
+    If cc then CALL nn<br>
+&nbsp;else continue</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">3<br>
+    3<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">17<br>
+    17<br>
+    10</span></font></td>
+    <td width="35%" height="19"><font face="Courier">nn - word (0..FFFF)<br>
+    cc - C,NC,Z,NZ,M,P,PE,PO<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19">CCF</td>
+    <td width="19%" height="19"><font face="Courier">CY:=not CY</font></td>
+    <td width="14%" height="19"><font face="Courier">*...0x</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">CP r<br>
+    CP (HL)<br>
+    CP n<br>
+    CP (ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">A-r<br>
+    A-(HL)<br>
+    A-n<br>
+    A-(ii+n)</font></td>
+    <td width="14%" height="19"><font face="Courier">**V*1*<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1<br>
+    1<br>
+    2<br>
+    3</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    7<br>
+    7<br>
+    19</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19">CDP</td>
+    <td width="19%" height="19"><font face="Courier">A-(HL);dec HL;dec BC</font></td>
+    <td width="14%" height="19"><font face="Courier">.***1*</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">16</span></font></td>
+    <td width="35%" height="19"><font face="Courier">PV=0 if BC=0,else PV=1</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">CPDR<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">Repeat CPD<br>
+    until Z=1 or BC=0</font></td>
+    <td width="14%" height="19"><font face="Courier">.***1*<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">21<br>
+    16</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">CPI</font></td>
+    <td width="19%" height="19"><font face="Courier">A-(HL);inc HL;dec BC</font></td>
+    <td width="14%" height="19"><font face="Courier">.***1*</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">16</span></font></td>
+    <td width="35%" height="19"><font face="Courier">PV=0 if BC=0,else PV=1</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">CPIR<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">Repeat CPI<br>
+&nbsp;</font></td>
+    <td width="14%" height="19"><font face="Courier">.***1*<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">21<br>
+    16</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">CPL</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=A xor 255</font></td>
+    <td width="14%" height="19"><font face="Courier">....11</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">DAA</font></td>
+    <td width="19%" height="19"><font face="Courier">Decimal adjust Acc.</font></td>
+    <td width="14%" height="19"><font face="Courier">**P*.*</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">DEC r<br>
+    DEC (HL)<br>
+    DEC (ii+n)<br>
+    DEC rr<br>
+    DEC ii</font></td>
+    <td width="19%" height="19"><font face="Courier">r:=r-1<br>
+    (HL):=(HL)-1<br>
+    (ii+n):=(ii+n)-1<br>
+    rr:=rr-1<br>
+    ii:=ii-1</font></td>
+    <td width="14%" height="19"><font face="Courier">.*V*1*<br>
+    <br>
+    <br>
+    ......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1<br>
+    1<br>
+    3<br>
+    1<br>
+    2</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    11<br>
+    23<br>
+    6<br>
+    10</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">DI</font></td>
+    <td width="19%" height="19"><font face="Courier">IFF:=0</font></td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">DJNZ e<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">dec B;if B 0 JR e<br>
+&nbsp;if B=0 continue</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">13<br>
+    8</span></font></td>
+    <td width="35%" height="19"><font face="Courier">e - adresse relative<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">EI</font></td>
+    <td width="19%" height="19"><font face="Courier">IFF:=1</font></td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">EX AF,AF'<br>
+    EX DE,HL<br>
+    EX (SP),HL<br>
+    EX (SP),ii</font></td>
+    <td width="19%" height="19"><font face="Courier">AF&lt;-&gt;AF'<br>
+    DE&lt;-&gt;HL<br>
+    (SP)&lt;-&gt;HL<br>
+    (SP)&lt;-&gt;ii</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1<br>
+    1<br>
+    1<br>
+    2</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    4<br>
+    4<br>
+    23</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">EXX<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">BC&lt;-&gt;BC';DE&lt;-&gt;DE'; <br>
+    HL&lt;-&gt;HL'</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+&nbsp;</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19">Halt</td>
+    <td width="19%" height="19">Halte le processeur</td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">IM 1<br>
+    IM 2<br>
+    IM 3</font></td>
+    <td width="19%" height="19"><font face="Courier">Interrupt mode 1<br>
+    Interrupt mode 2<br>
+    Interrupt mode 3</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+    <br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">8<br>
+    <br>
+&nbsp;</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">IN A,(n)<br>
+    IN r,(C)<br>
+    IN ?,(C)<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=port(n)<br>
+    r:=port(C)<br>
+    only set flags as<br>
+&nbsp;as IN r,(C) does</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+    2<br>
+    2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">11<br>
+    12<br>
+    12<br>
+&nbsp;</span></font></td>
+    <td width="35%" height="19"><br>
+    <br>
+    <font face="Courier">can't be entered as a<br>
+    command;code is ED 70</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">INC r<br>
+    INC (HL)<br>
+    NC (ii+n)<br>
+    INC rr<br>
+    INC ii</font></td>
+    <td width="19%" height="19"><font face="Courier">r:=r+1<br>
+    (HL):=(HL)+1<br>
+    (ii+n):=(ii+n)+1<br>
+    rr:=rr+1<br>
+    ii:=ii+1</font></td>
+    <td width="14%" height="19"><font face="Courier">.*V*0*<br>
+    <br>
+    <br>
+    ......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">1<br>
+    1<br>
+    3<br>
+    1<br>
+    2</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    11<br>
+    23<br>
+    6<br>
+    10</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">IND<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">(HL):=port(C);<br>
+    dec HL;dec B</font></td>
+    <td width="14%" height="19"><font face="Courier">x*xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">16<br>
+&nbsp;</span></font></td>
+    <td width="35%" height="19"><font face="Courier">Z=1 if B=0,else Z=0<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">INDR<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">Repeat IND<br>
+&nbsp;until B=0</font></td>
+    <td width="14%" height="19"><font face="Courier">x1xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">21<br>
+    16</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">INI<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">(HL):=port(C);<br>
+    inc HL;dec B</font></td>
+    <td width="14%" height="19"><font face="Courier">x*xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">16<br>
+&nbsp;</span></font></td>
+    <td width="35%" height="19"><font face="Courier">Z=1 if B=0,else Z=0<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">INIR<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">Repeat INI<br>
+&nbsp;until B=0</font></td>
+    <td width="14%" height="19"><font face="Courier">x1xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">21<br>
+    16</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">JP nn<br>
+    JP cc,nn<br>
+    JP (HL)<br>
+    JP (ii)</font></td>
+    <td width="19%" height="19"><font face="Courier">PC:=nn<br>
+    If cc then JP nn<br>
+    PC:=HL<br>
+    PC:=ii</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    ......<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">3<br>
+    3<br>
+    1<br>
+    2</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">10<br>
+    10<br>
+    4<br>
+    8</span></font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">JR e<br>
+    JR cond,e<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">PC:=PC+e<br>
+    If cond then JR e<br>
+&nbsp;else NOP</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">2<br>
+    2<br>
+&nbsp;</span></font></td>
+    <td width="8%" height="19"><font face="Courier">
+    <span style="font-size: 12pt">12<br>
+    12<br>
+    7</span></font></td>
+    <td width="35%" height="19"><font face="Courier">cond - C,NC,Z,NZ</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="14"><font face="Courier">LD r,r<br>
+    LD r,(HL)<br>
+    LD r,n<br>
+    LD r,(ii+n)<br>
+    LD (HL),r<br>
+    LD (ii+n),r<br>
+    LD (HL),n<br>
+    LD (ii+n),n<br>
+    LD A,(BC)<br>
+    LD A,(DE)<br>
+    LD A,(nn)<br>
+    LD (BC),A<br>
+    LD (DE),A<br>
+    LD (nn),A<br>
+    LD A,I<br>
+    LD A,R<br>
+    LD I,A<br>
+    LD R,A<br>
+    LD rr,nn<br>
+    LD ii,nn<br>
+    LD HL,(nn)<br>
+    LD rr,(nn)<br>
+    LD ii,(nn)<br>
+    LD (nn),HL<br>
+    LD (nn),rr<br>
+    LD (nn),ii<br>
+    LD SP,HL<br>
+    LD SP,ii</font></td>
+    <td width="19%" height="14"><font face="Courier">r:=r<br>
+    r:=(HL)<br>
+    r:=n<br>
+    r:=(ii+n)<br>
+    (HL):=r<br>
+    (ii+n):=r<br>
+    (HL):=n<br>
+    (ii+n):=n<br>
+    A:=(BC)<br>
+    A:=(DE)<br>
+    A:=(nn)<br>
+    (BC):=A<br>
+    (DE):=A<br>
+    (nn):=A<br>
+    A:=I<br>
+    A:=R<br>
+    I:=A<br>
+    R:=A<br>
+    rr:=nn<br>
+    ii:=nn<br>
+    HL:=(nn)<br>
+    rr:=(nn)<br>
+    ii:=(nn)<br>
+    (nn):=HL<br>
+    (nn):=rr<br>
+    (nn):=ii<br>
+    SP:=HL<br>
+    SP:=ii</font></td>
+    <td width="14%" height="14"><font face="Courier">......<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    .***00<br>
+    <br>
+    ......<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="14"><font face="Courier">
+    <span style="font-size: 12pt">1<br>
+    1<br>
+    2<br>
+    3<br>
+    1<br>
+    3<br>
+    2<br>
+    4<br>
+    1<br>
+    1<br>
+    3<br>
+    1<br>
+    1<br>
+    3<br>
+    2<br>
+    2<br>
+    2<br>
+    2<br>
+    3<br>
+    4<br>
+    3<br>
+    4<br>
+    4<br>
+    3<br>
+    4<br>
+    4<br>
+    1<br>
+    1</span></font></td>
+    <td width="8%" height="14"><font face="Courier">
+    <span style="font-size: 12pt">4<br>
+    7<br>
+    7<br>
+    19<br>
+    7<br>
+    19<br>
+    10<br>
+    19<br>
+    7<br>
+    7<br>
+    13<br>
+    7<br>
+    7<br>
+    13<br>
+    9<br>
+    9<br>
+    9<br>
+    9<br>
+    10<br>
+    14<br>
+    16<br>
+    20<br>
+    20<br>
+    16<br>
+    20<br>
+    20<br>
+    6<br>
+    10</span></font></td>
+    <td width="35%" height="14"><br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <font face="Courier">PV=IFF<br>
+    PV=IFF<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">LDD<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">(DE):=(HL);<br>
+    dec DE,HL,BC</font></td>
+    <td width="14%" height="19"><font face="Courier">..*.00<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">16<br>
+&nbsp;</font></td>
+    <td width="35%" height="19"><font face="Courier">PV=0 if BC=0,else PV=1<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">LDDR<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">Repeat LDD<br>
+&nbsp;</font></td>
+    <td width="14%" height="19"><font face="Courier">..0.00<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">21<br>
+    16</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">LDI<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">(DE):=(HL);<br>
+    inc DE,HL;dec BC</font></td>
+    <td width="14%" height="19"><font face="Courier">..*.00<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">16<br>
+&nbsp;</font></td>
+    <td width="35%" height="19"><font face="Courier">PV=0 if BC=0,else PV=1<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">LDIR<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">Repeat LDI<br>
+&nbsp;until Z=1 or BC=0</font></td>
+    <td width="14%" height="19"><font face="Courier">..0.00<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">21<br>
+    16</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">NEG</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=0-A</font></td>
+    <td width="14%" height="19"><font face="Courier">**V*1*</font></td>
+    <td width="8%" height="19"><font face="Courier">2</font></td>
+    <td width="8%" height="19"><font face="Courier">8</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">NOP</font></td>
+    <td width="19%" height="19"><font face="Courier">No operation</font></td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">1</font></td>
+    <td width="8%" height="19"><font face="Courier">4</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">OR r<br>
+    OR (HL)<br>
+    OR n<br>
+    OR (ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=A or r<br>
+    A:=A or (HL)<br>
+    A:=A or n<br>
+    A:=A or (ii+n)</font></td>
+    <td width="14%" height="19"><font face="Courier">0*P*00<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">1<br>
+    1<br>
+    2<br>
+    3</font></td>
+    <td width="8%" height="19"><font face="Courier">4<br>
+    7<br>
+    7<br>
+    19</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="17"><font face="Courier">OTDR<br>
+&nbsp;</font></td>
+    <td width="19%" height="17"><font face="Courier">Repeat OUTD<br>
+&nbsp;until B=0</font></td>
+    <td width="14%" height="17"><font face="Courier">x1xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="17"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="17"><font face="Courier">21<br>
+    16</font></td>
+    <td width="35%" height="17"></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">OTIR<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">Repeat OUTI<br>
+&nbsp;until B=0</font></td>
+    <td width="14%" height="19"><font face="Courier">x1xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">21<br>
+    16</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">OUT (n),A<br>
+    OUT (C),r</font></td>
+    <td width="19%" height="19"><font face="Courier">port(n):=A<br>
+    port(C):=r</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2</font></td>
+    <td width="8%" height="19"><font face="Courier">11<br>
+    12</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">OUTD<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">port(C):=(HL);<br>
+    dec HL;dec B</font></td>
+    <td width="14%" height="19"><font face="Courier">x*xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">16<br>
+&nbsp;</font></td>
+    <td width="35%" height="19"><font face="Courier">Z=1 if B=0,else Z=0<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">OUTI<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">port(C):=(HL);<br>
+    inc HL;dec B</font></td>
+    <td width="14%" height="19"><font face="Courier">x*xx1x<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">16<br>
+&nbsp;</font></td>
+    <td width="35%" height="19"><font face="Courier">Z=1 if B=0,else Z=0<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">POP qq<br>
+    POP ii</font></td>
+    <td width="19%" height="19"><font face="Courier">qq:=(SP);SP:=SP+2<br>
+    ii:=(SP);SP:=SP+2</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">1<br>
+    2</font></td>
+    <td width="8%" height="19"><font face="Courier">10<br>
+    14</font></td>
+    <td width="35%" height="19"><font face="Courier">qq - AF,BC,DE,HL<br>
+&nbsp;</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">PUSH qq<br>
+    PUSH ii</font></td>
+    <td width="19%" height="19"><font face="Courier">SP:=SP-2;(SP):=qq<br>
+    SP:=SP-2;(SP):=ii</font></td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">1<br>
+    2</font></td>
+    <td width="8%" height="19"><font face="Courier">11<br>
+    15</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RES b,r<br>
+    RES b,(HL)<br>
+    RES b,(ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">rb:=0<br>
+    (HL)b:=0<br>
+    (ii+n)b:=0</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RET<br>
+    RET cc<br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">POP PC<br>
+    If cc then RET<br>
+&nbsp;else NOP</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+    ......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">1<br>
+    1<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">10<br>
+    11<br>
+&nbsp;</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RETI</font></td>
+    <td width="19%" height="19"><font face="Courier">Return from interr.</font></td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">2</font></td>
+    <td width="8%" height="19"><font face="Courier">14</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RETN</font></td>
+    <td width="19%" height="19"><font face="Courier">Return from NMI</font></td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">2</font></td>
+    <td width="8%" height="19"><font face="Courier">14</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RL r<br>
+    RL (HL)<br>
+    RL (ii+n)<br>
+&nbsp;</font></td>
+    <td width="19%" height="38" rowspan="2"><font face="Courier">
+    +-------&gt;------+<br>
+    |+--+ +-------+|<br>
+    ++CY+&lt;+7 &lt;-- 0++<br>
+    <br>
+    +--+ +-------+<br>
+&nbsp;</font></td>
+    <td width="14%" height="19"><font face="Courier">**P*00<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23<br>
+&nbsp;</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RLA</font></td>
+    <td width="14%" height="19"><font face="Courier">*...00</font></td>
+    <td width="8%" height="19"><font face="Courier">1</font></td>
+    <td width="8%" height="19"><font face="Courier">4</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RLC r<br>
+    RLC (HL)<br>
+    RLC (ii+n)</font></td>
+    <td width="19%" height="38" rowspan="2"><font face="Courier">+----&gt;----+<br>
+    +--+ |+-------+|<br>
+    |CY+&lt;++7 &lt;-- 0++<br>
+    +--+ +-------+<br>
+&nbsp;</font></td>
+    <td width="14%" height="19"><font face="Courier">**P*00<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RLCA</font></td>
+    <td width="14%" height="19"><font face="Courier">*...00</font></td>
+    <td width="8%" height="19"><font face="Courier">1</font></td>
+    <td width="8%" height="19"><font face="Courier">4</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RLD<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">A +----&gt;---+(HL)<br>
+    +---+-+-++---+-+-+<br>
+    |7 4|3 0||7 4|3 0|<br>
+    +---+-+-++++-+-+-+<br>
+&nbsp;+-&lt;-++-&lt;-+ |</font></td>
+    <td width="14%" height="19"><font face="Courier">.*P*00<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">18<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RR r<br>
+    RR (HL)<br>
+    RR (ii+n)</font></td>
+    <td width="19%" height="38" rowspan="2"><font face="Courier">
+    +------&lt;-------+<br>
+    |+-------+ +--+|<br>
+    ++7 --&gt; 0+&gt;+CY++<br>
+    +-------+ +--+<br>
+&nbsp;</font></td>
+    <td width="14%" height="19"><font face="Courier">**P*00<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RRA</font></td>
+    <td width="14%" height="19"><font face="Courier">*...00</font></td>
+    <td width="8%" height="19"><font face="Courier">1</font></td>
+    <td width="8%" height="19"><font face="Courier">4</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RRC r<br>
+    RRC (HL)<br>
+    RRC (ii+n)<br>
+&nbsp;</font></td>
+    <td width="19%" height="38" rowspan="2"><font face="Courier">+---&lt;-----+<br>
+    |+-------+| +--+ |<br>
+    ++7 --&gt; 0++&gt;+CY|<br>
+    +-------+ +--+<br>
+&nbsp;</font></td>
+    <td width="14%" height="19"><font face="Courier">**P*00<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23<br>
+&nbsp;</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RRCA</font></td>
+    <td width="14%" height="19"><font face="Courier">*...00</font></td>
+    <td width="8%" height="19"><font face="Courier">1</font></td>
+    <td width="8%" height="19"><font face="Courier">4</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RRD<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="19%" height="19"><font face="Courier">A +---&lt;----+(HL)<br>
+    +---+-+-++---+-+-+<br>
+    |7 4|3 0||7 4|3 0|<br>
+    +---+-+-++++-+-+-+<br>
+&nbsp;+-&gt;-++-&gt;-+</font></td>
+    <td width="14%" height="19"><font face="Courier">.*P*00<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">18<br>
+    <br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">RST adr</font></td>
+    <td width="19%" height="19"><font face="Courier">CALL adr</font></td>
+    <td width="14%" height="19"><font face="Courier">......</font></td>
+    <td width="8%" height="19"><font face="Courier">1</font></td>
+    <td width="8%" height="19"><font face="Courier">11</font></td>
+    <td width="35%" height="19"><font face="Courier">adr - byte (000xxx00b)</font></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">SBC A,r<br>
+    SBC A,(HL)<br>
+    SBC A,n<br>
+    SBC A,(ii+n)<br>
+    SBC HL,rr</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=A-r-CY<br>
+    A:=A-(HL)-CY<br>
+    A:=A-n-CY<br>
+    A:=A-(ii+n)-CY<br>
+    HL:=HL-rr-CY</font></td>
+    <td width="14%" height="19"><font face="Courier">**V*1*<br>
+    <br>
+    <br>
+    <br>
+    **V*1x</font></td>
+    <td width="8%" height="19"><font face="Courier">1<br>
+    1<br>
+    2<br>
+    3<br>
+    2</font></td>
+    <td width="8%" height="19"><font face="Courier">4<br>
+    7<br>
+    7<br>
+    19<br>
+    15</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">SCF</font></td>
+    <td width="19%" height="19"><font face="Courier">CY:=1</font></td>
+    <td width="14%" height="19"><font face="Courier">1...00</font></td>
+    <td width="8%" height="19"><font face="Courier">1</font></td>
+    <td width="8%" height="19"><font face="Courier">4</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">SET b,r<br>
+    SET b,(HL)<br>
+    SET b,(ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">rb:=1<br>
+    (HL)b:=1<br>
+    (ii+n)b:=1</font></td>
+    <td width="14%" height="19"><font face="Courier">......<br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">SLA r<br>
+    SLA (HL)<br>
+    SLA (ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">+--+ +-------+<br>
+    |CY+&lt;+7 &lt;-- 0+&lt;0<br>
+    +--+ +-------+</font></td>
+    <td width="14%" height="19"><font face="Courier">**P*00<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="18"><font face="Courier">SRA r<br>
+    SRA (HL)<br>
+    SRA (ii+n)</font></td>
+    <td width="19%" height="18"><font face="Courier">&nbsp;+-------+ +--+<br>
+    +&gt;+7 --&gt; 0+&gt;+CY|<br>
+    +-+-------+ +--+</font></td>
+    <td width="14%" height="18"><font face="Courier">**P*00<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="18"><font face="Courier">2<br>
+    2<br>
+    4</font></td>
+    <td width="8%" height="18"><font face="Courier">8<br>
+    15<br>
+    23</font></td>
+    <td width="35%" height="18"></td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">SRL r<br>
+    SRL (HL)<br>
+    SRL (ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">&nbsp;+-------+ +--+<br>
+&nbsp;0&gt;+7 --&gt; 0+&gt;+CY|<br>
+&nbsp;+-------+ +--+</font></td>
+    <td width="14%" height="19"><font face="Courier">**P*00<br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">2<br>
+    2<br>
+    4</font></td>
+    <td width="8%" height="19"><font face="Courier">8<br>
+    15<br>
+    23</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="19"><font face="Courier">SUB r<br>
+    SUB (HL)<br>
+    SUB n<br>
+    SUB (ii+n)</font></td>
+    <td width="19%" height="19"><font face="Courier">A:=A-r<br>
+    A:=A-(HL)<br>
+    A:=A-n<br>
+    A:=A-(ii+n)</font></td>
+    <td width="14%" height="19"><font face="Courier">**V*0*<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="19"><font face="Courier">1<br>
+    1<br>
+    2<br>
+    3</font></td>
+    <td width="8%" height="19"><font face="Courier">4<br>
+    7<br>
+    7<br>
+    19</font></td>
+    <td width="35%" height="19">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="16%" height="17"><font face="Courier">XOR r<br>
+    XOR (HL)<br>
+    XOR n<br>
+    XOR (ii+n)</font></td>
+    <td width="19%" height="17"><font face="Courier">A:=A xor r<br>
+    A:=A xor (HL)<br>
+    A:=A xor n<br>
+    A:=A xor (ii+n)</font></td>
+    <td width="14%" height="17"><font face="Courier">0*P*00<br>
+    <br>
+    <br>
+&nbsp;</font></td>
+    <td width="8%" height="17"><font face="Courier">1<br>
+    1<br>
+    2<br>
+    3</font></td>
+    <td width="8%" height="17"><font face="Courier">4<br>
+    7<br>
+    7<br>
+    19</font></td>
+    <td width="35%" height="17"></td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -66,7 +66,7 @@ cliStart
 			call	printStr
 
 			ei
-mainLoop	halt
+mainLoop	halt							; Главный цикл (опрос клавиатуры)
 			call	getInput
 
 			call	checkKeyEnter
@@ -75,7 +75,11 @@ mainLoop	halt
 			call	checkKeyDel
 			call	nz,deleteKey
 
-			call	checkKeyUp
+			call	checkKeyAlt
+			jr		nz,scrollMode
+			call	z,scrollBack
+
+skipAltKey	call	checkKeyUp
 			call	nz,upKey
 
 			call	checkKeyDown
@@ -92,6 +96,74 @@ mainLoop	halt
 
 			jr		mainLoop
 
+;---------------------------------------
+scrollBack	ld		a,(scrollMode+1)
+			cp		#00
+			ret		z
+			xor		a
+			ld		(scrollMode+1),a
+			;ld		hl,(backUpPos)
+			;jr		scrollNow
+			ret
+
+scrollMode	ld		a,#00					; firsr call
+			cp		#00
+			jr		nz,backSkip
+
+			ld		hl,(scrollPos)
+			ld		(backUpPos),hl
+
+backSkip	call	checkKeyUp
+			call	nz,scrollUp
+
+			call	checkKeyDown
+			call	nz,scrollDown
+			
+			jr		mainLoop
+
+scrollUp	ld		a,#01
+			ld		(scrollMode+1),a
+
+			ld		hl,(scrollPos)
+			ld		de,(limitTop)
+			ld		a,h
+			cp		d
+			jr		c,scrollUp_00			;<=
+			jr		z,scrollUp_00
+			jr		scrollUp_01
+scrollUp_00	ld		a,l
+			cp		e
+			jr		c,mainLoop				;<=
+			jr		z,mainLoop
+
+scrollUp_01	DUP		8
+			dec		hl
+			EDUP
+			jr		scrollNow
+
+scrollDown	ld		a,#01
+			ld		(scrollMode+1),a
+
+			ld		hl,(scrollPos)
+			ld		de,(limitBottom)
+
+			ld		a,h
+			cp		d
+			jr		c,scrollOk			;<=
+
+			ld		a,l
+			cp		e
+			jr		c,scrollOk				;<=
+			jp		mainLoop
+
+scrollOk	DUP		8
+			inc		hl
+			EDUP
+scrollNow	ld		(scrollPos),hl
+			call	setVOffset
+			ret
+
+;---------------------------------------
 pluginExit
 			; Восстанавливаем ZX-палитру
 			ld		hl,zxPal
@@ -139,10 +211,12 @@ txtModeInit
 
 ;---------------------------------------
 ; Очистка текстового экрана
-clearTxt	ld      hl,#c000+128		; блок атрибутов
+clearTxt	ld		b,cliTxtPages
+
+			ld      hl,#c000+128		; блок атрибутов
 	        ld      de,#c001+128
 	        ld		a,(curColor)
-	        ld      b,36
+	        ld      b,64
 attrLoop    push    bc,de,hl
 	        ld      bc,127
 	        ld      (hl),a
@@ -155,7 +229,7 @@ attrLoop    push    bc,de,hl
 	        ld		a," "				; блок символов
 	        ld      hl,#c000
 	        ld      de,#c001
-	        ld      b,36
+	        ld      b,64
 scrLoop	    push    bc,de,hl
 	        ld      bc,127
 	        ld     (hl),a
@@ -173,6 +247,7 @@ restBorder
 	        srl		a
 	        srl		a
 setBorder
+			ld		a,1
 	        ld		bc,Border
 	        out		(c),a
         	ret
@@ -201,8 +276,14 @@ palLoop		push	hl
 ;---------------------------------------
 upKey		ld		a,(historyPos)
 			cp		#00
+			jr		nz,upKey_00
+			ld		hl,cliHistory
+			ld		a,(hl)
+			cp		#00
 			ret		z
-			dec		a
+			jr		upKey_01
+
+upKey_00	dec		a
 			ld		(historyPos),a
 			ld		hl,iBufferSize		;hl * a
 			call	mult16x8
@@ -210,7 +291,8 @@ upKey		ld		a,(historyPos)
 			pop		bc
 			ld		hl,cliHistory
 			add		hl,bc
-			ld		de,iBuffer
+
+upKey_01	ld		de,iBuffer
 			ld		bc,iBufferSize
 			ldir
 			call	clearLine
@@ -514,6 +596,7 @@ skipChar_02
 			push	hl
 			ld		hl,curPosAddr
 			call	getNext_1
+			call	clearLine			; Очищаем новую строку (для печати по кругу 0-64 строк)
 			jr		skipFinal
 skipChar_03
 			cp		20					; Управляющий код: 20 - inverse
@@ -560,6 +643,7 @@ printChar	ld		hl,(curPosAddr)				; печать символа
 			ld		(hl),a
 			ret
 
+;---------------------------------------
 getNextPos	ld		hl,curPosAddr
 			ld		a,(curPosX)
 			inc		a
@@ -574,8 +658,37 @@ getNext_1	xor		a
 			ld		a,(curPosY)
 			inc		a
 			cp		termHeight
-			jr		nz,getNext_2
+			jr		c,checkNext
+			call	nc,incBLimit
+			cp		64							; 64 line per one page
+			jr		nz,getNextDown
+			
+			call	incTLimit
+
+			ld		a,1
+			ld		(checkNext+2),a
 			xor		a
+
+getNextDown	push	af
+			ld		hl,(scrollPos)
+			DUP		8
+			inc		hl
+			EDUP
+			ld		a,h
+			cp		#02
+			jr		c,skipNext
+			jr		z,skipNext
+			xor		a
+			ld		(checkNext+2),a
+			;ld		hl,#0110
+			ld		hl,#01ff
+			ld		(limitBottom),hl
+			ld		hl,#0000
+			ld		(limitTop),hl
+
+skipNext	call	scrollNow
+			pop		af
+
 getNext_2	ld		(curPosY),a
 			ld		hl,#c000
 			ld		d,a
@@ -586,6 +699,42 @@ getNext_2	ld		(curPosY),a
 			ld		(hl),d
 			ret
 
+checkNext	ld		b,a
+			ld		a,#00
+			cp		#00
+			ld		a,b
+			jr		z,getNext_2
+
+			call	incTLimit
+			call	incBLimit
+
+			jr		getNextDown
+
+incTLimit	ld		hl,(limitTop)
+			DUP		8
+			inc		hl
+			EDUP
+			ld		(limitTop),hl
+			ret
+
+incBLimit	ld		hl,(limitBottom)
+			DUP		8
+			inc		hl
+			EDUP
+			push	af
+			ld		a,h
+			cp		#02
+			jr		c,incBLimit0
+
+			;call	incTLimit
+			ld		hl,#0008
+			ld		(limitTop),hl
+			ld		hl,#0000
+incBLimit0	ld		(limitBottom),hl
+			pop		af
+			ret
+
+;---------------------------------------
 getPrevPos	ld		hl,curPosAddr
 			ld		a,(curPosX)
 			dec		a
@@ -675,7 +824,11 @@ closeCli	pop		af					; skip sp ret
 ;---------------------------------------
 clearScreen	call	clearTxt
 			call	printInit
-			ret
+			ld		hl,#0000
+			ld		(backUpPos),hl
+			ld		(limitTop),hl
+			ld		(limitBottom),hl
+			jp		scrollNow
 
 ;---------------------------------------
 echoString	ex		de,hl
@@ -690,7 +843,7 @@ echoString	ex		de,hl
 clearLine	ld		a,#00
 			ld		(curPosX),a
 			ld		(curPosAddr),a
-			ld		b,termWidth
+			ld		b,termWidth-1
 clLoop		push	bc
 			ld		a," "
 			call	printChar

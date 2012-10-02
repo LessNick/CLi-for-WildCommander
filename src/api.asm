@@ -34,9 +34,19 @@ checkKeyLeft	ld		a,LFFF
 checkKeyRight	ld		a,RGGG
 				jp		wcKernel
 ;---------------------------------------
-waitAnyKey		ld		a,USPO
-				call	wcKernel
+checkKeyAlt		ld		a,ALT
+				jp		wcKernel
+;---------------------------------------
+waitKeyCalm		ld		a,USPO
+				jp		wcKernel
+
+waitAnyKey		call	waitKeyCalm
 				ld		a,NUSP					; wait 4 anykey
+				jp		wcKernel
+;---------------------------------------
+getKey			ld		a,#01					; #01 - всегда выдает код из TAI1
+				ex		af,af'
+				ld		a,KBSCN
 				jp		wcKernel
 ;---------------------------------------
 getKeyWithShift	ld		a,#00					; #00 - учитывает SHIFT
@@ -75,5 +85,11 @@ setDirBegin		ld		a,GDIR
 				jp		wcKernel
 ;---------------------------------------
 load512bytes	ld		a,LOAD512
+				jp		wcKernel
+;---------------------------------------
+setHOffset		ld		a,GXoff
+				jp		wcKernel
+;---------------------------------------
+setVOffset		ld		a,GYoff
 				jp		wcKernel
 ;---------------------------------------

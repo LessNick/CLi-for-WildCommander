@@ -1,0 +1,10 @@
+echo line 0001
+echo line 0002
+echo line 0003
+echo line 0004
+echo line 0005
+echo line 0006
+echo line 0007
+echo line 0008
+echo line 0009
+echo line 0010

@@ -1,5 +1,11 @@
 ; Binary Data
 
+;scrollLock	db		#00					; #00 - unlocked / #01 - locked
+scrollPos	dw		#0000
+backUpPos	dw		#0000
+limitTop	dw		#0000
+limitBottom	dw		#0000
+
 codeBuff	db		"  ",#00
 scriptLength
 			dw		#0000,#0000
