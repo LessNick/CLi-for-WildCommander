@@ -1,3 +1,6 @@
+;---------------------------------------
+; sh - execute shell scripts
+;---------------------------------------
 shellExecute
 			ex		de,hl				; hl params
 
@@ -61,8 +64,7 @@ loadScript	ld		hl,bufferAddr
 			push	hl
 			call	load512bytes
 
-shExt_Loop	call	clearIBuffer
-			pop		hl
+shExt_Loop	pop		hl
 			ld		de,iBuffer
 
 			ld		bc,#0000

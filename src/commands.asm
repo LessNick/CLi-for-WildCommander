@@ -1,44 +1,84 @@
-;---------------------------------------
-; Command table below with all jump vectors.
+;---------------------------------------------
+; Command's table below with all jump vectors
+;---------------------------------------------
 cmdTable
-			db		"exit"					; Command
-			db		"*"						; 1 byte
-			dw		closeCli				; 2 bytes
+;--- A ---
 
-			db		"cls"					; Command
-			db		"*"						; 1 byte
-			dw		clearScreen				; 2 bytes
+;--- B ---
 
-			db		"pwd"					; Command
-			db		"*"						; 1 byte
-			dw		pathWorkDir				; 2 bytes
+;--- C ---
+	db	"cd"
+	db	"*"
+	dw	changeDir
 
-			db		"sleep"					; Command
-			db		"*"						; 1 byte
-			dw		sleepSeconds			; 2 bytes
+	db	"cls"
+	db	"*"
+	dw	clearScreen
+;--- D ---
+	db	"dir"
+	db	"*"
+	dw	listDir
+;--- E ---
+	db	"echo"
+	db	"*"
+	dw	echoString
 
-			db		"echo"					; Command
-			db		"*"						; 1 byte
-			dw		echoString				; 2 bytes
-			
-			db		"ls"					; Command
-			db		"*"						; 1 byte
-			dw		listDir					; 2 bytes
+	db	"exit"
+	db	"*"
+	dw	closeCli
+;--- F ---
 
-			db		"dir"					; Command
-			db		"*"						; 1 byte
-			dw		listDir					; 2 bytes
+;--- G ---
 
-			db		"cd"					; Command
-			db		"*"						; 1 byte
-			dw		changeDir				; 2 bytes
-			
-			db		"sh"					; Command
-			db		"*"						; 1 byte
-			dw		shellExecute			; 2 bytes
+;--- H ---
+	db	"help"
+	db	"*"
+	dw	showHelp
+;--- I ---
 
-			db		"help"					; Command
-			db		"*"						; 1 byte
-			dw		showHelp				; 2 bytes
+;--- J ---
 
-			db		#00						; table end marker
+;--- K ---
+
+;--- L ---
+	db	"ls"
+	db	"*"
+	dw	listDir
+;--- M ---
+
+;--- N ---
+
+;--- O ---
+
+;--- P ---
+	db	"pwd"
+	db	"*"
+	dw	pathWorkDir
+;--- Q ---
+
+;--- R ---
+
+;--- S ---
+	db	"sh"
+	db	"*"
+	dw	shellExecute
+
+	db	"sleep"
+	db	"*"
+	dw	sleepSeconds
+;--- T ---
+
+;--- U ---
+
+;--- V ---
+
+;--- W ---
+
+;--- X ---
+
+;--- Y ---
+
+;--- Z ---
+
+;--- table end marker ---
+	db	#00

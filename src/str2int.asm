@@ -1,6 +1,8 @@
-;		ld	hl,string
-;		call	str2int
-;		exit: hl=result
+;---------------------------------------
+; string to int converter
+;---------------------------------------
+; in: hl,string addr
+; out:hl = value
 
 str2int		ld		bc,#0000
 			ld		de,#0000
@@ -76,9 +78,12 @@ calcEnd		ld		a,#00
 wrongValue	ld		hl,#0000
 			ld		a,#ff				; error!
 			ret
+
 ;-------------------------------------------
 ; multiplication
-; hl * a
+;-------------------------------------------
+; in: hl * a
+; out:hl,low de,high
 
 mult16x8	ld		de,#0000
 			ld		(mult16x8_2 + 1),de
@@ -107,7 +112,7 @@ mult16x8_1	djnz	mult16x8_0
 
 mult16x8_2	ld		de,#0000
 			pop		bc
-			ret							; return hl=low, de=high
+			ret							
 
 ;-------------------------------------------
 intBuffer	dw	#0000

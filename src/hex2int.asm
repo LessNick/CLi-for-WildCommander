@@ -1,7 +1,10 @@
-;	I: hl,str addr "0A"
-;	O: A=byte #0a (10)
+;---------------------------------------
+; hex to int converter
+;---------------------------------------
+;in: hl,str addr | "0A"
+;out:a,byte      | #0a (10)
 
-hex2int		ld		a,(hl)				;
+hex2int		ld		a,(hl)
 			call	hex2int_
 			sla		a
 			sla		a

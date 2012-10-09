@@ -1,34 +1,27 @@
+;---------------------------------------------
 ; Binary Data
-
-;scrollLock	db		#00					; #00 - unlocked / #01 - locked
-scrollPos	dw		#0000
-backUpPos	dw		#0000
-limitTop	dw		#0000
-limitBottom	dw		#0000
+;---------------------------------------------
 
 codeBuff	db		"  ",#00
 scriptLength
 			dw		#0000,#0000
 storeKey	db		#00
-strLen		db		#00
+
+
 iBufferPos	db		#00
 iBuffer		ds		iBufferSize,#00
 
-curPosX		db		#00					; cursor Pos X
-curPosY		db		#00					; cursor Pos Y
-curPosAddr	dw		#c000				; cursor Pos Addr
 curColor	db		defaultCol			; paper | ink
+curEColor	db		defaultCol			; paper | ink
 
 zxPal		dw		#0000,#0010,#4000,#4010
 			dw		#0200,#0210,#4200,#4210
 			dw		#0000,#0018,#6000,#6018
 			dw		#0300,#0318,#6300,#6318
-
-			
-cliPal		
+		
 			;         rR   gG   bB
 			;         RRrrrGGgggBBbbb
-			dw		%0000000000000000	; 0.black
+cliPal		dw		%0000000000000000	; 0.black
 			dw		%0000000000010000	; 1.navy 
 			;dw		%0100000000000000	; 2.maroon
 			dw		%0110000100010000	; 2.amiga pink
@@ -53,44 +46,38 @@ cliPal
 			dw		%0110001100000000	;14.yellow
 			dw		%0110001100011000	;15.white
 
-file83Msg	db		16,15,"             ",#00
+fileOneLine	db		16,15,"             "
+			db		16,15,"             "
+			db		16,15,"             "
+			db		16,15,"             "
+			db		16,15,"             "
+			db		16,15,"             "
+			db		#0d,#00				; end
+
+helpOneLine	db		"             "
+			db		"             "
+			db		"             "
+			db		"             "
+			db		"             "
+			db		"             "
+			db		#0d,#00				; end
 
 entrySearch	ds		14,#00
 
 rootSearch	db		flagDir,".",#00
 
-cursor_01	db		16,15,cursorType,16,16,#00
-cursor_02	db		16,8,cursorType,16,16,#00
-cursor_03	db		16,5,cursorType,16,16,#00
-cursor_04	db		16,16," ",16,16,#00
-
 curAnimPos	db		#00
-curAnim		dw		cursor_01
-			db		14
-			dw		cursor_02
-			db		5
-			dw		cursor_03
-			db		3
-			dw		cursor_04
-			db		1
-			dw		cursor_03
-			db		3
-			dw		cursor_02
-			db		5
-			dw		#00
+curAnim		db		14,15					; timeout,color
+			db		5,8						; timeout,color
+			db		7,5						; timeout,color
+			db		5,8						; timeout,color
+			db		#00
 
-historyPos	db		#00
-
-cliHistory	ds		iBufferSize, #00
+hCount		db		#00
+historyPos	db		#05
+cliHistory	DUP		historySize
 			ds		iBufferSize, #00
-			ds		iBufferSize, #00
-			ds		iBufferSize, #00
-			ds		iBufferSize, #00
-			ds		iBufferSize, #00
-			ds		iBufferSize, #00
-			ds		iBufferSize, #00
-			ds		iBufferSize, #00
-			ds		iBufferSize, #00
+			EDUP
 
 pathStrPos	dw		#0000
 pathString	ds		pathStrSize,#00

@@ -1,4 +1,6 @@
 ;---------------------------------------
+; sleep - wait in seconds
+;---------------------------------------
 sleepSeconds
 			ex		de,hl				; hl params
 			call	str2int
@@ -18,7 +20,11 @@ sleep_00	ld		a,l
 			call	waitAnyKey
 			jr		sleep_02
 
-sleep_01	ld		b,a
+sleep_01	push	af
+			ld		hl,restoreMsg
+			call	printStr
+			pop		af
+			ld		b,a
 sleep_01a	push	bc
 			ld		b,50
 sleep_01b	halt

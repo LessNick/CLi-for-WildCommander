@@ -1,9 +1,11 @@
 ;---------------------------------------
+; cd - change work directory
+;---------------------------------------
 changeDir	ex		de,hl				; hl params
 
 			ld		a,(hl)
 			cp		"/"
-			jr		z,cdSplitPath
+			jp		z,cdSplitPath
 
 			ld		a,flagDir			; directory
 			call	prepareEntry
@@ -44,6 +46,7 @@ cdDelLoop	ld		(hl),e				; /
 			jr		nz,cdDelLoop
 			inc		bc
 			ld		(pathStrPos),bc
+			ex		de,hl
 			jr		cdExitPath
 
 cdRoot		call	initPath
@@ -74,12 +77,15 @@ cdEndPath	ld		a,"/"
 			inc		bc
 			ld		(pathStrPos),bc
 
-cdExitPath	xor		a					; no error
+cdExitPath	inc		de
+			ld		a,#0d
+			ld		(de),a
+			xor		a					; no error
 			ret
 
 cdNotFound	ld		hl,dirNotFoundMsg
 			call	printStr
-			ld		a,#ff				; error
+			xor		a
 			ret
 
 cdSplitPath	inc		hl

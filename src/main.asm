@@ -1,25 +1,18 @@
+;---------------------------------------
+; CLI (Command Line Interface) Plugin
+; (C) breeze/fishbone crew 2012
+;---------------------------------------
+
         DEVICE ZXSPECTRUM128
 
-;   +----------+-----------+----------+
-;   |Результат | Состояние | Мнемоника|
-;   |сравнения |  флагов   |  условия |
-;   +----------+-----------+----------+
-;   |   A=X    |   Z=1     |    Z     |
-;   +----------+-----------+----------+
-;   |  A<>X    |   Z=0     |    NZ    |
-;   +----------+-----------+----------+
-;   | Беззнаковое сравнение (0...255) |
-;   +----------+-----------+----------+
-;   |   A<X    |  CY=1     |    C     |
-;   +----------+-----------+----------+
-;   |  A>=X    |  CY=0     |    NC    |
-;   +----------+-----------+----------+
-;   | С учетом знака    (-128...+127) |
-;   +----------+-----------+----------+
-;   |   A<X    |   S=1     |    P     |
-;   +----------+-----------+----------+
-;   |  A>=X    |   S=0     |    M     |
-;   +----------+-----------+----------+
+			org	#be00
+edit256		ds	128," "					; 128 bytes ascii
+			ds	128,defaultCol			; 128 bytes colors
+			
+			org	#bf00
+
+bufer256	ds	128," "					; 128 bytes ascii
+			ds	128,defaultCol			; 128 bytes colors
 
 			org #6000
 
@@ -48,12 +41,6 @@ cliTxtBegin	equ		#20					; start page
 			include "pluginHead.asm"
 			include "cli.asm"
 
-	;DISPLAY "scrollUp addr:",/A,scrollUp
-	;DISPLAY "scrollDown addr:",/A,scrollDown
-	;DISPLAY "checkNext addr:",/A,checkNext
-	;DISPLAY "limitBottom addr:",/A,limitBottom
-	;DISPLAY "test addr:",/A,test
-	;DISPLAY "incBLimit0 addr:",/A,incBLimit0
-	;DISPLAY "scrollPos addr:",/A,scrollPos
+	;DISPLAY "upKey addr:",/A,upKey
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode

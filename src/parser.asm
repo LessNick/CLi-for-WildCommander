@@ -1,19 +1,16 @@
-; Input DE points to command buffer start
-; HL points to command table
+;---------------------------------------
+; Command line parser
+;---------------------------------------
+; In: de, command string addr
+;	  hl, table of commands list
+; Out:a,#ff = command not found
+;     a,#00 - command found, hl - addr params start
 
 ;startCode
-;		ld	de,cmd_buffer
-;		call	parser
-;		jp	$
-
-;cmd_buffer
-;    		db	"cls"
-;    		db	"videomode"
-;    		db	"border 5"
-;		ds	255,0
-
-;parser
 ;			ld		hl,table
+;			ld		de,cmd_buffer
+;			call	parser
+
 parser		call	eat_space
 			ld		(storeAddr),de
 
@@ -57,6 +54,9 @@ forward
 
 end_of_command
 			call	eat_space
+			ld		a,(hl)
+			cp		"*"
+			jr		nz,no_match+1
 
 			inc		hl					; increase to *
 										; Increase to point to jump vector for command
@@ -66,8 +66,7 @@ end_of_command
 			ld		l,a
 			jp		(hl)				; de - addr start params
 
-no_match
-			pop		af
+no_match	pop		af
 										; Routine to print "Unkown command error"
 			ld		a,#ff
 			ret
@@ -75,46 +74,10 @@ no_match
 eat_space
 			ld		a,(de)
 			cp		#00
-			ret		z			; if reach to the end of buffer
-			cp		#20			; check for space
+			ret		z					; if reach to the end of buffer
+			cp		#20					; check for space
 			ret		nz
 			inc		de
 			jp		eat_space
 
 storeAddr	dw		#0000
-;--------------------------------------------------------------
-;jumpvector1
-;		ld	a,4
-;		out	(254),a			; example1
-;		ret
-;
-;jumpvector2
-;		ld	a,3
-;		out	(254),a			; example2
-;		ret
-;
-;cmd_border
-;		ex	de,hl			; hl params
-;		call	str2int
-;		ld	a,l
-;		out	(254),a
-;		ret
-;
-;--------------------------------------------------------------
-;		include "str2int.asm"
-;--------------------------------------------------------------
-; Command table below with all jump vectors.
-;table
-;		db	"cls"			; Command
-;		db	"*"			; 1 byte
-;		dw	jumpvector1		; 2 bytes
-;
-;		db	"videomode"		; Command
-;		db	"*"			; 1 byte
-;		dw	jumpvector2		; 2 bytes
-;
-;		db	"border"		; Command
-;		db	"*"			; 1 byte
-;		dw	cmd_border		; 2 bytes
-;
-;		db	#00			; table end marker

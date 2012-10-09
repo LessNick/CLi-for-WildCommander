@@ -1,4 +1,6 @@
 ;---------------------------------------
+; ls/dir - read directory
+;---------------------------------------
 listDir
 lsPathCount	ld		a,#00					; path counter
 			cp		#00
@@ -11,10 +13,7 @@ lsNotRoot	ld		hl,rootSearch
 			call	searchEntry
 			jp		z,lsCantReadDir
 
-lsBegin		ld		hl,endMsg
-			call	printStr
-			
-			xor		a
+lsBegin		xor		a
 			ld		(lsCount+1),a
 			ld		(itemsCount+1),a
 
@@ -70,9 +69,7 @@ lsNext_03	bit		5,(ix+11)
 
 lsNext_04	ld		a,colorFile			; в противном случает - обычный файл
 
-lsNext		ld		(file83Msg+1),a
-			ld		hl,file83Msg
-			call	printStr
+lsNext		ld		(de),a
 
 lsCount		ld		a,#00
 			inc		a
@@ -81,7 +78,8 @@ lsCount		ld		a,#00
 			jr		nz,lsSkip
 			xor		a
 			ld		(lsCount+1),a
-			ld		hl,endMsg
+
+			ld		hl,fileOneLine
 			call	printStr
 
 lsSkip		pop		hl
@@ -96,7 +94,7 @@ itemsCount	ld		a,#00
 			add		hl,bc
 			jp		lsLoop
 
-lsEnd		ld		hl,endMsg
+lsEnd		ld		hl,restoreMsg
 			call	printStr
 			ret
 
@@ -113,34 +111,57 @@ clearBuffer	ld		hl,bufferAddr
 			ret
 
 lsCopyName	push	hl
-			ld		hl,file83Msg+2
-			ld		de,file83Msg+3
-			ld		bc,12
-			ld		a," "
-			ld		(hl),a
-			ldir
+			ld		hl,fileOneLine
+			ld		b,0
+			ld		a,(lsCount+1)
+			ld		c,a
+			add		a,a
+			add		a,a
+			add		a,a
+			add		a,a
+			sbc		c
+			ld		c,a
+			add		hl,bc
+			ex		de,hl
 			pop		hl
-			ld		de,file83Msg+2
-			ld		b,#00
+			inc		de
+			push	de
+			inc		de
+			
+			ld		bc,#0000
 lsCopyLoop	ld		a,(hl)
 			cp		" "
 			jr		z,lsCopySkip
 			ld		(de),a
 			inc		de
+			inc		c						; счётчик символов отпечатано (позиция)
 lsCopySkip	inc		b						; счётчик символов всего (позиция)
 			inc		hl
 			ld		a,b
 			cp		11
-			ret		z
+			jr		z,lsCopyRet
 			cp		8						; 8.3
 			jr		nz,lsCopyLoop
 			ld		a,(hl)
 			cp		" "
-			ret		z
+			jr		z,lsCopyRet
 			ld		a,"."
+			inc		c
 			ld		(de),a
 			inc		de
 			jr		lsCopyLoop
+
+lsCopyRet	ld		a,c
+			cp		12
+			jr		nc,lsCopyRet_0
+			ld		a," "
+			ld		(de),a
+			inc		c
+			inc		de
+			jr		lsCopyRet
+
+lsCopyRet_0	pop		de
+			ret
 
 lsCantReadDir
 			ld		hl,cantReadDirMsg
