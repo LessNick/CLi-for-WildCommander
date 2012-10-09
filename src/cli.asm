@@ -539,11 +539,12 @@ helpLoop	ld		a,(hl)
 			inc		hl
 			inc		hl
 			inc		hl
-			push	hl
 
-helpSpace	inc		de
+helpSpace	ld		a," "
+			ld		(de),a
+			inc		de
 			djnz	helpSpace
-			pop		hl
+
 			inc		c
 			ld		a,c
 			cp		6
@@ -591,7 +592,7 @@ pathWorkDir	ld		hl,pathString
 			include "commands.asm"
 
 			include "binData.asm"
-			
+
 pluginEnd
 ;---------------------------------------
 	ENT

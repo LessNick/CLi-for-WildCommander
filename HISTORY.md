@@ -1,4 +1,15 @@
+## 0.06 (2012-10-09)
+
+* Full code refactoring
+* Added scroll for output (thx 4 budder)
+
+## 0.05 (2012-10-02)
+
+* simple backup XD
+* no work code
+
 ## 0.04 (2012-09-29)
+
 * Added commands: cd with full path, pwd
 * Some bugfixes with ls & cd
 

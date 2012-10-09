@@ -7,7 +7,7 @@ echo \x10\x0303.Dark violet
 echo \x10\x0404.Green
 echo \x10\x05\x11\x0f05.Dark teal\x11\x10
 echo \x10\x0606.Orange
-echo \x10\x0707.Light Biege
+echo \x10\x0707.Light Beige
 echo \x10\x0808.Silver
 echo \x10\x0909.Blue
 echo \x10\x0a10.Red
