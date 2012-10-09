@@ -1,7 +1,7 @@
 ## 0.06 (2012-10-09)
 
 * Full code refactoring
-* Added scroll for output (thx 4 budder)
+* Added scroll for output (tnx 4 budder)
 
 ## 0.05 (2012-10-02)
 

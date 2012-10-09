@@ -7,6 +7,9 @@ Command Line Interface (further simply CLi) is plugin for WildCommander.
 CLi extend interface WildCommander with help command line and few commands, also
 allows you to run simplified version of SH scripts.
 
+<img src="https://raw.github.com/acidrave/CLi-for-WildCommander/master/misc/screenshot2.png"
+ alt="CLi Example" title="Command Line Interface for WildCommander" align="center" />
+
 WildCommander written by [Budder](http://budder.narod.ru/) for [PentEvo/ZX Evolution](http://www.nedopc.com/zxevo/zxevo_eng.php) (Modern ZX Spectrum's clone).
 More information can be found at the bottom of this readme file.
 
