@@ -7,6 +7,20 @@ welcomeMsg	db		16,6,"Command Line Interface for WildCommander v0.06",#0d
 			db		16,16
 			db		#00
 
+;aboutMsg
+;                                     ,
+;              ,-.       _,---._ __  / \
+;             /  )    .-'       `./ /   \
+;            (  (   ,'            `/    /|
+;             \  `-"             \'\   / |
+;              `.              ,  \ \ /  |
+;               /`.          ,'-`----Y   |
+;              (            ;        |   '
+;              |  ,-.    ,-'         |  /
+;              |  | (   |        hjw | /
+;              )  |  \  `.___________|/
+;              `--'   `--'
+
 readyMsg	db		"1>"
 			db		#00
 

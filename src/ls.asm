@@ -94,7 +94,13 @@ itemsCount	ld		a,#00
 			add		hl,bc
 			jp		lsLoop
 
-lsEnd		ld		hl,restoreMsg
+lsEnd		ld		a,(lsCount+1)
+			cp		#00
+			jr		z,lsEnd_00
+			ld		hl,fileOneLine
+			call	printStr
+			
+lsEnd_00	ld		hl,restoreMsg
 			call	printStr
 			ret
 

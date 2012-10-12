@@ -3,7 +3,7 @@ echo ----------------------------------------
 echo \x10\x0000.Black
 echo \x10\x0101.Navy
 echo \x10\x0202.Amiga pink
-echo \x10\x0303.Dark violet
+echo \x10\x0303.Light violet
 echo \x10\x0404.Green
 echo \x10\x05\x11\x0f05.Dark teal\x11\x10
 echo \x10\x0606.Orange

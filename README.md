@@ -13,6 +13,9 @@ allows you to run simplified version of SH scripts.
 WildCommander written by [Budder](http://budder.narod.ru/) for [PentEvo/ZX Evolution](http://www.nedopc.com/zxevo/zxevo_eng.php) (Modern ZX Spectrum's clone).
 More information can be found at the bottom of this readme file.
 
+<img src="https://raw.github.com/acidrave/CLi-for-WildCommander/master/misc/nyancat.png"
+ alt="CLi Example" title="Command Line Interface for WildCommander" align="center" />
+
 ## Installation
 
 For usage Cli requires the latest version of WildCommder. You can get it [here](https://code.google.com/p/zx-evo-fpga/source/browse/#svn%2Fbranches%2Ftslabs%2Fpentevo%2Fsoft%2FWC%2Fexe).

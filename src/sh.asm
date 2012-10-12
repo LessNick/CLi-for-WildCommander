@@ -90,7 +90,13 @@ shExt_01	push	hl
 			or		c
 			jr		z,shExt_Loop		; пропустить пустую строку
 
-			xor		a					; сброс флагов
+			ld		a,(hl)
+			cp		#00
+			jr		nz,shExt_02
+			pop		hl
+			ret		z
+
+shExt_02	xor		a					; сброс флагов
 			ld		hl,cmdTable
 			ld		de,iBuffer
 			call	parser

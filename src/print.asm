@@ -72,7 +72,16 @@ printSExit	ld		hl,bufer256
 			ld		a,(strLen)
 			ret
 
-printS_00	xor		a
+printS_00	pop		hl
+			push	hl
+			inc		hl
+			ld		a,(hl)
+			cp		#00
+			jr		nz,printS_00a
+			pop		hl
+			jr		printSExit
+
+printS_00a	xor		a
 			ld		(printX),a
 			jr		nextLine_00
 

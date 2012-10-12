@@ -26,7 +26,7 @@ cliPal		dw		%0000000000000000	; 0.black
 			;dw		%0100000000000000	; 2.maroon
 			dw		%0110000100010000	; 2.amiga pink
 			;dw		%0100000000010000	; 3.purple
-			dw		%0110001000011000	; 3.dark violet
+			dw		%0110001000011000	; 3.light violet
 			dw		%0000001000000000	; 4.green
 			;dw		%0000001000010000	; 5.teal
 			dw		%0000000100010000	; 5.dark teal

@@ -113,7 +113,8 @@ printKey	ld		hl,iBuffer
 			ld		b,#00
 			push	af
 			ld		a,(iBufferPos)
-			cp		iBufferSize-1
+			;cp		iBufferSize-1
+			cp		80-3						;TODO: iBufferSize
 			jr		z,buffOverload				; Конец строки! Бип и выход!
 			ld		c,a
 			add		hl,bc

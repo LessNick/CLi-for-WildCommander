@@ -107,10 +107,10 @@ skipAltKey	call	checkKeyUp
 			call	nz,downKey
 
 			call	checkKeyLeft
-			;call	nz,leftKey
+			call	nz,leftKey
 
 			call	checkKeyRight
-			;call	nz,rightKey
+			call	nz,rightKey
 
 			call	getKeyWithShift
 			call	nz,printKey
@@ -329,70 +329,68 @@ downKey		ld		a,(historyPos)
 			ret
 
 ;---------------------------------------
-;leftKey		ld		a,(iBufferPos)
-;			cp		#00
-;			ret		z
-;			dec		a
-;			ld		hl,iBuffer
-;			ld		b,0
-;			ld		c,a
-;			add		hl,bc
-;			push	af
-;			ld		a,(storeKey)
-;			ld		b,a
-;			ld		a,(hl)
-;			ld		(storeKey),a
-;			ld		a,b
-;			cp		#00
-;			jr		nz,leftKey_00
-;			ld		a," "
-;leftKey_00	call	printChar		
-;			pop 	af
-;			ld		(iBufferPos),a
-;			ld		a,(curPosX)
-;			dec		a
-;			ld		(curPosX),a
-;			ld		(curPosAddr),a
-;			ret
-;
+leftKey		ld		a,(iBufferPos)
+			cp		#00
+			ret		z
+			dec		a
+			ld		hl,iBuffer
+			ld		b,0
+			ld		c,a
+			add		hl,bc
+			push	af
+			ld		a,(storeKey)
+			ld		b,a
+			ld		a,(hl)
+			ld		(storeKey),a
+			ld		a,b
+			cp		#00
+			jr		nz,leftKey_00
+			ld		a," "
+leftKey_00	call	printEChar
+			pop 	af
+			ld		(iBufferPos),a
+			ld		a,(printEX)
+			dec		a
+			ld		(printEX),a
+			ret
+
 ;---------------------------------------
-;rightKey	ld		a,(iBufferPos)
-;			inc		a
-;			ld		hl,iBuffer
-;			ld		b,0
-;			ld		c,a
-;			add		hl,bc
-;			push	af
-;			push	hl
-;			dec		hl
-;			ld		a,(hl)
-;			cp		#00
-;			jr		z,rightStop
-;			pop		hl
-;			ld		a,(storeKey)
-;			ld		b,a
-;			ld		a,(hl)
-;			ld		(storeKey),a
-;			ld		a,b
-;			cp		#00
-;			jr		nz,rightKey_00
-;			ld		a," "
-;rightKey_00	call	printChar		
-;			pop 	af
-;			ld		(iBufferPos),a
-;			ld		a,(curPosX)
-;			inc		a
-;			ld		(curPosX),a
-;			ld		(curPosAddr),a
-;			ret
-;rightStop	pop		hl
-;			pop		af
-;			ret
-;
+rightKey	ld		a,(iBufferPos)
+			inc		a
+			ld		hl,iBuffer
+			ld		b,0
+			ld		c,a
+			add		hl,bc
+			push	af
+			push	hl
+			dec		hl
+			ld		a,(hl)
+			cp		#00
+			jr		z,rightStop
+			pop		hl
+			ld		a,(storeKey)
+			ld		b,a
+			ld		a,(hl)
+			ld		(storeKey),a
+			ld		a,b
+			cp		#00
+			jr		nz,rightKey_00
+			ld		a," "
+rightKey_00	call	printEChar
+			pop 	af
+			ld		(iBufferPos),a
+			ld		a,(printEX)
+			inc		a
+			ld		(printEX),a
+			ret
+rightStop	pop		hl
+			pop		af
+			ret
+
 ;---------------------------------------
 enterKey	ld		a,defaultCol
 			ld		(curEColor),a
-			ld		a," "
+			ld		a,(storeKey)
 			call	printEChar
 			call	printEUp
 			ld		a,(iBuffer)
@@ -449,28 +447,43 @@ ph_00		ld		(historyPos),a
 
 ;---------------------------------------
 deleteKey	ld		a,(iBufferPos)
-			cp		#00
+			cp		#00							; уже удалено до самого конца
 			jp		z,buffOverload+1
+
 			ld		hl,iBuffer-1
 			ld		b,#00
 			ld		c,a
 			add		hl,bc
 			ld		(hl),b
+
 			dec		a
 			ld		(iBufferPos),a
-			
+
 			ld		a," "
 			call	printEChar
 
 			ld		a,(printEX)
 			dec		a
 			cp		#ff							; Начало строки буфера edit256
-			jr		nz,deleteKey_0
-			;call	printEUp
-			xor		a
+			jr		nz,putEX
+;			ld		a,(iBufferPos)
+;			cp		80-3						; 1>_ = 3 simbols
+;			jr		c,delSkip
+;			ld		a,79						; _ = 1 simbol
+;delSkip		ld		b,#00
+;			ld		c,a
+;			ld		de,
+;			ld		a,#01						; move up
+;			call	PR_POZ
 
-deleteKey_0	ld		(printEX),a
-
+			ld		a,79
+putEX		ld		(printEX),a
+			
+			ld		a,(iBufferPos)
+			cp		#00
+			ret		nz
+			ld		a," "
+			call	printEChar
 			ret
 
 ;---------------------------------------

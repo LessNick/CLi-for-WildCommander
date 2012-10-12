@@ -42,5 +42,7 @@ cliTxtBegin	equ		#20					; start page
 			include "cli.asm"
 
 	;DISPLAY "upKey addr:",/A,upKey
+	;DISPLAY "echoString addr:",/A,echoString
+	DISPLAY "callFromExt addr:",/A,callFromExt
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
