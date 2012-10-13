@@ -46,6 +46,8 @@ cliPal		dw		%0000000000000000	; 0.black
 			dw		%0110001100000000	;14.yellow
 			dw		%0110001100011000	;15.white
 
+nameEmpty	db		"             "
+
 fileOneLine	db		16,15,"             "
 			db		16,15,"             "
 			db		16,15,"             "
@@ -74,7 +76,7 @@ curAnim		db		14,15					; timeout,color
 			db		#00
 
 hCount		db		#00
-historyPos	db		#05
+historyPos	db		#00
 cliHistory	DUP		historySize
 			ds		iBufferSize, #00
 			EDUP

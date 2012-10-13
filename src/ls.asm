@@ -96,11 +96,20 @@ itemsCount	ld		a,#00
 
 lsEnd		ld		a,(lsCount+1)
 			cp		#00
-			jr		z,lsEnd_00
+			jr		z,lsEnd_01
+
+lsEnd_00	ld		hl,nameEmpty
+			call	lsCopyName
+			ld		a,(lsCount+1)
+			inc		a
+			ld		(lsCount+1),a
+			cp		#06
+			jr		nz,lsEnd_00			
+
 			ld		hl,fileOneLine
 			call	printStr
 			
-lsEnd_00	ld		hl,restoreMsg
+lsEnd_01	ld		hl,restoreMsg
 			call	printStr
 			ret
 

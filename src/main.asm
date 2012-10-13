@@ -43,6 +43,9 @@ cliTxtBegin	equ		#20					; start page
 
 	;DISPLAY "upKey addr:",/A,upKey
 	;DISPLAY "echoString addr:",/A,echoString
-	DISPLAY "callFromExt addr:",/A,callFromExt
+	;DISPLAY "callFromExt addr:",/A,callFromExt
+	DISPLAY "cliHistory addr:",/A,cliHistory
+	DISPLAY "putHistory addr:",/A,putHistory
+	DISPLAY "downKey addr:",/A,downKey
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode

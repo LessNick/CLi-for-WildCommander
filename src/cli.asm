@@ -70,7 +70,9 @@ callFromMenu
 cliStart	ld		a,#00				
 			cp		#00
 			jr		nz,cliStart_0	
-			ld		hl,welcomeMsg			; cold start
+			ld		hl,versionMsg			; cold start
+			call	printStr
+			ld		hl,typeHelpMsg
 			call	printStr
 			ld		a,#01
 			ld		(cliStart+1),a
@@ -256,18 +258,18 @@ palLoop		push	hl
 upKey		ld		a,(hCount)
 			cp		#00
 			ret		z
-			cp		#01
-			jr		nz,upKey_00a
 			ld		a,(historyPos)
-			jr		upKey_00
-
-upKey_00a	ld		a,(historyPos)
-			dec		a
-			cp		#ff
+			cp		#00
 			jr		nz,upKey_00
-			ld		a,historySize-1
+			ld		c,a
+			ld		a,(hCount)
+			dec		a
+			add		a,c
+			jr		upKey_00a
 
-upKey_00	push	af
+upKey_00	dec		a
+
+upKey_00a	push	af
 			ld		hl,iBufferSize		;hl * a
 			call	mult16x8
 			push	hl
@@ -275,10 +277,6 @@ upKey_00	push	af
 			ld		hl,cliHistory
 			add		hl,bc
 
-			ld		a,(hl)
-			cp		#00
-			jr		z,keyExit
-			
 			pop		af
 			ld		(historyPos),a
 
@@ -297,21 +295,39 @@ upKey_01	ld		de,iBuffer
 			ld		(iBufferPos),a
 			ret
 
-keyExit		pop		af
-			ret
-
 ;---------------------------------------
-downKey		ld		a,(historyPos)
-			ld		hl,iBufferSize		;hl * a
+downKey		ld		a,(hCount)
+			cp		#00
+			ret		z
+
+			ld		a,(historyPos)
+			cp		historySize
+			jr		c,dnKey_00
+			xor		a
+			jr		dnKey_00a
+
+dnKey_00	dec		a
+			cp		#ff
+			jr		nz,dnKey_00a
+
+			xor		a
+
+dnKey_00a	ld		hl,iBufferSize		;hl * a
 			call	mult16x8
 			push	hl
 			pop		bc
 			ld		hl,cliHistory
 			add		hl,bc
 
-			ld		a,(hl)
-			cp		#00
-			ret		z
+			ld		a,(hCount)
+			inc		a
+			ld		c,a
+			ld		a,(historyPos)
+			inc		a
+			cp		c
+			jr		c,dnKey_00b
+			ld		a,1
+dnKey_00b	ld		(historyPos),a
 
 			ld		de,iBuffer
 			ld		bc,iBufferSize
@@ -424,13 +440,18 @@ clearIBuffer
 			ld		(iBufferPos),a
 			ret
 
-putHistory	ld		a,(historyPos)
-			inc		a
+putHistory	ld		a,(hCount)
 			cp		historySize
-			jr		nz,ph_00
-			xor		a
-ph_00		ld		(historyPos),a
-			ld		hl,iBufferSize		;hl * a
+			jr		c,ph_00
+
+			ld		hl,cliHistory+iBufferSize
+			ld		de,cliHistory
+			ld		bc,(historySize-1)*iBufferSize
+			ldir
+
+			dec		a
+
+ph_00		ld		hl,iBufferSize		;hl * a
 			call	mult16x8
 			push	hl
 			pop 	bc
@@ -440,9 +461,15 @@ ph_00		ld		(historyPos),a
 			ld		hl,iBuffer
 			ld		bc,iBufferSize
 			ldir
+
 			ld		a,(hCount)
 			inc		a
+			cp		historySize+1
+			jr		nc,ph_01
 			ld		(hCount),a
+
+ph_01		ld		a,(hCount)
+			ld		(historyPos),a
 			ret
 
 ;---------------------------------------
@@ -497,11 +524,18 @@ clearScreen	xor		a
 			ret
 
 ;---------------------------------------
+showAbout	ld		hl,versionMsg
+			call	printStr
+			ld		hl,aboutMsg
+			jr		echoPrint
+
+;---------------------------------------
 echoString	ex		de,hl
 			push	hl
 			call	printInit
 			pop		hl
-			call	printStr
+
+echoPrint	call	printStr
 			ld		hl,restoreMsg
 			call	printStr
 			call	clearIBuffer

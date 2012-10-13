@@ -185,6 +185,8 @@ codeHex		inc		hl
 			jr		z,codeHexI
 			cp		#11							; Управляющий код: 17 - paper
 			jr		z,codeHexP
+
+			inc		hl
 			cp		#14							; Управляющий код: 20 - inverse
 			jr		z,codeInverse
 			jp		printS						; В противном случае просто напечатать код символа
