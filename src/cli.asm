@@ -534,13 +534,45 @@ showAbout	ld	hl,versionMsg
 echoString	ex	de,hl
 		push	hl
 		call	printInit
-		pop	hl
 
-echoPrint	call	printStr
+		ld	hl,echoBuffer
+		ld	de,echoBuffer+1
+		ld	bc,eBufferSize-1
+		xor	a
+		ld	(hl),a
+		ldir
+		ld	(quoteFlag+1),a
+		pop	hl
+		ld	de,echoBuffer
+
+echoStr_00	ld	a,(hl)
+		cp	#00
+		jr	z,echoPrint
+		cp	"\""
+		jr	nz,echoStr_01
+		ld	a,(quoteFlag+1)
+		xor	#01
+		ld	(quoteFlag+1),a
+		jr	echoStr_02
+
+echoStr_01	ld	(de),a
+		inc	de
+echoStr_02	inc	hl
+		jr	echoStr_00
+
+echoPrint	ld	(de),a
+		
+		ld	hl,echoBuffer
+quoteFlag	ld	a,#00
+		cp	#01
+		jr	nz,quoteOk
+		ld	hl,wrongQuote
+quoteOk		call	printStr
 		ld	hl,restoreMsg
 		call	printStr
 		call	clearIBuffer
 		ret
+
 
 ;---------------------------------------
 prepareEntry	push	hl,af

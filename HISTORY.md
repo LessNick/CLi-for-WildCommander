@@ -2,6 +2,7 @@
 
  * source code tabulating correct to standart 8 pos.
  * fix scroll limit
+ * fix echo command for correct parse "
 
 ## 0.06 (2012-10-09)
 

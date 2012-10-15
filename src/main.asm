@@ -22,6 +22,7 @@ defaultCol	equ	%01011111
 cursorType	equ	"_"
 iBufferSize	equ	255
 historySize	equ	10
+eBufferSize	equ	iBufferSize
 bufferAddr	equ	#0000
 pathStrSize	equ	255*4
 
@@ -42,5 +43,6 @@ cliTxtBegin	equ	#20				; start page
 		include "cli.asm"
 
 	;DISPLAY "downKey addr:",/A,downKey
+	DISPLAY "echoStr_00 addr:",/A,echoStr_00
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode

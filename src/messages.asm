@@ -74,3 +74,7 @@ helpMsg		db	16,13,"Available commands(embedded):",16,16
 wrongPathMsg	db	16,10,"Error! Wrong path.",#0d
 		db	16,16
 		db	#00
+
+wrongQuote	db	16,10,"Error! Unmatched \".",#0d
+		db	16,16
+		db	#00

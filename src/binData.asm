@@ -84,3 +84,5 @@ cliHistory	DUP	historySize
 pathStrPos	dw	#0000
 pathString	ds	pathStrSize,#00
 		db	#00
+
+echoBuffer	ds	eBufferSize, #00

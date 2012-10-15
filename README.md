@@ -27,6 +27,9 @@ Simple copy CLI.WMF into WC directory and run manually or write into wc.ini:
 Restart WildCommder, press F10 and select "Command Line Interface" in menu list. Also you
 can press ENTER at the *.sh file and start the execution of the script without running CLi.
 
+<img src="https://raw.github.com/acidrave/CLi-for-WildCommander/master/misc/aperture.png"
+ alt="CLi Example" title="Command Line Interface for WildCommander" align="center" /
+
 ## Usage
 
 Type "help" into command line for the list available commands.
