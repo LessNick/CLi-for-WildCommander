@@ -22,11 +22,11 @@ cliInit		ld		hl,cliPal
 			; Инициализируем строку ввода
 			call	editInit
 
-			; Включаем текстовый режим и подготавливаем окружение
-			call	txtModeInit
-
 			; Предварительно очищаем экран
 			call	clearTxt
+
+			; Включаем текстовый режим и подготавливаем окружение
+			call	txtModeInit
 
 			; Инициализируем переменные для печати в консоли
 			call	printInit
@@ -194,7 +194,11 @@ txtModeInit
 
 ;---------------------------------------
 ; Очистка текстового экрана
-clearTxt	ld		b,cliTxtPages
+			; Включаем страницу с нашим текстовым режимом
+clearTxt	ld		a,#00
+			call	setVideoPage
+
+			ld		b,cliTxtPages
 
 			ld      hl,#c000+128		; блок атрибутов
 	        ld      de,#c001+128

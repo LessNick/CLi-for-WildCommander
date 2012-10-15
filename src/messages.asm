@@ -14,7 +14,7 @@
 ;              )  |  \  `.___________|/
 ;              `--'   `--'
 
-versionMsg	db		16,6,"Command Line Interface for WildCommander v0.06",#0d
+versionMsg	db		16,6,"Command Line Interface for WildCommander v0.08",#0d
 			db		16,7,"2012 (C) Breeze\\\\Fishbone Crew",#0d
 			db		#00
 
@@ -26,6 +26,7 @@ typeHelpMsg	db		#0d
 aboutMsg	db		#0d
 			db		16,08,"Source & current version - ",16,13,"http://bit.ly/Cli4WC",#0d,#0d
 			db		16,02,"Special thanks:",#0d
+			db		16,08," - ",16,15,"Robat(Wizard^DT)",16,08," for the screensaver example code",#0d
 			db		16,08," - ",16,15,"Budder^MGN",16,08," for the help with code",#0d
 			db		16,08," - ",16,15,"TS-Labs",16,08," for the firmware & emulator",#0d
 			db		16,08," - ",16,15,"CHRV & NedoPC",16,08," for the PentEvo hardware",#0d
