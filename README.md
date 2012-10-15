@@ -28,7 +28,7 @@ Restart WildCommder, press F10 and select "Command Line Interface" in menu list.
 can press ENTER at the *.sh file and start the execution of the script without running CLi.
 
 <img src="https://raw.github.com/acidrave/CLi-for-WildCommander/master/misc/aperture.png"
- alt="CLi Example" title="Command Line Interface for WildCommander" align="center" /
+ alt="CLi Example" title="Command Line Interface for WildCommander" align="center" />
 
 ## Usage
 
