@@ -46,6 +46,10 @@ but you want to test this platform & software, you can download "Unreal Speccy" 
 To build the project from source we use [sjasmplus](http://sourceforge.net/projects/sjasmplus/) assembler,
 but you can use any available assembler that supports Zilog Z80 processor.
 
+## YouTube
+
+Also you can view "how it's works" at [youtube](http://www.youtube.com/watch?v=Duo4MfBhUQA).
+
 ## Special thanks
 
 Big thanks to:
