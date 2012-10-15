@@ -1,3 +1,8 @@
+## 0.08 (2012-10-14)
+
+ * source code tabulating correct to standart 8 pos.
+ * fix scroll limit
+
 ## 0.06 (2012-10-09)
 
 * Full code refactoring
