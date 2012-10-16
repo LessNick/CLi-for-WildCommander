@@ -7,7 +7,10 @@
 
 ; Начало основного кода плагина
 
-pluginStart	push	ix
+pluginStart	include "api.h.asm"
+		include "api.asm"
+
+_shellStart	push	ix
 		cp	#00					; вызов по расширению
 		jp	z,callFromExt
 		cp	#03					; вызов из меню запуска плагинов
@@ -573,7 +576,6 @@ quoteOk		call	printStr
 		call	clearIBuffer
 		ret
 
-
 ;---------------------------------------
 prepareEntry	push	hl,af
 		ld	hl,entrySearch
@@ -655,14 +657,33 @@ helpExit	ld	hl,helpOneLine
 pathWorkDir	ld	hl,pathString
 		call	printStr
 		ret
+;---------------------------------------
+;testCmd		; Включаем страницу для приложений
+;		ld	a,#02
+;		call	setVideoPage
+;		ld	hl,exampleStart
+;		ld	de,#c000
+;		ld	bc,exampleEnd-exampleStart
+;		ldir
+;		call	#c000
+;		ret
+;
+;exampleStart
+;		ld	hl,helloMsg
+;		call	printStr
+;		ret
+;exampleEnd
+;
+;helloMsg	db	16,16,"Hello world!",#0d
+;		db	#00
 
 ;---------------------------------------
 		include "print.asm"
-		include "api.asm"
 		include	"sleep.asm"
 		include	"ls.asm"
 		include	"cd.asm"
 		include	"sh.asm"
+		include	"exec.asm"
 		include "parser.asm"
 		include "str2int.asm"
 		include "hex2int.asm"
@@ -675,5 +696,4 @@ pathWorkDir	ld	hl,pathString
 pluginEnd
 ;---------------------------------------
 	ENT
-
 endCode		nop

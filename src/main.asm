@@ -36,13 +36,23 @@ colorArch	equ	3				; dark violet
 cliTxtPages	equ	5				; size Buffer for cli print (5 pages)
 cliTxtBegin	equ	#20				; start page
 
+appAddr		equ	#c000				; application load address
+appBank		equ	#03				; application load memory bank
+
 		include "wcKernel.h.asm"
 		include "tsConf.h.asm"
 
 		include "pluginHead.asm"
 		include "cli.asm"
 
+		include "helloworld.asm"
+
+
 	;DISPLAY "downKey addr:",/A,downKey
-	DISPLAY "echoStr_00 addr:",/A,echoStr_00
+	;DISPLAY "echoStr_00 addr:",/A,echoStr_00
+	;DISPLAY "testCmd addr:",/A,testCmd
+
+	DISPLAY "executeApp addr:",/A,executeApp
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
+	SAVEBIN "bin/app/hello", appStart, appEnd-appStart

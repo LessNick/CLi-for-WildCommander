@@ -78,3 +78,8 @@ wrongPathMsg	db	16,10,"Error! Wrong path.",#0d
 wrongQuote	db	16,10,"Error! Unmatched \".",#0d
 		db	16,16
 		db	#00
+
+wrongAppMsg	db	16,10,"Error! Wrong application file format.",#0d
+		db	16,16
+		db	#00
+

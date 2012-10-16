@@ -12,7 +12,7 @@ changeDir	ex	de,hl				; hl params
 
 cdStart		ld	hl,entrySearch
 		call	searchEntry
-		jr		z,cdNotFound
+		jr	z,cdNotFound
 
 		call	setDirBegin
 

@@ -29,7 +29,7 @@ callFromExt	ld	(scriptLength),hl
 		call	prepareSize
 
 		call	loadScript
-		jp		pluginExit
+		jp	pluginExit
 
 
 prepareSize	ld	bc,(scriptLength+2)

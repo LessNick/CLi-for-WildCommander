@@ -25,6 +25,10 @@ cmdTable
 	db	"*"
 	dw	echoString
 
+	db	"exec"
+	db	"*"
+	dw	executeApp
+
 	db	"exit"
 	db	"*"
 	dw	closeCli
@@ -69,7 +73,9 @@ cmdTable
 	db	"*"
 	dw	sleepSeconds
 ;--- T ---
-
+;	db	"test"
+;	db	"*"
+;	dw	testCmd
 ;--- U ---
 
 ;--- V ---
