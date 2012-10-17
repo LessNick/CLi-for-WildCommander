@@ -57,10 +57,12 @@ appBank		equ	#03				; application load memory bank
 	;DISPLAY "listDir addr:",/A,listDir
 	;DISPLAY "shellExecute addr:",/A,shellExecute
 	;DISPLAY "executeApp addr:",/A,executeApp
-	DISPLAY "cdRoot addr:",/A,cdRoot
-	DISPLAY "cdSplitPath addr:",/A,cdSplitPath
-	DISPLAY "ttt addr:",/A,ttt
-	DISPLAY "cdNotFound addr:",/A,cdNotFound
+	;DISPLAY "cdRoot addr:",/A,cdRoot
+	;DISPLAY "cdSplitPath addr:",/A,cdSplitPath
+	;DISPLAY "ttt addr:",/A,ttt
+	;DISPLAY "cdNotFound addr:",/A,cdNotFound
+	;DISPLAY "cdStart addr:",/A,cdStart
+	DISPLAY "changeDir addr:",/A,changeDir
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
 	SAVEBIN "bin/app/hello", appStart, appEnd-appStart
