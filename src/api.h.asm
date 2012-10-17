@@ -28,6 +28,7 @@ load512bytes	jp	_load512bytes
 setHOffset	jp	_setHOffset
 setVOffset	jp	_setVOffset
 callDma		jp	_callDma
+getFatEntry	jp	_getFatEntry
 checkSync	jp	_checkSync
 printString	jp	_printString
 

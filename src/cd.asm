@@ -6,6 +6,8 @@ changeDir	ex	de,hl				; hl params
 		ld	a,(hl)
 		cp	"/"
 		jp	z,cdSplitPath
+		cp	"."
+		jp	z,cdSplitPath+1
 
 		ld	a,flagDir			; directory
 		call	prepareEntry
@@ -50,8 +52,12 @@ cdDelLoop	ld	(hl),e				; /
 		ex	de,hl
 		jr	cdExitPath
 
-cdRoot		call	initPath
-		xor	a
+cdRoot		push	hl
+		call	initPath
+		pop	hl
+		xor	a				; alt no error
+		ex	af,af'
+		xor	a				; no error
 		ret
 
 cdIncPath	ld	a,(lsPathCount+1)
@@ -81,14 +87,19 @@ cdEndPath	ld	a,"/"
 cdExitPath	inc	de
 		ld	a,#0d
 		ld	(de),a
+		xor	a				; alt no error
+		ex	af,af'
 		xor	a				; no error
 		ret
 
 cdNotFound	ld	hl,dirNotFoundMsg
 		call	printStr
+		ld	a,#ff				; alt error
+		ex	af,af'
 		xor	a
 		ret
 
+;---------------------------------------
 cdSplitPath	inc	hl
 		ld	a,(hl)
 		cp	#00
@@ -98,7 +109,10 @@ cdSplitReset	call	pathToRoot
 		xor	a
 		ld	(lsPathCount+1),a
 		call	initPath
-		xor	a
+
+cdExit		xor	a				; alt no error
+		ex	af,af'
+		xor	a				; no error
 		ret
 
 splitCont	push	hl
@@ -107,7 +121,7 @@ splitCont	push	hl
 
 splitCont2	ld	a,flagDir			; directory
 		call	prepareEntry
-		dec		hl
+		dec	hl
 		push	hl
 		call	cdStart
 		pop	hl
@@ -116,16 +130,18 @@ splitCont2	ld	a,flagDir			; directory
 
 		ld	a,(hl)
 		cp	#00
-		ret	z				; end path, no error		
+		;ret	z				; end path, no error
+		jr	z,cdExit
 
 		ld	a,(hl)
 		cp	"/"
-		jr	nz,splitWrong
+ttt		jr	nz,splitWrong
 
 		inc	hl
 		ld	a,(hl)
 		cp	#00
-		ret	z				; end path, no error
+		;ret	z				; end path, no error
+		jr	z,cdExit
 
 		jr	splitCont2
 

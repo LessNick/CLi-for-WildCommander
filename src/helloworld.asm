@@ -7,6 +7,8 @@ appStart
 
 		ld	hl,helloMsg
 		call	printString
+		
+		xor	a					; no error, clean exit!
 		ret
 	
 helloMsg	db	16,16,"Hello world!",#0d

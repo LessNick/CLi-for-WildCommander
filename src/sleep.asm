@@ -5,7 +5,8 @@ sleepSeconds	ex	de,hl				; hl params
 		call	str2int
 		cp	#ff				; wrong params
 		jr	nz,sleep_00
-		ld	hl,errorParMsg
+
+errorPar	ld	hl,errorParMsg
 		call	printStr
 		ret
 

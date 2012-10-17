@@ -1,13 +1,29 @@
 ;---------------------------------------
 ; ls/dir - read directory
 ;---------------------------------------
-listDir
+listDir		ex	de,hl
+		ld	a,(hl)
+		cp	#00
+		jr	z,lsPathCount
+
+		push	hl
+		call	storePath
+		pop	de
+		call	changeDir
+		ex	af,af'
+		cp	#00
+		call	z,lsPathCount
+
+		call	restorePath
+		ret
+
+
 lsPathCount	ld	a,#00					; path counter
 		cp	#00
 		jr	nz,lsNotRoot
 
 		call	pathToRoot
-		jr		lsBegin
+		jr	lsBegin
 
 lsNotRoot	ld	hl,rootSearch
 		call	searchEntry

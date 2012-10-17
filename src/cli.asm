@@ -15,7 +15,64 @@ _shellStart	push	ix
 		jp	z,callFromExt
 		cp	#03					; вызов из меню запуска плагинов
 		jp	z,callFromMenu
-		jp	pluginExit
+		jp	wrongExit
+
+;---------------------------------------
+callFromExt	ld	(scriptLength),hl
+		ld	(scriptLength+2),de
+
+		call	checkExtention
+		jp	z,runSh
+		dec	a
+		jp	z,runApp
+;		dec	a
+;		jp	z,mp3muz
+		jp	wrongExit
+
+;---------------------------------------
+checkExtention	push	hl,de
+		ld	de,entry
+		call	getFatEntry
+
+		ld	hl,entry+8
+		ld	de,extSh
+		call	checkEStr
+		ld	a,0
+		jr	z,checkEExit
+
+		ld	hl,entry+8
+		ld	de,extSpace
+		call	checkEStr
+		ld	a,1
+		jr	z,checkEExit
+
+		;ld	hl,entry+8
+		;ld	de,mp3
+		;call	checkEStr
+		;d	a,2
+		;jr	z,checkEExit
+		
+		ld	a,#ff
+
+checkEExit	pop 	de,hl
+		or 	a
+		ret
+
+checkEStr	ld 	a,(de)
+		cp 	(hl)
+		ret 	nz
+		inc 	hl
+		inc 	de
+		
+		ld	a,(de)
+		cp	(hl)
+		ret 	nz
+		inc 	hl
+		inc	de
+
+		ld	a,(de)
+		cp	(hl)
+        	ret
 
 ;---------------------------------------
 		; Устанавливаем CLI-палитру
@@ -147,16 +204,23 @@ scrollDown	ld	a,#01
 		ret
 
 ;---------------------------------------
-pluginExit	call	clearIBuffer
+wrongExit	call	restoreExit
+		pop	ix
+		ld	a,1	 				; файл не опознан, пусть забирают вьюверы/другой плагин
+		ret
+
+pluginExit	call	restoreExit
+		pop	ix
+		xor	a	 				; просто выход
+		ret
+
+restoreExit	call	clearIBuffer
 
 		; Восстанавливаем ZX-палитру
 		ld	hl,zxPal
 		call	initPal
 
 		call	restoreWC
-
-		pop		ix
-		xor		a 				; просто выход
 		ret
 
 ;---------------------------------------
@@ -658,6 +722,80 @@ pathWorkDir	ld	hl,pathString
 		call	printStr
 		ret
 ;---------------------------------------
+storePath	ld	hl,pathBString
+		ld	de,pathBString+1
+		ld	bc,pathStrSize
+		xor	a
+		ld	(hl),a
+		ldir
+
+		ld	hl,pathString
+		ld	de,pathBString
+storeLoop	ld	a,(hl)
+		cp	#00
+		ret	z
+		cp	#0d
+		ret	z
+		ld	(de),a
+		inc	hl
+		inc	de
+		jr	storeLoop
+
+restorePath	ld	de,pathBString
+		call	changeDir
+		ret
+
+;---------------------------------------
+checkIsPath	push	hl
+		xor	a
+		ld	(needCd+1),a
+		ld	(pathCd+1),hl
+
+cipLoop		ld	a,(hl)
+		cp	#00
+		jr	z,needCd
+		cp	"/"
+		jr	nz,cipNext
+		ld	a,#01
+		ld	(needCd+1),a
+		ld	(pathCd+1),hl
+cipNext		inc	hl
+		jr	cipLoop
+
+needCd		ld	a,#00				; need cd?
+		cp	#00
+		jr	z,cipExit
+
+pathCd		ld	hl,#0000
+		xor	a
+		ld	(hl),a
+		push	hl
+
+		call	storePath
+		pop	hl
+		pop	de
+		ld	a,(de)
+		cp	#00				; root ?
+		jr	nz,pathCd_00
+		ld	de,rootPath
+		
+pathCd_00	inc	hl
+		push	hl
+		call	changeDir
+
+pathCd_01	pop	hl
+		ret
+
+cipExit		call	storePath
+		pop	hl
+		xor	a
+		ex	af,af'
+		xor	a
+		ret
+
+rootPath	db	"/",#00
+;---------------------------------------
+
 ;testCmd		; Включаем страницу для приложений
 ;		ld	a,#02
 ;		call	setVideoPage

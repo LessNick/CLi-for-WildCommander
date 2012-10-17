@@ -46,13 +46,22 @@ appBank		equ	#03				; application load memory bank
 		include "cli.asm"
 
 		include "helloworld.asm"
+		include "test1.asm"
 
 
 	;DISPLAY "downKey addr:",/A,downKey
 	;DISPLAY "echoStr_00 addr:",/A,echoStr_00
 	;DISPLAY "testCmd addr:",/A,testCmd
-
-	DISPLAY "executeApp addr:",/A,executeApp
+	;DISPLAY "executeApp addr:",/A,executeApp
+	;DISPLAY "checkExtention addr:",/A,checkExtention
+	;DISPLAY "listDir addr:",/A,listDir
+	;DISPLAY "shellExecute addr:",/A,shellExecute
+	;DISPLAY "executeApp addr:",/A,executeApp
+	DISPLAY "cdRoot addr:",/A,cdRoot
+	DISPLAY "cdSplitPath addr:",/A,cdSplitPath
+	DISPLAY "ttt addr:",/A,ttt
+	DISPLAY "cdNotFound addr:",/A,cdNotFound
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
 	SAVEBIN "bin/app/hello", appStart, appEnd-appStart
+	SAVEBIN "bin/app/test1", test1Start, test1End-test1Start

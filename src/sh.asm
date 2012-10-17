@@ -1,9 +1,20 @@
 ;---------------------------------------
 ; sh - execute shell scripts
 ;---------------------------------------
-shellExecute	ex	de,hl				; hl params
+shellExecute	ex	de,hl
+		ld	a,(hl)
+		cp	#00
+		jp	z,errorPar
 
-		ld	a,flagFile			; file
+		call	checkIsPath
+		ex	af,af'
+		cp	#00
+		call	z,shellExe
+		
+		call	restorePath
+		ret
+
+shellExe	ld	a,flagFile			; file
 		call	prepareEntry
 			
 		ld	hl,entrySearch
@@ -22,16 +33,13 @@ fileNotFound	ld	hl,fileNotFoundMsg
 		call	printStr
 		ret
 
-callFromExt	ld	(scriptLength),hl
-		ld	(scriptLength+2),de
-
-		call	cliInit
+runSh		call	cliInit
 		call	prepareSize
 
 		call	loadScript
 		jp	pluginExit
 
-
+;---------------------------------------
 prepareSize	ld	bc,(scriptLength+2)
 		ld	a,b
 		or	c

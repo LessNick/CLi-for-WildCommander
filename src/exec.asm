@@ -1,9 +1,20 @@
 ;---------------------------------------
 ; exec - execute application
 ;---------------------------------------
-executeApp	ex	de,hl				; hl params
+executeApp	ex	de,hl
+		ld	a,(hl)
+		cp	#00
+		jp	z,errorPar
 
-		ld	a,flagFile			; file
+		call	checkIsPath
+		ex	af,af'
+		cp	#00
+		call	z,exeApp
+		
+		call	restorePath
+		ret
+
+exeApp		ld	a,flagFile			; file
 		call	prepareEntry
 			
 		ld	hl,entrySearch
@@ -17,7 +28,15 @@ executeApp	ex	de,hl				; hl params
 		call	prepareSize
 		call	loadSApp
 		ret
+;---------------------------------------		
+runApp		call	cliInit
+		call	prepareSize
 
+		call	loadSApp
+		cp	#00
+		jp	z,pluginExit
+		jp	wrongExit
+;---------------------------------------
 loadSApp	ld	a,appBank
 		call	setVideoPage
 
@@ -51,4 +70,5 @@ loadSApp	ld	a,appBank
 
 wrongApp	ld	hl,wrongAppMsg
 		call	printStr
+		ld	a,#ff				; wrong application
 		ret

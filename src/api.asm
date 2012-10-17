@@ -102,6 +102,13 @@ _callDma	ex	af,af'
 		ld	a,_DMAPL
 		jp	wcKernel
 ;---------------------------------------
+_getFatEntry	ld	a,_TENTRY
+		jp	wcKernel
+;---------------------------------------
+
+
+
+;---------------------------------------
 _checkSync	ld	hl,(_TMN)
 		ld	a,h
 		or	l
