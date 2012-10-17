@@ -32,6 +32,8 @@ exeApp		ld	a,flagFile			; file
 runApp		call	cliInit
 		call	prepareSize
 
+		call	scopeBinary
+		
 		call	loadSApp
 		cp	#00
 		jp	z,pluginExit

@@ -1,8 +1,14 @@
 ;---------------------------------------
 ; cd - change work directory
 ;---------------------------------------
-changeDir	ex	de,hl				; hl params
+changeDirSilent	ld	a,1
+		ld	(cdNotFound+1),a
+		jr	changeDir_00
 
+changeDir	xor	a
+		ld	(cdNotFound+1),a
+
+changeDir_00	ex	de,hl				; hl params
 		ld	a,(hl)
 		cp	"/"
 		call	z,resetToRoot
@@ -41,7 +47,7 @@ changeNow	ex	de,hl
 cdLastCheck	pop	hl
 		ld	a,(hl)
 		cp	#00
-		jr	z,cdExitOk
+		jp	z,cdExitOk
 
 		ld	a,flagDir			; directory
 		call	prepareEntry
@@ -117,9 +123,12 @@ cdEndPath	ld	a,"/"
 		ret
 
 		pop	hl
-cdNotFound	ld	hl,dirNotFoundMsg
+cdNotFound	ld	a,#00
+		cp	#01
+		jr	z,cdNotFound_00
+		ld	hl,dirNotFoundMsg
 		call	printStr
-		ld	a,#ff				; alt error
+cdNotFound_00	ld	a,#ff				; alt error
 		ex	af,af'
 		xor	a
 		ret

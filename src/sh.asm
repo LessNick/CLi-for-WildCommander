@@ -36,6 +36,8 @@ fileNotFound	ld	hl,fileNotFoundMsg
 runSh		call	cliInit
 		call	prepareSize
 
+		call	scopeBinary
+
 		call	loadScript
 		jp	pluginExit
 

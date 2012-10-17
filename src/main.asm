@@ -33,11 +33,18 @@ colorHidden	equ	13				; teal
 colorSystem	equ	2				; amiga pink
 colorArch	equ	3				; dark violet
 
+colorError	equ	10				; red
+colorWarning	equ	14				; yellow
+colorOk		equ	13				; 
+
 cliTxtPages	equ	5				; size Buffer for cli print (5 pages)
 cliTxtBegin	equ	#20				; start page
 
 appAddr		equ	#c000				; application load address
 appBank		equ	#03				; application load memory bank
+
+scopeBinAddr	equ	#c000				; /bin list address start
+scopeBinBank	equ	#04				; /bin application list
 
 		include "wcKernel.h.asm"
 		include "tsConf.h.asm"
@@ -49,20 +56,9 @@ appBank		equ	#03				; application load memory bank
 		include "test1.asm"
 
 
-	;DISPLAY "downKey addr:",/A,downKey
-	;DISPLAY "echoStr_00 addr:",/A,echoStr_00
-	;DISPLAY "testCmd addr:",/A,testCmd
-	;DISPLAY "executeApp addr:",/A,executeApp
-	;DISPLAY "checkExtention addr:",/A,checkExtention
-	;DISPLAY "listDir addr:",/A,listDir
-	;DISPLAY "shellExecute addr:",/A,shellExecute
-	;DISPLAY "executeApp addr:",/A,executeApp
-	;DISPLAY "cdRoot addr:",/A,cdRoot
-	;DISPLAY "cdSplitPath addr:",/A,cdSplitPath
-	;DISPLAY "ttt addr:",/A,ttt
-	;DISPLAY "cdNotFound addr:",/A,cdNotFound
-	;DISPLAY "cdStart addr:",/A,cdStart
-	DISPLAY "changeDir addr:",/A,changeDir
+	;DISPLAY "changeDir addr:",/A,changeDir
+	;DISPLAY "changeDir addr:",/A,helpOneLine
+	DISPLAY "checkIsBin addr:",/A,checkIsBin
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
 	SAVEBIN "bin/app/hello", appStart, appEnd-appStart

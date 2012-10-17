@@ -14,7 +14,7 @@
 ;              )  |  \  `.___________|/
 ;              `--'   `--'
 
-versionMsg	db	16,6,"Command Line Interface for WildCommander v0.08",#0d
+versionMsg	db	16,6,"Command Line Interface for WildCommander v0.10",#0d
 		db	16,7,"2012 (C) Breeze\\\\Fishbone Crew",#0d
 		db	#00
 
@@ -36,11 +36,11 @@ aboutMsg	db	#0d
 readyMsg	db	"1>"
 		db	#00
 
-errorMsg	db	16,10,"Error! Unknown command.",#0d
+errorMsg	db	16,colorError,"Error! Unknown command.",#0d
 		db	16,16
 		db	#00
 
-errorParMsg	db	16,10,"Error! Wrong parameters.",#0d
+errorParMsg	db	16,colorError,"Error! Wrong parameters.",#0d
 		db	16,16
 		db	#00
 
@@ -51,35 +51,42 @@ anyKeyMsg	db	16,7,"Press any key to continue.",#0d
 restoreMsg	db	16,16,17,16
 		db	#0d,#00
 
-wrongDevMsg	db	16,10,"Error! Wrong device ID.",#0d
+wrongDevMsg	db	16,colorError,"Error! Wrong device ID.",#0d
 		db	16,16
 		db	#00
 
-dirNotFoundMsg	db	16,10,"Error! Directory not found.",#0d
+dirNotFoundMsg	db	16,colorError,"Error! Directory not found.",#0d
 		db	16,16
 		db	#00
 
-fileNotFoundMsg	db	16,10,"Error! File not found.",#0d
+fileNotFoundMsg	db	16,colorError,"Error! File not found.",#0d
 		db	16,16
 		db	#00
 
-cantReadDirMsg	db	16,10,"Error! Can't read directory.",#0d
+cantReadDirMsg	db	16,colorError,"Error! Can't read directory.",#0d
 		db	16,16
 		db	#00
 
-helpMsg		db	16,13,"Available commands(embedded):",16,16
+helpMsg		db	16,colorOk,"Available commands(embedded):",16,16
 		db	16,16
 		db	#0d,#00
 
-wrongPathMsg	db	16,10,"Error! Wrong path.",#0d
+helpMsg2	db	16,colorOk,"Available commands(external):",16,16
+		db	16,16
+		db	#0d,#00
+
+wrongPathMsg	db	16,colorError,"Error! Wrong path.",#0d
 		db	16,16
 		db	#00
 
-wrongQuote	db	16,10,"Error! Unmatched \".",#0d
+wrongQuote	db	16,colorError,"Error! Unmatched \".",#0d
 		db	16,16
 		db	#00
 
-wrongAppMsg	db	16,10,"Error! Wrong application file format.",#0d
+wrongAppMsg	db	16,colorError,"Error! Wrong application file format.",#0d
 		db	16,16
 		db	#00
 
+noBinDirMsg	db	16,colorWarning,"Warning! \"/bin\" directory not found.",#0d
+		db	16,16
+		db	#00	

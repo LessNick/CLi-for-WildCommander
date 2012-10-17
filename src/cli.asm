@@ -126,6 +126,8 @@ initPath	ld	hl,pathString
 callFromMenu	call	cliInit
 		call	cliInitDev
 
+		call	scopeBinary
+
 cliStart	ld	a,#00				
 		cp	#00
 		jr	nz,cliStart_0	
@@ -486,7 +488,12 @@ enterKey	ld	a,defaultCol
 		xor	a					; сброс флагов
 		ld	hl,cmdTable
 		ld	de,iBuffer
+		push	de
 		call	parser
+		pop	de
+		cp	#ff
+		jr	nz,enterReady
+		call	checkIsBin
 		cp	#ff
 		jr	nz,enterReady
 		call	printInit
@@ -678,7 +685,7 @@ newLine		ld	de,helpOneLine
 helpAgain	ld	b,13
 helpLoop	ld	a,(hl)
 		cp	#00
-		jr	z,helpExit
+		jr	z,helpLast
 		cp	"*"
 		jr	nz,helpSkip
 		inc	hl
@@ -696,14 +703,12 @@ helpSpace	ld	a," "
 		jr	nz,helpAgain
 
 		push	hl,de,bc
+		
 		ld	hl,helpOneLine
 		call	printStr
-		ld	hl,helpOneLine
-		ld	de,helpOneLine+1
-		ld	a," "
-		ld	(hl),a
-		ld	bc,13*6-1
-		ldir
+
+		call	clearOneLine
+
 		pop	bc,de,hl
 		jr	newLine
 
@@ -712,6 +717,65 @@ helpSkip	ld	(de),a
 		inc	hl
 		dec	b
 		jr	helpLoop
+
+clearOneLine	ld	hl,helpOneLine
+		ld	de,helpOneLine+1
+		ld	a," "
+		ld	(hl),a
+		ld	bc,13*6-1
+		ldir
+		ret
+
+helpLast	ld	hl,helpOneLine
+		call	printStr
+;---------------
+		ld	hl,helpMsg2
+		call	printStr
+
+		ld	a,scopeBinBank
+		call	setVideoPage
+
+		call	clearOneLine
+
+		ld	hl,scopeBinAddr
+		ld	de,helpOneLine
+		xor	a
+		ld	(helpCount+1),a
+
+helpLoop2	ld	a,(hl)
+		cp	#00
+		jr	z,helpExit
+		ld	b,8
+helpCopy	ld	a,(hl)
+		cp	"A"
+		jr	c,helpPaste
+		cp	"Z"
+		jr	nc,helpPaste
+		add	32
+helpPaste	ld	(de),a
+		inc	hl
+		inc	de
+		djnz	helpCopy
+		
+helpCount	ld	a,#00
+		inc	a
+		ld	(helpCount+1),a
+		cp	8
+		jr	nz,helpSkip2
+		xor	a
+		ld	(helpCount+1),a
+		push	hl,de
+		ld	hl,helpOneLine
+		call	printStr
+		call	clearOneLine
+		pop	de,hl
+		ld	de,helpOneLine
+		jr	helpLoop2
+
+helpSkip2	inc	de
+		inc	de
+		jr	helpLoop2
+
 
 helpExit	ld	hl,helpOneLine
 		call	printStr
@@ -794,8 +858,171 @@ cipExit		call	storePath
 		ret
 
 rootPath	db	"/",#00
-;---------------------------------------
 
+;---------------------------------------
+scopeBinary	call	storePath
+
+		ld	de,binPath
+		call	changeDirSilent
+		ex	af,af'
+		cp	#00
+		jp	nz,noBinDir
+
+		call	setFileBegin
+
+		ld	a,scopeBinBank
+		call	setVideoPage
+
+		ld	de,scopeBinAddr
+		ld	(sbCopyName+1),de
+
+		call	clearScopeBin
+
+sbReadAgain	call	clearBuffer
+
+		ld	hl,bufferAddr
+		ld	b,#01				; 1 block 512b
+		call	load512bytes
+
+		ld	hl,bufferAddr
+
+sbLoop		ld	a,(hl)
+		cp	#00
+		jp	z,sbEnd
+
+		push	hl
+		pop	ix
+		bit	3,(ix+11)
+		jr	nz,sbSkip			; если 1, то запись это ID тома
+		
+		bit	4,(ix+11)
+		jr	nz,sbSkip			; если 1, то каталог
+		
+		ld	a,(hl)
+		cp	#e5
+		jr	z,sbSkip
+
+		push	hl
+		call	sbCopyName
+		pop	hl
+
+sbSkip		
+sbCount		ld	a,#00
+		inc	a
+		ld	(sbCount+1),a
+		cp	16					; 16 записей на сектор
+		jr	z,sbLoadNext
+
+		ld	bc,32					; 32 byte = 1 item
+		add	hl,bc
+		jp	sbLoop
+
+sbLoadNext	xor	a
+		ld	(sbCount+1),a
+		jp 	sbReadAgain
+
+sbEnd		call	restorePath
+		ret
+
+sbCopyName	ld	de,scopeBinAddr
+
+		ld	b,8					; 16384 / 8 = 2048 bin files
+sbCopy		ld	a,(hl)
+		cp	"A"
+		jr	c,sbPaste
+		cp	"Z"
+		jr	nc,sbPaste
+		add	32
+sbPaste		ld	(de),a
+		inc	hl
+		inc	de
+		djnz	sbCopy
+
+		ld	(sbCopyName+1),de
+		ret
+
+clearScopeBin	ld	hl,scopeBinAddr
+		ld	de,scopeBinAddr+1
+		ld	bc,#4000-1
+		xor	a
+		ld	(hl),a
+		ldir
+		ret
+
+noBinDir	ld	hl,noBinDirMsg
+		call	printStr
+
+		ld	hl,restoreMsg
+		call	printStr
+		ret
+
+binPath		db	"/bin",#00
+;---------------------------------------
+checkIsBin	push	de
+		ld	a,scopeBinBank
+		call	setVideoPage
+
+		ld	hl,cibFile
+		ld	de,cibFile+1
+		ld	bc,7
+		xor	a
+		ld	(hl),a
+		ldir
+
+		pop	hl
+
+		ld	de,scopeBinAddr
+cibLoop		ld	b,8
+		push	de
+		push	hl
+cibLoop_00	ld	a,(de)
+		cp	#00
+		jr	z,cibError
+		ld	c,a
+		ld	a,(hl)
+		cp	c
+		jr	nz,cibNext
+		inc	hl
+		inc	de
+		ld	a,(hl)				; end entered name?
+		cp	#00
+		jr	nz,cibLoop_01
+		ld	a,(de)
+		cp	" "				; end name in table?
+		jr	nz,cibNext
+		jr	cibOk
+
+cibLoop_01	djnz	cibLoop_00			; file found
+		jr	cibOk
+
+cibNext		pop	hl
+		pop	de
+		ex	de,hl
+		ld	bc,8
+		add	hl,bc
+		ex	de,hl	
+		jr	cibLoop
+
+cibOk		pop	hl
+		pop	de
+		ld	de,cibFile
+		ld	bc,8
+		ldir
+
+		ld	de,cdBinPath
+		call	executeApp
+		xor	a,#00				; no err
+		ret
+
+cibError	pop	hl
+		pop	de
+		ld	a,#ff				; err
+		ret
+
+cdBinPath	db	"/bin/"
+cibFile		ds	8,0
+		db	#00
+;---------------------------------------
 ;testCmd		; Включаем страницу для приложений
 ;		ld	a,#02
 ;		call	setVideoPage
