@@ -11,6 +11,7 @@ pluginStart	include "api.h.asm"
 		include "api.asm"
 
 _shellStart	push	ix
+		call	storeWcInt
 		cp	#00					; вызов по расширению
 		jp	z,callFromExt
 		cp	#03					; вызов из меню запуска плагинов
@@ -123,7 +124,9 @@ initPath	ld	hl,pathString
 		ret
 
 ;---------------------------------------
-callFromMenu	call	cliInit
+callFromMenu	call	setCLiInt
+
+		call	cliInit
 		call	cliInitDev
 
 		call	scopeBinary
@@ -160,7 +163,6 @@ mainLoop	halt					; Главный цикл (опрос клавиатуры)
 
 		call	checkKeyAlt
 		jr	nz,scrollMode
-		call	z,scrollStop
 
 skipAltKey	call	checkKeyUp
 		call	nz,upKey
@@ -179,12 +181,6 @@ skipAltKey	call	checkKeyUp
 
 		jr	mainLoop
 
-scrollStop	ld	a,#00
-		ret	z
-		xor	a
-		ld	(scrollStop+1),a			; scroll stop
-		ret
-
 scrollMode	call	checkKeyUp
 		call	nz,scrollUp
 
@@ -194,14 +190,10 @@ scrollMode	call	checkKeyUp
 		jr	mainLoop
 
 scrollUp	ld	a,#01
-		ld	(scrollStop+1),a			; scroll start
-		ld	a,#01
 		call	PR_POZ
 		ret
 
-scrollDown	ld	a,#01
-		ld	(scrollStop+1),a			; scroll start
-		ld	a,#02
+scrollDown	ld	a,#02
 		call	PR_POZ
 		ret
 
@@ -221,8 +213,78 @@ restoreExit	call	clearIBuffer
 		; Восстанавливаем ZX-палитру
 		ld	hl,zxPal
 		call	initPal
-
+		call	restoreWCInt
 		call	restoreWC
+		ret
+;---------------------------------------
+storeWcInt	push	hl
+		ld	hl,(_WCINT)
+		ld	(wcIntAddr+1),hl
+		pop	hl
+		ret
+
+restoreWCInt	ei
+		halt
+		di
+		push	hl
+		ld	hl,(wcIntAddr+1)
+		ld	(_WCINT),hl
+		pop	hl
+		ei
+		ret
+
+setCLiInt	ei
+		halt
+		di
+		push	hl
+		ld	hl,cliInt
+		ld	(_WCINT),hl
+		pop	hl
+		ei
+		ret
+;---------------------------------------
+cliInt		push	hl,de,bc,af
+		exx
+		ex	af,af'
+		push	hl,de,bc,af
+
+		call	checkKeyAlt
+		call	nz,checkVideoKey
+		
+		pop	af,bc,de,hl		
+		exx
+		ex	af,af'
+		pop	af,bc,de,hl
+wcIntAddr	jp	#0000
+
+checkVideoKey	call	checkKeyF1
+		jr	nz,setVideo0
+		call	checkKeyF2
+		jr	nz,setVideo1
+		ret
+
+setVideo0	; Переключаем видео на наш текстовый режим
+		ld	a,#01					; #01 - 1й видео буфер (16 страниц)
+		call	setTxtMode
+
+		; На всякий случай переключаем разрешайку на 320x240 TXT
+		ld	a,%10000011
+		call	setVideoMode
+
+		call	restBorder
+
+		ret
+
+setVideo1	; Переключаем видео на наш текстовый режим
+		ld	a,#02					; #02 - 2й видео буфер (16 страниц)
+		call	setTxtMode
+
+		; Переключаем графический режим (по умолчанию 320x240 256c)
+		ld	a,(currentVMode)
+		call	setVideoMode
+
+		ld	a,(curGfxBorder)
+		call	setBorder
 		ret
 
 ;---------------------------------------
@@ -245,22 +307,47 @@ txtModeInit	; Включаем страницу со страндартным ф
 		ld	de,#c000
 		ld	bc,2048
 		ldir
-
+		
 		; Включаем страницу с нашим текстовым режимом
 		ld	a,#00
 		call	setVideoPage
 
-		; Переключаем видео на наш текстовый режим
-		ld	a,#01					; #01 - 1й видео буфер (16 страниц)
-		call	setTxtMode
+		jp	setVideo0
 
-		; На всякий случай переключаем разрешайку на 320x240 TXT
-		ld	a,%10000011
-		jp	setVideoMode
+;---------------------------------------
+; Очистка графического экрана
+		; Включаем страницу с нашим графическим режимом
+gfxCls		ld	hl,clearingMsg
+		call	printStr
+
+		ld	a,#10
+		ld	(gfxClsPage+1),a
+
+gfxClsPage	ld	a,#10
+		call	setVideoPage
+		
+		ld	hl,#c000
+		ld	de,#c001
+		ld	bc,#3fff
+		xor	a
+		ld	(hl),a
+		ldir
+
+		ld	a,(gfxClsPage+1)
+		inc	a
+		cp	#18
+		jr	z,gfxClsExit
+		ld	(gfxClsPage+1),a
+
+		jr	gfxClsPage
+
+gfxClsExit	ld	a,#00
+		call	setVideoPage
+		ret
 
 ;---------------------------------------
 ; Очистка текстового экрана
-			; Включаем страницу с нашим текстовым режимом
+		; Включаем страницу с нашим текстовым режимом
 clearTxt	ld	a,#00
 		call	setVideoPage
 
@@ -479,6 +566,7 @@ enterKey	ld	a,defaultCol
 		ld	a,(storeKey)
 		call	printEChar
 		call	printEUp
+
 		ld	a,(iBuffer)
 		cp	#00					; simple enter
 		jr	z,enterReady
@@ -1045,6 +1133,29 @@ cibError	pop	hl
 cdBinPath	db	"/bin/"
 cibFile		ds	8,0
 		db	#00
+
+;---------------------------------------
+switchScreen	ex	de,hl
+		call	str2int
+		ld	a,h
+		cp	#00
+		jp	nz,errorPar
+		ld	a,l
+		cp	#00
+		jp	z,setVideo0
+		cp	#01
+		jp	z,setVideo1
+		jp	errorPar
+;---------------------------------------
+gfxBorder	ex	de,hl
+		call	str2int
+		ld	a,h
+		cp	#00
+		jp	nz,errorPar
+		ld	a,l
+		ld	(curGfxBorder),a
+		ret
+
 ;---------------------------------------
 ;testCmd		; Включаем страницу для приложений
 ;		ld	a,#02
@@ -1072,6 +1183,7 @@ cibFile		ds	8,0
 		include	"cd.asm"
 		include	"sh.asm"
 		include	"exec.asm"
+		include "loadpal.asm"
 		include "parser.asm"
 		include "str2int.asm"
 		include "hex2int.asm"

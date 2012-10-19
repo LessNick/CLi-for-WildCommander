@@ -40,6 +40,12 @@ _checkKeyRight	ld	a,_RGGG
 _checkKeyAlt	ld	a,_ALT
 		jp	wcKernel
 ;---------------------------------------
+_checkKeyF1	ld	a,_F1
+		jp	wcKernel
+;---------------------------------------
+_checkKeyF2	ld	a,_F2
+		jp	wcKernel
+;---------------------------------------
 _waitKeyCalm	ld	a,_USPO
 		jp	wcKernel
 ;---------------------------------------

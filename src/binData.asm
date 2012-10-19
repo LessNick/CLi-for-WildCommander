@@ -14,6 +14,8 @@ iBuffer		ds	iBufferSize,#00
 curColor	db	defaultCol			; paper | ink
 curEColor	db	defaultCol			; paper | ink
 
+curGfxBorder	db	#00				; graphics mode border color
+
 zxPal		dw	#0000,#0010,#4000,#4010
 		dw	#0200,#0210,#4200,#4210
 		dw	#0000,#0018,#6000,#6018
@@ -93,3 +95,15 @@ echoBuffer	ds	eBufferSize, #00
 entry		ds	32
 extSh		db	"SH "
 extSpace	db	"   "
+
+currentVMode	db	%10000010			; включение видео режима (разрешение+тип)
+							; i:A' - видео режим
+							;   [7-6]: %00 - 256x192
+							;          %01 - 320x200
+							;          %10 - 320x240
+							;          %11 - 360x288
+							;   [5-2]: %0000
+							;   [1-0]: %00 - ZX
+							;          %01 - 16c
+							;          %10 - 256c
+							;          %11 - txt

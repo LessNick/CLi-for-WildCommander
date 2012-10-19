@@ -26,20 +26,18 @@ exeApp		ld	a,flagFile			; file
 
 		call	setFileBegin
 		call	prepareSize
-		call	loadSApp
+		call	loadApp
 		ret
 ;---------------------------------------		
 runApp		call	cliInit
 		call	prepareSize
-
-		;call	scopeBinary
 		
-		call	loadSApp
+		call	loadApp
 		cp	#00
 		jp	z,pluginExit
 		jp	wrongExit
 ;---------------------------------------
-loadSApp	ld	a,appBank
+loadApp	ld	a,appBank
 		call	setVideoPage
 
 		ld	hl,appAddr-4

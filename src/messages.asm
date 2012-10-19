@@ -19,7 +19,7 @@ versionMsg	db	16,6,"Command Line Interface for WildCommander v0.10",#0d
 		db	#00
 
 typeHelpMsg	db	#0d
-		db	16,13,"Type ",20," help ",20," to display the full list of commands.",#0d,#0d
+		db	16,colorInfo,"Type ",20," help ",20," to display the full list of commands.",#0d,#0d
 		db	16,16
 		db	#00
 
@@ -87,6 +87,14 @@ wrongAppMsg	db	16,colorError,"Error! Wrong application file format.",#0d
 		db	16,16
 		db	#00
 
+wrongPalMsg	db	16,colorError,"Error! Wrong palette file format.",#0d
+		db	16,16
+		db	#00
+
 noBinDirMsg	db	16,colorWarning,"Warning! \"/bin\" directory not found.",#0d
 		db	16,16
 		db	#00	
+
+clearingMsg	db	16,colorInfo,"Clearing...",#0d
+		db	16,16
+		db	#00

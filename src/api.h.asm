@@ -12,6 +12,8 @@ checkKeyDown	jp	_checkKeyDown
 checkKeyLeft	jp	_checkKeyLeft
 checkKeyRight	jp	_checkKeyRight
 checkKeyAlt	jp	_checkKeyAlt
+checkKeyF1	jp	_checkKeyF1
+checkKeyF2	jp	_checkKeyF2
 waitKeyCalm	jp	_waitKeyCalm
 waitAnyKey	jp	_waitAnyKey
 getKey		jp	_getKey

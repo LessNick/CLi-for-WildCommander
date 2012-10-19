@@ -35,7 +35,13 @@ cmdTable
 ;--- F ---
 
 ;--- G ---
+	db	"gfxborder"
+	db	"*"
+	dw	gfxBorder
 
+	db	"gfxcls"
+	db	"*"
+	dw	gfxCls
 ;--- H ---
 	db	"help"
 	db	"*"
@@ -47,6 +53,10 @@ cmdTable
 ;--- K ---
 
 ;--- L ---
+	db	"loadpal"
+	db	"*"
+	dw	loadPal
+
 	db	"ls"
 	db	"*"
 	dw	listDir
@@ -67,6 +77,10 @@ cmdTable
 	db	"*"
 	dw	scopeBinary
 ;--- S ---
+	db	"screen"
+	db	"*"
+	dw	switchScreen
+
 	db	"sh"
 	db	"*"
 	dw	shellExecute

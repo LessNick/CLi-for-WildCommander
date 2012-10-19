@@ -1,9 +1,15 @@
 ## 0.10 (2012-10-17)
 
+ * add switch between first(txt) & second(gfx) screen with help combination alt+f1/alt+f2
  * cd fix if path not found
  * file search buffer fix
  * try exec file if it start as ./filename
+ * add exec files from /bin directory
  * add command rehash (rescan /bin directory)
+ * add command gfxcls (clear graphics (second) screen)
+ * add command screen switch between first & second screen (for scripts)
+ * add command gfxborder, set border's color of second(gfx) screen 
+ * add command loadpal, load palette from file to current
 
 ## 0.08 (2012-10-14)
 
