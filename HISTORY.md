@@ -1,4 +1,4 @@
-## 0.10 (2012-10-17)
+## 0.10 (2012-10-19)
 
  * add switch between first(txt) & second(gfx) screen with help combination alt+f1/alt+f2
  * cd fix if path not found
