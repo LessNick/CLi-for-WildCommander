@@ -1,3 +1,5 @@
+## 0.12 (2012-10-19)
+
 ## 0.10 (2012-10-19)
 
  * add switch between first(txt) & second(gfx) screen with help combination alt+f1/alt+f2

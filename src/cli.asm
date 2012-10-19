@@ -315,34 +315,37 @@ txtModeInit	; Включаем страницу со страндартным ф
 		jp	setVideo0
 
 ;---------------------------------------
-; Очистка графического экрана
-		; Включаем страницу с нашим графическим режимом
-gfxCls		ld	hl,clearingMsg
-		call	printStr
+; Очистка графического экрана c помощью DMA
 
-		ld	a,#10
-		ld	(gfxClsPage+1),a
-
-gfxClsPage	ld	a,#10
+gfxCls		ld	a,#10					; Включаем страницу с нашим графическим режимом
 		call	setVideoPage
-		
-		ld	hl,#c000
-		ld	de,#c001
-		ld	bc,#3fff
-		xor	a
-		ld	(hl),a
-		ldir
 
-		ld	a,(gfxClsPage+1)
-		inc	a
-		cp	#18
-		jr	z,gfxClsExit
-		ld	(gfxClsPage+1),a
+		ld	hl,#0000				; заливаем цветом первые 2 пикселя
+		ld	(#c000),hl
 
-		jr	gfxClsPage
+		ld	a,#ff
+		call	callDma					; ожидаем готовности DMA
 
-gfxClsExit	ld	a,#00
+		ld	hl,0					; BHL - Source
+		ld	de,2					; CDE - Destination
+		ld	bc,#1010				;
+		ld	a,#00					; Инициализация источника(Source) и приёмника(Destination)
+		call	callDma
+
+		ld	a,#05					; выставление DMA_T
+		ld	b,32*8-1				; B - кол-во бёрстов
+		call	callDma
+        	
+        	ld	a,#06					; выставление DMA_N
+        	ld	b,255					; B - размер бёрста
+        	call	callDma
+
+		ld	a,#fe					; запуск с ожиданием завершения (o:NZ - DMA занята)
+		call	callDma
+
+		ld	a,#00					; Восстанавливаем страницу с текстовым режимом
 		call	setVideoPage
+
 		ret
 
 ;---------------------------------------
