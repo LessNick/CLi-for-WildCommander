@@ -32,7 +32,7 @@ exeApp		ld	a,flagFile			; file
 runApp		call	cliInit
 		call	prepareSize
 
-		call	scopeBinary
+		;call	scopeBinary
 		
 		call	loadSApp
 		cp	#00

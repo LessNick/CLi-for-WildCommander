@@ -64,7 +64,7 @@ helpOneLine	db	"             "
 		db	"             "
 		db	#0d,#00				; end
 
-entrySearch	ds	14,#00
+entrySearch	ds	255,#00
 
 rootSearch	db	flagDir,".",#00
 

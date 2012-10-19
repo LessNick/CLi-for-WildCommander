@@ -485,9 +485,11 @@ enterKey	ld	a,defaultCol
 
 		call	putHistory
 
+		ld	de,iBuffer
+		call	checkIsExec				; ./filename
+
 		xor	a					; сброс флагов
 		ld	hl,cmdTable
-		ld	de,iBuffer
 		push	de
 		call	parser
 		pop	de
@@ -545,6 +547,24 @@ ph_00		ld	hl,iBufferSize				;hl * a
 ph_01		ld	a,(hCount)
 		ld	(historyPos),a
 		ret
+;---------------------------------------
+checkIsExec	push	de
+		call	eat_space
+		ld	a,(de)
+		cp	"."
+		jr	nz,noExec
+		inc	de
+		ld	a,(de)
+		cp	"/"
+		jr	nz,noExec
+		inc	de					; file exec
+		call	executeApp
+		pop	af					; de
+		pop	af					; ret	
+		jr	enterReady				; exit
+
+noExec		pop	de
+		ret
 
 ;---------------------------------------
 deleteKey	ld	a,(iBufferPos)
@@ -590,6 +610,7 @@ putEX		ld	(printEX),a
 
 ;---------------------------------------
 closeCli	pop	af					; skip sp ret
+		pop	af
 		pop	af
 		jp	pluginExit
 
@@ -969,7 +990,9 @@ checkIsBin	push	de
 		ld	(hl),a
 		ldir
 
-		pop	hl
+		pop	de
+		call	eat_space
+		ex	de,hl
 
 		ld	de,scopeBinAddr
 cibLoop		ld	b,8

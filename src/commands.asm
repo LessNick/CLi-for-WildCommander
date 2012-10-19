@@ -63,7 +63,9 @@ cmdTable
 ;--- Q ---
 
 ;--- R ---
-
+	db	"rehash"
+	db	"*"
+	dw	scopeBinary
 ;--- S ---
 	db	"sh"
 	db	"*"

@@ -128,7 +128,14 @@ cdNotFound	ld	a,#00
 		jr	z,cdNotFound_00
 		ld	hl,dirNotFoundMsg
 		call	printStr
-cdNotFound_00	ld	a,#ff				; alt error
+
+cdNotFound_00	ld	hl,pathString
+		ld	bc,(pathStrPos)
+		add	hl,bc
+		ld	a,#0d
+		ld	(hl),a
+		
+		ld	a,#ff				; alt error
 		ex	af,af'
 		xor	a
 		ret

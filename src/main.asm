@@ -52,14 +52,13 @@ scopeBinBank	equ	#04				; /bin application list
 		include "pluginHead.asm"
 		include "cli.asm"
 
-		include "helloworld.asm"
+		;include "helloworld.asm"
 		include "test1.asm"
 
 
-	;DISPLAY "changeDir addr:",/A,changeDir
-	;DISPLAY "changeDir addr:",/A,helpOneLine
-	DISPLAY "checkIsBin addr:",/A,checkIsBin
+	;DISPLAY "closeCli addr:",/A,closeCli
+	DISPLAY "checkIsExec addr:",/A,checkIsExec
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
-	SAVEBIN "bin/app/hello", appStart, appEnd-appStart
+	;SAVEBIN "bin/app/hello", appStart, appEnd-appStart
 	SAVEBIN "bin/app/test1", test1Start, test1End-test1Start

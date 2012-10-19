@@ -1,5 +1,10 @@
 ## 0.10 (2012-10-17)
 
+ * cd fix if path not found
+ * file search buffer fix
+ * try exec file if it start as ./filename
+ * add command rehash (rescan /bin directory)
+
 ## 0.08 (2012-10-14)
 
  * source code tabulating correct to standart 8 pos.
