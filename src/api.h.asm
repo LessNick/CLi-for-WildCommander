@@ -1,7 +1,9 @@
 ;---------------------------------------
 ; CLi (Command Line Interface) API Header
 ;---------------------------------------
-
+resPal		equ	#01		; ресурс палитра
+resSpr		equ	#02		; ресурс спрайт
+;---------------------------------------
 shellStart	jp	_shellStart
 openStream	jp	_openStream
 pathToRoot	jp	_pathToRoot
@@ -12,6 +14,7 @@ checkKeyDown	jp	_checkKeyDown
 checkKeyLeft	jp	_checkKeyLeft
 checkKeyRight	jp	_checkKeyRight
 checkKeyAlt	jp	_checkKeyAlt
+checkKeyEsc	jp	_checkKeyEsc
 checkKeyF1	jp	_checkKeyF1
 checkKeyF2	jp	_checkKeyF2
 waitKeyCalm	jp	_waitKeyCalm
@@ -33,5 +36,7 @@ callDma		jp	_callDma
 getFatEntry	jp	_getFatEntry
 checkSync	jp	_checkSync
 printString	jp	_printString
-
+setScreen	jp	_setScreen
+clearGfxScreen	jp	_clearGfxScreen
+loadResource	jp	_loadResource
 ;---------------------------------------

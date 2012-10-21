@@ -31,6 +31,7 @@ shellExe	ld	a,flagFile			; file
 
 fileNotFound	ld	hl,fileNotFoundMsg
 		call	printStr
+		ld	a,#ff				; error
 		ret
 
 runSh		call	cliInit

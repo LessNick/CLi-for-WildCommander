@@ -40,6 +40,9 @@ _checkKeyRight	ld	a,_RGGG
 _checkKeyAlt	ld	a,_ALT
 		jp	wcKernel
 ;---------------------------------------
+_checkKeyEsc	ld	a,_ESC
+		jp	wcKernel
+;---------------------------------------
 _checkKeyF1	ld	a,_F1
 		jp	wcKernel
 ;---------------------------------------
@@ -126,4 +129,40 @@ _checkSync	ld	hl,(_TMN)
 		ret
 ;---------------------------------------
 _printString	call	printStr
+		ret
+;---------------------------------------
+_setScreen	cp	#00				; в A - 0 - txt, 1 - gfx
+		jp	z,setVideo0
+		cp	#01
+		jp	z,setVideo1
+		ret
+;---------------------------------------
+_clearGfxScreen	call	gfxCls
+		ld	a,appBank
+		call	setVideoPage
+		ret
+;---------------------------------------
+_loadResource	push	hl,bc
+		ld	hl,pathBString
+		ld	de,pathBString2
+		ld	bc,pathStrSize
+		ldir
+		pop	bc,hl
+
+		ex	de,hl
+		cp	resPal				; загрузка палитры
+		call	z,loadGfxPal
+		
+		cp	resSpr				; загрузка спрайтов
+		call	z,loadSprites
+
+		push	af
+		ld	a,appBank
+		call	setVideoPage
+		pop	af
+
+		ld	hl,pathBString2
+		ld	de,pathBString
+		ld	bc,pathStrSize
+		ldir
 		ret

@@ -1,6 +1,39 @@
 ;---------------------------------------
 ; loadpal - loading palette
 ;---------------------------------------
+loadGfxPal	call	loadPal
+		cp	#00
+		jr	nz,exitPal
+		
+		push	hl
+		ld	a,gPalBank			; load Pal File
+		call	setVideoPage
+		pop	hl
+
+		ld	de,gPalAddr			; сохраняем загруженную палитру
+		ld	bc,512
+		ldir
+		jr	exitPal
+;---------------------------------------
+loadTxtPal	call	loadPal
+		cp	#00
+		jr	nz,exitPal
+		
+		push	hl
+		ld	a,palBank			; load Pal File
+		call	setVideoPage
+		pop	hl
+
+		ld	de,palAddr			; сохраняем загруженную палитру
+		push	de
+		ld	bc,512
+		ldir
+		pop	hl
+		call	setFilePal
+
+exitPal		xor	a				; убирает сообщение "unknown command"
+		ret
+;---------------------------------------
 loadPal		ex	de,hl
 		ld	a,(hl)
 		cp	#00
@@ -10,8 +43,9 @@ loadPal		ex	de,hl
 		ex	af,af'
 		cp	#00
 		call	z,findPalFile
-		
+		push	hl,af
 		call	restorePath
+		pop	af,hl
 		ret
 
 findPalFile	ld	a,flagFile			; file
@@ -20,20 +54,14 @@ findPalFile	ld	a,flagFile			; file
 		ld	hl,entrySearch
 		call	searchEntry
 		jp	z,fileNotFound
-
+		
 		ld	(scriptLength),hl
 		ld	(scriptLength+2),de
 
 		call	setFileBegin
 		call	prepareSize
-		call	loadPalFile
-		ret
 
-;---------------------------------------
-loadPalFile	ld	a,palBank
-		call	setVideoPage
-
-		ld	hl,palAddr-4
+		ld	hl,#0000
 		push	hl
 		call	load512bytes
 
@@ -59,11 +87,18 @@ loadPalFile	ld	a,palBank
 		jr	nz,wrongPal
 		inc	hl
 
-		ld	bc,FMAddr
+		xor	a
+		ret						; pal file is ok
+
+wrongPal	ld	hl,wrongPalMsg
+		call	printStr
+		ld	a,#ff					; wrong pal file
+		ret
+
+setFilePal	ld	bc,FMAddr
 		ld 	a,%00010000				; Разрешить приём данных для палитры (?) Bit 4 - FM_EN установлен
 		out	(c),a
 
-		ld	hl,#c000
 		ld 	de,#0000				; Память с палитрой замапливается на адрес #0000
 		ld	bc,512
 		ldir
@@ -73,7 +108,3 @@ loadPalFile	ld	a,palBank
 		out	(c),a
 		ret
 
-wrongPal	ld	hl,wrongPalMsg
-		call	printStr
-		ld	a,#ff				; wrong pal file
-		ret

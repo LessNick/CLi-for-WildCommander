@@ -37,7 +37,7 @@ runApp		call	cliInit
 		jp	z,pluginExit
 		jp	wrongExit
 ;---------------------------------------
-loadApp	ld	a,appBank
+loadApp		ld	a,appBank
 		call	setVideoPage
 
 		ld	hl,appAddr-4

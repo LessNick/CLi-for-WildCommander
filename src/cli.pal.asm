@@ -3,6 +3,7 @@
 cliPalStart	
 		db	#7f,"PAL"				; Palette signature
 
+
 		DUP	16
 		;         rR   gG   bB
 		;         RRrrrGGgggBBbbb

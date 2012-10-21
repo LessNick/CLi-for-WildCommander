@@ -71,7 +71,7 @@ helpMsg		db	16,colorOk,"Available commands(embedded):",16,16
 		db	16,16
 		db	#0d,#00
 
-helpMsg2	db	16,colorOk,"Available commands(external):",16,16
+helpMsg2	db	#0d,16,colorOk,"Available commands(external):",16,16
 		db	16,16
 		db	#0d,#00
 

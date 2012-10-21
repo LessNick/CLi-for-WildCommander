@@ -20,6 +20,17 @@ editClear	ld	hl,edit256					; очистка редактируемой стро
 
 		ret
 
+printInLine	push	hl
+		ld	hl,#0000
+		ld	(printEX),hl
+		pop	hl
+		call	printEStr
+		
+		ld 	hl,edit256
+		ld 	a,#01
+		ld 	bc,#0000			; reserved
+		call	BUF_UPD
+		ret
 ;---------------------------------------
 printEStr	xor	a					; Печать в строке ввода
 		ld	(eStrLen),a

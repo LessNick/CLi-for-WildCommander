@@ -1,5 +1,12 @@
 ## 0.12 (2012-10-19)
 
+ * change gfxcls to clear with help dma
+ * fix help list exernal cmd if "/bin" is't exist
+ * add command gfxloadpal - load independent palette for graphics mode
+ * add loadResoure function for application
+ * add GLi (Graphics Library interface)
+ * add demo "Boing" for GLi & test system
+
 ## 0.10 (2012-10-19)
 
  * add switch between first(txt) & second(gfx) screen with help combination alt+f1/alt+f2

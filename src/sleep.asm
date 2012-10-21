@@ -8,6 +8,7 @@ sleepSeconds	ex	de,hl				; hl params
 
 errorPar	ld	hl,errorParMsg
 		call	printStr
+		ld	a,#ff				; error
 		ret
 
 sleep_00	ld	a,l

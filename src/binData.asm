@@ -90,6 +90,9 @@ pathString	ds	pathStrSize,#00
 pathBString	ds	pathStrSize,#00
 		db	#00
 
+pathBString2	ds	pathStrSize,#00
+		db	#00
+
 echoBuffer	ds	eBufferSize, #00
 
 entry		ds	32

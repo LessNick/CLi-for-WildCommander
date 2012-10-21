@@ -80,6 +80,22 @@ checkEStr	ld 	a,(de)
 cliInit		ld	hl,cliPal
 		call	initPal
 
+		; Сохраняем палитру для TXT режима
+		ld	a,palBank
+		call	setVideoPage
+		ld	hl,cliPal
+		ld 	de,palAddr
+		call	dupPal
+		; Сохраняем палитру для GFX режима
+		ld	a,gPalBank
+		call	setVideoPage
+		ld	hl,cliPal
+		ld 	de,gPalAddr
+		call	dupPal
+
+		;ld	a,appBank
+		;call	setVideoPage
+
 		; Инициализируем строку ввода
 		call	editInit
 
@@ -263,7 +279,8 @@ checkVideoKey	call	checkKeyF1
 		jr	nz,setVideo1
 		ret
 
-setVideo0	; Переключаем видео на наш текстовый режим
+setVideo0	call	hideSprites
+		; Переключаем видео на наш текстовый режим
 		ld	a,#01					; #01 - 1й видео буфер (16 страниц)
 		call	setTxtMode
 
@@ -273,9 +290,19 @@ setVideo0	; Переключаем видео на наш текстовый р�
 
 		call	restBorder
 
+		ld	a,palBank
+		call	setVideoPage
+
+		ld	hl,palAddr
+		call	setFilePal
+
+		ld	a,appBank
+		call	setVideoPage
+
 		ret
 
-setVideo1	; Переключаем видео на наш текстовый режим
+setVideo1	call	showSprites
+		; Переключаем видео на графический режим
 		ld	a,#02					; #02 - 2й видео буфер (16 страниц)
 		call	setTxtMode
 
@@ -285,6 +312,15 @@ setVideo1	; Переключаем видео на наш текстовый р�
 
 		ld	a,(curGfxBorder)
 		call	setBorder
+
+		ld	a,gPalBank
+		call	setVideoPage
+
+		ld	hl,gPalAddr
+		call	setFilePal
+
+		ld	a,appBank
+		call	setVideoPage
 		ret
 
 ;---------------------------------------
@@ -400,7 +436,14 @@ initPal		ld	bc,FMAddr
 		out	(c),a
 
 		ld 	de,#0000				; Память с палитрой замапливается на адрес #0000
-		ld	b,e
+		call	dupPal
+
+		ld 	bc,FMAddr			
+		xor	a					; Запретить, Bit 4 - FM_EN сброшен
+		out	(c),a
+		ret
+
+dupPal		ld	b,#00
         	ld	a,16
 palLoop		push	hl
 		ld	c,32
@@ -408,10 +451,6 @@ palLoop		push	hl
 		dec 	a
 		pop	hl
 		jr 	nz,palLoop
-
-		ld 	bc,FMAddr			
-		xor	a					; Запретить, Bit 4 - FM_EN сброшен
-		out	(c),a
 		ret
 
 ;---------------------------------------
@@ -972,7 +1011,14 @@ cipExit		call	storePath
 rootPath	db	"/",#00
 
 ;---------------------------------------
-scopeBinary	call	storePath
+scopeBinary	ld	a,scopeBinBank
+		call	setVideoPage
+
+		call	clearScopeBin
+		call	storePath
+		
+		ld	de,scopeBinAddr
+		ld	(sbCopyName+1),de
 
 		ld	de,binPath
 		call	changeDirSilent
@@ -981,14 +1027,6 @@ scopeBinary	call	storePath
 		jp	nz,noBinDir
 
 		call	setFileBegin
-
-		ld	a,scopeBinBank
-		call	setVideoPage
-
-		ld	de,scopeBinAddr
-		ld	(sbCopyName+1),de
-
-		call	clearScopeBin
 
 sbReadAgain	call	clearBuffer
 
@@ -1055,7 +1093,7 @@ sbPaste		ld	(de),a
 
 clearScopeBin	ld	hl,scopeBinAddr
 		ld	de,scopeBinAddr+1
-		ld	bc,#4000-1
+		ld	bc,palAddr-scopeBinAddr-1
 		xor	a
 		ld	(hl),a
 		ldir
@@ -1189,7 +1227,10 @@ gfxBorder	ex	de,hl
 		include "loadpal.asm"
 		include "parser.asm"
 		include "str2int.asm"
+		include "int2str.asm"
+		include "int2hex.asm"
 		include "hex2int.asm"
+		include "gli.asm"
 ;---------------------------------------
 		include "messages.asm"
 		include "commands.asm"

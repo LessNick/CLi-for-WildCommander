@@ -42,6 +42,11 @@ cmdTable
 	db	"gfxcls"
 	db	"*"
 	dw	gfxCls
+
+	db	"gfxloadpal"
+	db	"*"
+	dw	loadGfxPal
+
 ;--- H ---
 	db	"help"
 	db	"*"
@@ -55,7 +60,7 @@ cmdTable
 ;--- L ---
 	db	"loadpal"
 	db	"*"
-	dw	loadPal
+	dw	loadTxtPal
 
 	db	"ls"
 	db	"*"
