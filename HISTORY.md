@@ -1,4 +1,4 @@
-## 0.12 (2012-10-19)
+## 0.12 (2012-10-22)
 
  * change gfxcls to clear with help dma
  * fix help list exernal cmd if "/bin" is't exist
