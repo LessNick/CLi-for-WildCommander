@@ -148,11 +148,11 @@ _TMRKNXT	equ	#37	; reserved ???
 _STREAM		equ	#39	; работа с потоками
 				; i:D - номер потока (0/1)
 				;   B - устройство: 0-SD(ZC)
-				;					1-Nemo IDE Master
-				;					2-Nemo IDE Slave
+				;	1-Nemo IDE Master
+				;	2-Nemo IDE Slave
 				;   C - раздел (не учитывается)
 				;   BC=#FFFF: включает поток из D (не возвращает флагов)
-				;	          иначе создает/пересоздает поток.
+				;	      иначе создает/пересоздает поток.
 				; o:NZ - устройство или раздел не найдены
 				;   Z - можно начинать работать с потоком
 
@@ -242,13 +242,13 @@ _F10		equ	#26	;
 _ALT		equ	#27	;
 _SHIFT		equ	#28	;
 _CTRL		equ	#29	;
-_KBSCN		equ	#2A	; опрос клавишь
+_KBSCN		equ	#2A	; опрос клавиш
   				; i:A' - обработчик
-				; 	#00 - учитывает SHIFT (TAI1/TAI2)
-				; 	#01 - всегда выдает код из TAI1
+				;   #00 - учитывает SHIFT (TAI1/TAI2)
+				;   #01 - всегда выдает код из TAI1
 				; o: NZ: A - TAI1/TAI2 (see PS2P.ASM)
-				; 	  Z: A=#00 - unknown key
-				; 	     A=#FF - buffer end
+				;     Z: A=#00 - unknown key
+				; 	 A=#FF - buffer end
 ;		equ	#2b
 _CAPS		equ	#2c	; (Caps Lock)
 _ANYK		equ	#2d	; any key

@@ -64,21 +64,23 @@ sprBank		equ	#08				; sprites load memory bank
 
 		;include "helloworld.asm"
 		;include "test1.asm"
-		include "boing.asm"
+		;include "boing.asm"
 
 		;include "zx.pal.asm"
 		;include "cli.pal.asm"
 		;include "boing.pal.asm"
 
-	;DISPLAY "BoingEnd addr:",/A,BoingEnd
-	;DISPLAY "loadTxtPal addr:",/A,loadTxtPal
-	;DISPLAY "loadSprites addr:",/A,loadSprites
-	DISPLAY "updSprite_00 addr:",/A,updSprite_00
+	DISPLAY "code size:",/A,endCode-startCode
+	;DISPLAY "updSprite_00 addr:",/A,updSprite_00
+	;DISPLAY "scopeBinary addr:",/A,scopeBinary
+	;DISPLAY "printString addr:",/A,printString
+	;DISPLAY "executeApp addr:",/A,executeApp
+	;DISPLAY "checkIsBin addr:",/A,checkIsBin
 
 	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
 	;SAVEBIN "bin/app/hello", appStart, appEnd-appStart
 	;SAVEBIN "bin/app/test1", test1Start, test1End-test1Start
-	SAVEBIN "bin/demo/boing", BoingStart, BoingEnd-BoingStart
+	;SAVEBIN "bin/demo/boing", BoingStart, BoingEnd-BoingStart
 
 	;SAVEBIN "bin/pal/zx.pal", zxPalStart, zxPalEnd-zxPalStart
 	;SAVEBIN "bin/pal/cli.pal", cliPalStart, cliPalEnd-cliPalStart

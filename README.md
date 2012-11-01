@@ -56,6 +56,7 @@ Also you can view "how it's works" at [youtube](http://www.youtube.com/watch?v=D
 ## Special thanks
 
 Big thanks to:
+> - Robat(Wizard^DT) for the screensaver example code
 > - Budder/MGN for their help with information, consultations and help with code.
 > - TS-Labs for PentEvo firmware & Unreal Speccy modification.
 > - CHRV & all members of [NedoPC](http://www.nedopc.com/) for PentEvo/ZX Evolution board.

@@ -16,7 +16,8 @@ printClear	ld	hl,bufer256				; очистка буфера256 (ASCII)
 		ld	hl,bufer256+128				; очистка буфера256 (Colors)
 		ld	de,bufer256+129
 		ld	bc,127
-		ld	a,defaultCol
+		;ld	a,defaultCol
+		ld	a,(curColor)
 		ld	(hl),a
 		ldir
 
@@ -33,6 +34,9 @@ printStr	xor	a					; Печать строки
 printSLoop	ld	a,(hl)
 		cp	#00					; Управляющий код: 0 - выход
 		jp	z,printSExit
+
+		cp	#09					; Управляющий код: 09 - tab
+		jp	z,codeTab
 			
 		cp	#0D					; Управляющий код: 13 - new line (enter) windows
 		jp	z,codeEnter
@@ -89,7 +93,24 @@ checkUpdate	call	checkSync				; проверяем необходимость о
 		ret	z					; нового инта не было - выход
 		call	PRINTWW
 		ret
-
+;---------------------------------------
+codeTab		ld	a,(printX)
+		srl	a					; /2
+		srl	a					; /4
+		srl	a					; /8
+		cp	#09
+		jr	z,codeEnter
+		inc	a
+		push	hl
+		ld	hl,tabTable
+		ld	b,0
+		ld	c,a
+		add	hl,bc
+		ld	a,(hl)
+		ld	(printX),a
+		pop	hl
+		inc	hl
+		jp	printSLoop
 ;---------------------------------------
 codeEnter	inc	hl
 		ld	a,(hl)
@@ -172,6 +193,8 @@ codeESC		inc	hl
 		ld	a,(hl)
 codeESC_0	cp	"\\"					; управляющий ESC: BackSlash \
 		jp	z,printS
+		cp	"t"
+		jp	z,codeTab				; управляющий ESC: Tab
 		cp	"n"
 		jp	z,codeEnter				; управляющий ESC: Enter
 		cp	"r"

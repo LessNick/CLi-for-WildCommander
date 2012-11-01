@@ -25,7 +25,14 @@ parse_start	ld      a,(de)
 		jp	z,end_of_command
 		cp	#20				; space means end of command
 		jp	z,end_of_command
-		cp	(hl)				; Compare a with first character in command table
+
+		cp	"A"
+		jr	c,parse_skip
+		cp	"Z"
+		jr	nc,parse_skip
+		add	32
+
+parse_skip	cp	(hl)				; Compare a with first character in command table
 		jp	nz,next_command			; Move HL to point to the first character of the next command in the table
 		inc	de
 		inc	hl

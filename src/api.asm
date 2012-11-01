@@ -3,11 +3,6 @@
 ;---------------------------------------
 
 wcKernel	equ	#6006				; WildCommander API
-deviceSDZC	equ	#00				; 0-SD(ZC)
-deviceNemoM	equ	#01				; Nemo IDE Master
-deviceNemoS	equ	#02				; Nemo IDE Slave
-flagFile	equ	#00				; flag:#00 - file
-flagDir		equ	#10				;      #10 - dir
 
 ;---------------------------------------
 _openStream	ld	d,#00				; окрываем поток с устройством (#00 = инициализация, #ff = сброс в root)
@@ -75,7 +70,7 @@ _setVideoPage	ex	af,af'				; #00-#0F - страницы из 1го видео б
 		ld	a,_MNGCVPL			; #10-#1F - страницы из 2го видео буфера
 		jp	wcKernel
 ;---------------------------------------
-_setTxtMode	ex	af,af'				; #01 - 1й видео буфер (16 страниц)
+_setVideoBuffer	ex	af,af'				; #01 - 1й видео буфер (16 страниц)
 		ld	a,_MNGV_PL			; #02 - 2й видео буфер (16 страниц)
 		jp	wcKernel
 ;---------------------------------------

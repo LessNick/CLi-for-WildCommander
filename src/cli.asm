@@ -145,6 +145,22 @@ callFromMenu	call	setCLiInt
 		call	cliInit
 		call	cliInitDev
 
+		call	storePath
+
+		ld	de,binPath
+		call	checkSystemDirs
+
+		ld	de,libsPath
+		call	checkSystemDirs
+
+		ld	de,localePath
+		call	checkSystemDirs
+
+		ld	de,systemPath
+		call	checkSystemDirs
+
+		call	restorePath
+
 		call	scopeBinary
 
 cliStart	ld	a,#00				
@@ -282,7 +298,7 @@ checkVideoKey	call	checkKeyF1
 setVideo0	call	hideSprites
 		; Переключаем видео на наш текстовый режим
 		ld	a,#01					; #01 - 1й видео буфер (16 страниц)
-		call	setTxtMode
+		call	setVideoBuffer
 
 		; На всякий случай переключаем разрешайку на 320x240 TXT
 		ld	a,%10000011
@@ -304,7 +320,7 @@ setVideo0	call	hideSprites
 setVideo1	call	showSprites
 		; Переключаем видео на графический режим
 		ld	a,#02					; #02 - 2й видео буфер (16 страниц)
-		call	setTxtMode
+		call	setVideoBuffer
 
 		; Переключаем графический режим (по умолчанию 320x240 256c)
 		ld	a,(currentVMode)
@@ -750,12 +766,6 @@ clearScreen	xor	a
 		ret
 
 ;---------------------------------------
-showAbout	ld	hl,versionMsg
-		call	printStr
-		ld	hl,aboutMsg
-		jr	echoPrint
-
-;---------------------------------------
 echoString	ex	de,hl
 		push	hl
 		call	printInit
@@ -1008,7 +1018,12 @@ cipExit		call	storePath
 		xor	a
 		ret
 
-rootPath	db	"/",#00
+;---------------------------------------
+checkSystemDirs	call	changeDirSilent
+		ex	af,af'
+		cp	#00
+		ret	z
+		jp	systemBroken
 
 ;---------------------------------------
 scopeBinary	ld	a,scopeBinBank
@@ -1021,10 +1036,7 @@ scopeBinary	ld	a,scopeBinBank
 		ld	(sbCopyName+1),de
 
 		ld	de,binPath
-		call	changeDirSilent
-		ex	af,af'
-		cp	#00
-		jp	nz,noBinDir
+		call	changeDir
 
 		call	setFileBegin
 
@@ -1099,14 +1111,27 @@ clearScopeBin	ld	hl,scopeBinAddr
 		ldir
 		ret
 
-noBinDir	ld	hl,noBinDirMsg
-		call	printStr
+;---------------------------------------
+systemBroken	ld	a,%10111111
+		ld	(curColor),a
+		ld	(curEColor),a
+		call	printClear
+		call	clearTxt
 
-		ld	hl,restoreMsg
-		call	printStr
-		ret
+		ld	a,%00001011
+		call	setBorder
 
-binPath		db	"/bin",#00
+		call	clearScreen
+
+		ld	hl,brokenMsg
+		call	printStr
+		
+		halt
+		call	waitAnyKey
+
+		pop	af
+		jp	pluginExit
+
 ;---------------------------------------
 checkIsBin	push	de
 		ld	a,scopeBinBank
@@ -1161,7 +1186,12 @@ cibOk		pop	hl
 		ld	bc,8
 		ldir
 
-		ld	de,cdBinPath
+		ld	hl,cdBinPath
+		ld	de,cibPath
+		ld	bc,cibPath-cdBinPath
+		ldir
+
+		ld	de,cibPath
 		call	executeApp
 		xor	a,#00				; no err
 		ret
@@ -1170,10 +1200,6 @@ cibError	pop	hl
 		pop	de
 		ld	a,#ff				; err
 		ret
-
-cdBinPath	db	"/bin/"
-cibFile		ds	8,0
-		db	#00
 
 ;---------------------------------------
 switchScreen	ex	de,hl

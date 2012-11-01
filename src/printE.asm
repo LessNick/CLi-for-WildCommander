@@ -14,7 +14,8 @@ editClear	ld	hl,edit256					; очистка редактируемой стро
 		ld	hl,edit256+128				; очистка буфера256 (Colors)
 		ld	de,edit256+129
 		ld	bc,127
-		ld	a,defaultCol
+		;ld	a,defaultCol
+		ld	a,(curColor)
 		ld	(hl),a
 		ldir
 

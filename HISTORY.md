@@ -1,3 +1,12 @@
+## 0.14 (2012-10-31)
+
+ * add support tabulating (\t) 
+ * remove command about
+ * add crash screen if system has wrong configuration
+ * add ignore case for commands(embedded)
+ * fix exec. second run is't work again.
+ * add information to CLi api header
+
 ## 0.12 (2012-10-22)
 
  * change gfxcls to clear with help dma

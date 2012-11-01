@@ -2,7 +2,7 @@
 ; CLi System messages
 ;---------------------------------------
 ;                                     ,
-;              ,-.       _,---._ __  / \
+;              ,.        _,---._ __  / \
 ;             /  )    .-'       `./ /   \
 ;            (  (   ,'            `/    /|
 ;             \  `-"             \'\   / |
@@ -14,22 +14,12 @@
 ;              )  |  \  `.___________|/
 ;              `--'   `--'
 
-versionMsg	db	16,6,"Command Line Interface for WildCommander v0.12",#0d
-		db	16,7,"2012 (C) Breeze\\\\Fishbone Crew",#0d
+versionMsg	db	16,6,"Command Line Interface for WildCommander v0.14",#0d
+		db	16,7,"2012 ",127," Breeze\\\\Fishbone Crew",#0d
 		db	#00
 
 typeHelpMsg	db	#0d
 		db	16,colorInfo,"Type ",20," help ",20," to display the full list of commands.",#0d,#0d
-		db	16,16
-		db	#00
-
-aboutMsg	db	#0d
-		db	16,08,"Source & current version - ",16,13,"http://bit.ly/Cli4WC",#0d,#0d
-		db	16,02,"Special thanks:",#0d
-		db	16,08," - ",16,15,"Robat(Wizard^DT)",16,08," for the screensaver example code",#0d
-		db	16,08," - ",16,15,"Budder^MGN",16,08," for the help with code",#0d
-		db	16,08," - ",16,15,"TS-Labs",16,08," for the firmware & emulator",#0d
-		db	16,08," - ",16,15,"CHRV & NedoPC",16,08," for the PentEvo hardware",#0d
 		db	16,16
 		db	#00
 
@@ -91,10 +81,16 @@ wrongPalMsg	db	16,colorError,"Error! Wrong palette file format.",#0d
 		db	16,16
 		db	#00
 
-noBinDirMsg	db	16,colorWarning,"Warning! \"/bin\" directory not found.",#0d
-		db	16,16
-		db	#00	
-
 clearingMsg	db	16,colorInfo,"Clearing...",#0d
 		db	16,16
+		db	#00
+
+brokenMsg	db	16,15
+		ds	6,#0d
+		include	"brokenLogo.asm"
+		db	#0d
+		db	16,6,#09,"      CLi couldn't find the following system directories:",#0d
+		db	16,colorWarning,#09,#09,#09,"bin, libs, locale or system !",#0d,#0d,#0d
+		db	16,2,#09,#09,"     Get fresh copy at http://bit.ly/Cli4WC",#0d,#0d,#0d
+		db	16,15,#09,#09,#09,"    Press ",20," any key ",20," to exit.",#0d
 		db	#00

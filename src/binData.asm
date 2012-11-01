@@ -1,6 +1,20 @@
 ;---------------------------------------------
 ; Binary Data
 ;---------------------------------------------
+rootPath	db	"/",#00
+binPath		db	"/bin",#00
+libsPath	db	"/libs",#00
+localePath	db	"/locale",#00
+systemPath	db	"/system",#00
+
+cdBinPath	db	"/bin/"
+cibPath		db	"     "
+cibFile		ds	8,0
+		db	#00
+
+tabSize		equ	#08				; tab size
+tabTable	db	tabSize*0, tabSize*1, tabSize*2, tabSize*3, tabSize*4
+		db	tabSize*5, tabSize*6, tabSize*7, tabSize*8, tabSize*9
 
 codeBuff	db	"  ",#00
 scriptLength
