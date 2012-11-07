@@ -13,6 +13,7 @@ loadGfxPal	call	loadPal
 		ld	de,gPalAddr			; сохраняем загруженную палитру
 		ld	bc,512
 		ldir
+		xor	a				; нет ошибок загрузки
 		jr	exitPal
 ;---------------------------------------
 loadTxtPal	call	loadPal
@@ -31,7 +32,10 @@ loadTxtPal	call	loadPal
 		pop	hl
 		call	setFilePal
 
-exitPal		xor	a				; убирает сообщение "unknown command"
+		xor	a
+
+exitPal		ex	af,af'
+		xor	a				; убирает сообщение "unknown command"
 		ret
 ;---------------------------------------
 loadPal		ex	de,hl
@@ -43,6 +47,8 @@ loadPal		ex	de,hl
 		ex	af,af'
 		cp	#00
 		call	z,findPalFile
+		;cp	#ff
+		;ret	z
 		push	hl,af
 		call	restorePath
 		pop	af,hl
@@ -55,8 +61,8 @@ findPalFile	ld	a,flagFile			; file
 		call	searchEntry
 		jp	z,fileNotFound
 		
-		ld	(scriptLength),hl
-		ld	(scriptLength+2),de
+		ld	(fileLength),hl
+		ld	(fileLength+2),de
 
 		call	setFileBegin
 		call	prepareSize

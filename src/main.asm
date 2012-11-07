@@ -64,25 +64,27 @@ sprBank		equ	#08				; sprites load memory bank
 
 		;include "helloworld.asm"
 		;include "test1.asm"
-		;include "boing.asm"
+		include "boing.asm"
+		;include "test2.asm"
 
 		;include "zx.pal.asm"
 		;include "cli.pal.asm"
 		;include "boing.pal.asm"
 
 	DISPLAY "code size:",/A,endCode-startCode
-	;DISPLAY "updSprite_00 addr:",/A,updSprite_00
-	;DISPLAY "scopeBinary addr:",/A,scopeBinary
-	;DISPLAY "printString addr:",/A,printString
-	;DISPLAY "executeApp addr:",/A,executeApp
-	;DISPLAY "checkIsBin addr:",/A,checkIsBin
+	;DISPLAY "changeDir addr:",/A,changeDir
+	;DISPLAY "resetToRoot addr:",/A,resetToRoot
+	;DISPLAY "loadGfxPal addr:",/A,loadGfxPal
+	;DISPLAY "loadResource addr:",/A,loadResource
+	DISPLAY "findSprFile addr:",/A,findSprFile
 
-	SAVEBIN "bin/CLI.WMF", startCode, endCode-startCode
-	;SAVEBIN "bin/app/hello", appStart, appEnd-appStart
-	;SAVEBIN "bin/app/test1", test1Start, test1End-test1Start
-	;SAVEBIN "bin/demo/boing", BoingStart, BoingEnd-BoingStart
+	SAVEBIN "bin/wc/CLI.WMF", startCode, endCode-startCode
+	;SAVEBIN "bin/bin/hello", appStart, appEnd-appStart
+	;SAVEBIN "bin/bin/test1", test1Start, test1End-test1Start
+	SAVEBIN "bin/demo/boing/boing", BoingStart, BoingEnd-BoingStart
+	;SAVEBIN "bin/tmp/test2", test2Start, test2End-test2Start
 
-	;SAVEBIN "bin/pal/zx.pal", zxPalStart, zxPalEnd-zxPalStart
-	;SAVEBIN "bin/pal/cli.pal", cliPalStart, cliPalEnd-cliPalStart
-	;SAVEBIN "bin/pal/boing.pal", boingPalStart, boingPalEnd-boingPalStart
+	;SAVEBIN "bin/system/pal/zx.pal", zxPalStart, zxPalEnd-zxPalStart
+	;SAVEBIN "bin/system/pal/cli.pal", cliPalStart, cliPalEnd-cliPalStart
+	;SAVEBIN "bin/demo/boing/boing.pal", boingPalStart, boingPalEnd-boingPalStart
 

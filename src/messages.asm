@@ -89,8 +89,11 @@ brokenMsg	db	16,15
 		ds	6,#0d
 		include	"brokenLogo.asm"
 		db	#0d
-		db	16,6,#09,"      CLi couldn't find the following system directories:",#0d
-		db	16,colorWarning,#09,#09,#09,"bin, libs, locale or system !",#0d,#0d,#0d
+		db	16,6,#09,"       CLi couldn't find the following system directories:",#0d
+		db	16,colorWarning,#09,#09,"       bin, fonts, libs, locale or system!",#0d,#0d,#0d
 		db	16,2,#09,#09,"     Get fresh copy at http://bit.ly/Cli4WC",#0d,#0d,#0d
 		db	16,15,#09,#09,#09,"    Press ",20," any key ",20," to exit.",#0d
 		db	#00
+
+statusOkMsg	db	16,16,"[ ",16,colorOk,"  OK  ",16,16," ]",#0d,#00
+statusErrorMsg	db	16,16,"[ ",16,colorError,"ERROR ",16,16," ]",#0d,#00

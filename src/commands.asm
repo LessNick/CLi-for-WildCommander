@@ -56,6 +56,10 @@ cmdTable
 ;--- K ---
 
 ;--- L ---
+	db	"loadfnt"
+	db	"*"
+	dw	loadTxtFnt
+
 	db	"loadpal"
 	db	"*"
 	dw	loadTxtPal

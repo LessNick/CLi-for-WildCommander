@@ -19,8 +19,8 @@ _shellStart	push	ix
 		jp	wrongExit
 
 ;---------------------------------------
-callFromExt	ld	(scriptLength),hl
-		ld	(scriptLength+2),de
+callFromExt	ld	(fileLength),hl
+		ld	(fileLength+2),de
 
 		call	checkExtention
 		jp	z,runSh
@@ -148,6 +148,9 @@ callFromMenu	call	setCLiInt
 		call	storePath
 
 		ld	de,binPath
+		call	checkSystemDirs
+
+		ld	de,fontsPath
 		call	checkSystemDirs
 
 		ld	de,libsPath
@@ -967,8 +970,7 @@ storeLoop	ld	a,(hl)
 		jr	storeLoop
 
 restorePath	ld	de,pathBString
-		call	changeDir
-		ret
+		jp	changeDir
 
 ;---------------------------------------
 checkIsPath	push	hl
@@ -1213,6 +1215,7 @@ switchScreen	ex	de,hl
 		cp	#01
 		jp	z,setVideo1
 		jp	errorPar
+
 ;---------------------------------------
 gfxBorder	ex	de,hl
 		call	str2int
@@ -1250,7 +1253,9 @@ gfxBorder	ex	de,hl
 		include	"cd.asm"
 		include	"sh.asm"
 		include	"exec.asm"
-		include "loadpal.asm"
+		include "loadPal.asm"
+		include "loadSpr.asm"
+		include "loadFnt.asm"
 		include "parser.asm"
 		include "str2int.asm"
 		include "int2str.asm"

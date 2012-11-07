@@ -6,6 +6,10 @@
  * add ignore case for commands(embedded)
  * fix exec. second run is't work again.
  * add information to CLi api header
+ * restructure bin hierarchy
+ * add command loadfont
+ * fix bugs in resource load
+ * add status for loadResource function (ok/error)
 
 ## 0.12 (2012-10-22)
 

@@ -13,24 +13,35 @@ bitmapYSm	equ	#00					; смещение по оси Y внутри bitmap де�
 BoingStart	
 		db	#7f,"CLA"				; Command Line Application
 
-		ld	hl,BoingMsg
+		ld	hl,boingMsg
 		call	printString
 		
+		ld	hl,infoMsg
+		call	printString		
+
 		call	clearGfxScreen
+
+		ld	hl,loadPalMsg
+		call	printString
 
 		ld	hl,boingPalFile
 		ld	a,resPal
 		call	loadResource
+		call	printOkStatus
+
+		ld	hl,loadSprMsg
+		call	printString
 
 		ld	hl,boingSprFile
 		ld	c,bitmapYSm
 		ld	a,resSpr
 		call	loadResource
+		call	printOkStatus
 
 		ld	a,1
 		call	setScreen
 
-		ld	hl,appRunMgs
+		ld	hl,appRunMsg
 		call	printString
 		
 		halt
@@ -116,6 +127,9 @@ BoingStop	call	editInit
 		xor	a
 		call	setScreen
 		call	clearGfxScreen
+		
+		ld	hl,appExitMsg
+		call	printString
 		xor	a			; no error, clean exit!
 		ret
 
@@ -172,11 +186,19 @@ timeCountMsg	db	"     "
 
 timeCount	dw	#0000
 
-appRunMgs	db	16,colorInfo,"Runing...",#0d,#0d
+infoMsg	db	"Amiga Boing (GLi demo) v 0.02",#0d
+		db	"2012 ",#7f," Breeze\\\\Fishbone Crew",#0d,#0d,#00
+
+loadPalMsg	db	16,colorInfo,"Loading palette... ",#00
+loadSprMsg	db	16,colorInfo,"Loading sprites... ",#00
+appRunMsg	db	#0d,16,colorInfo,"Runing...",#0d,#0d
 		db	16,16
 		db	#00
-	
-BoingMsg	db	16,16
+appExitMsg	db	16,colorInfo,"Exit.",#0d
+		db	16,16
+		db	#00
+
+boingMsg	db	16,16,#0d
 		db	"               /|___                 ",#0d
 		db	"        .__   / (___)                ",#0d
 		db	"  _____ |  \\\\_/  |   | ______. _____  ",#0d
@@ -190,7 +212,7 @@ BoingMsg	db	16,16
 		db	"|   |   |   |   |   |   |   |___|  ^|",#0d
 		db	"|   |___|___|___|___|\\\\__|__/~zOu|   |",#0d
 		db	"|___|~                          |___|",#0d
-		db	"              b o i n g              ",#0d
+		db	"              b o i n g              ",#0d,#0d
 		db	#00
 
 jumpTable	dw	288,210,287,201

@@ -145,15 +145,24 @@ _loadResource	push	hl,bc
 		pop	bc,hl
 
 		ex	de,hl
+		ld	hl,exitResource
+		push	hl
 		cp	resPal				; загрузка палитры
-		call	z,loadGfxPal
+		jp	z,loadGfxPal
 		
 		cp	resSpr				; загрузка спрайтов
-		call	z,loadSprites
+		jp	z,loadSprites
 
+		pop	hl				; тип ресурса не найден
+							; TODO: сделать ERROR MSG
+
+exitResource	push	af
+		ex	af,af'
 		push	af
 		ld	a,appBank
 		call	setVideoPage
+		pop	af
+		ex	af,af'
 		pop	af
 
 		ld	hl,pathBString2
@@ -161,3 +170,10 @@ _loadResource	push	hl,bc
 		ld	bc,pathStrSize
 		ldir
 		ret
+
+;---------------------------------------
+_printOkStatus	ex	af,af'
+		cp	#00
+		ret	nz
+		ld	hl,statusOkMsg
+		jp	printString

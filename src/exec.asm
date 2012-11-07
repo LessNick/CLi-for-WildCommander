@@ -21,8 +21,8 @@ exeApp		ld	a,flagFile			; file
 		call	searchEntry
 		jp	z,fileNotFound
 
-		ld	(scriptLength),hl
-		ld	(scriptLength+2),de
+		ld	(fileLength),hl
+		ld	(fileLength+2),de
 
 		call	setFileBegin
 		call	prepareSize

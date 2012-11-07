@@ -21,8 +21,8 @@ shellExe	ld	a,flagFile			; file
 		call	searchEntry
 		jr	z,fileNotFound
 
-		ld	(scriptLength),hl
-		ld	(scriptLength+2),de
+		ld	(fileLength),hl
+		ld	(fileLength+2),de
 
 		call	setFileBegin
 		call	prepareSize
@@ -43,14 +43,14 @@ runSh		call	cliInit
 		jp	pluginExit
 
 ;---------------------------------------
-prepareSize	ld	bc,(scriptLength+2)
+prepareSize	ld	bc,(fileLength+2)
 		ld	a,b
 		or	c
 		jr	z,ps_01
 		ld	b,#20				; 32 * 512 = 16384 (#4000)
 		jr	ps_02
 
-ps_01		ld	bc,(scriptLength)
+ps_01		ld	bc,(fileLength)
 		xor	a
 		srl	b
 		ld	a,b

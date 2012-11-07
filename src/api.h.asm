@@ -249,4 +249,6 @@ loadResource	jp	_loadResource		; Загрузка ресурсов из файл
 						;    A  - тип ресурса:
 						;	  resPal - ресурс палитра
 						; 	  resSpr - ресурс спрайты
+
+printOkStatus	jp	_printOkStatus		; Печать [ ok ] если нет ошибки (a' = #00)
 ;---------------------------------------

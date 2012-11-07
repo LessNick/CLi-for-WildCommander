@@ -3,6 +3,7 @@
 ;---------------------------------------------
 rootPath	db	"/",#00
 binPath		db	"/bin",#00
+fontsPath	db	"/fonts",#00
 libsPath	db	"/libs",#00
 localePath	db	"/locale",#00
 systemPath	db	"/system",#00
@@ -17,7 +18,7 @@ tabTable	db	tabSize*0, tabSize*1, tabSize*2, tabSize*3, tabSize*4
 		db	tabSize*5, tabSize*6, tabSize*7, tabSize*8, tabSize*9
 
 codeBuff	db	"  ",#00
-scriptLength
+fileLength
 		dw	#0000,#0000
 storeKey	db	#00
 
