@@ -67,10 +67,27 @@ cmdTable
 	db	"ls"
 	db	"*"
 	dw	listDir
+
+;	db	"loadmod"
+;	db	"*"
+;	dw	modLoad
 ;--- M ---
+;	db	"modload"
+;	db	"*"
+;	dw	modLoad
+
+;	db	"modplay"
+;	db	"*"
+;	dw	playModule
+
+;	db	"modstop"
+;	db	"*"
+;	dw	stopModule
 
 ;--- N ---
-
+	;db	"gsreset"
+	;db	"*"
+	;dw	resetGS
 ;--- O ---
 
 ;--- P ---

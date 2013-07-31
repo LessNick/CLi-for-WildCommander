@@ -171,6 +171,7 @@ _FENTRY		equ	#3b	; поиск файла/каталога в активной д
 				;		 name:"NAME.TXT","DIR"...
 				; o: Z - entry not found
 				;    NZ - CALL GFILE/GDIR for activating file/dir
+				;    [DE,HL] - file length
 
 _LOAD256	equ	#3c	; reserved ???
 _LOADNONE	equ	#3d	; reserved ???

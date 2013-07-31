@@ -28,16 +28,25 @@ printClear	ld	hl,bufer256				; очистка буфера256 (ASCII)
 		ret
 
 ;---------------------------------------
+printSpaceStr	ld	a," "
+		ld	(printExitCode+1),a
+		call	printStr
+		xor	a
+		ld	(printExitCode+1),a
+		ret
+
 printStr	xor	a					; Печать строки
 		ld	(strLen),a
 
 printSLoop	ld	a,(hl)
-		cp	#00					; Управляющий код: 0 - выход
+printExitCode	cp	#00					; Управляющий код: 0 - выход
 		jp	z,printSExit
 
 		cp	#09					; Управляющий код: 09 - tab
 		jp	z,codeTab
-			
+		
+		cp	#0C					; Управляющий код: 12 - delete
+		jp	z,codeDelete
 		cp	#0D					; Управляющий код: 13 - new line (enter) windows
 		jp	z,codeEnter
 		cp	#0A					; Управляющий код: 10 - new line (enter) unix
@@ -91,7 +100,7 @@ printS_00a	xor	a
 
 checkUpdate	call	checkSync				; проверяем необходимость обновления экрана
 		ret	z					; нового инта не было - выход
-		call	PRINTWW
+		call	printWW
 		ret
 ;---------------------------------------
 codeTab		ld	a,(printX)
@@ -112,6 +121,14 @@ codeTab		ld	a,(printX)
 		inc	hl
 		jp	printSLoop
 ;---------------------------------------
+codeDelete	ld	a,(printX)
+		cp	#00
+		jr	z,codeDelete_00
+		dec	a
+		ld	(printX),a
+codeDelete_00	inc	hl
+		jp	printSLoop
+
 codeEnter	inc	hl
 		ld	a,(hl)
 		cp	#0A					; windows \n\r ?

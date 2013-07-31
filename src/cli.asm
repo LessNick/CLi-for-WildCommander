@@ -2,22 +2,35 @@
 ; Main loop file
 ;---------------------------------------
 		org	#6200
-
 		DISP	#8000
 
 ; Начало основного кода плагина
 
 pluginStart	include "api.h.asm"
-		include "api.asm"
+		ds	50*3,#00				; зарезервировано для будующего расширение
+		include "gli.h.asm"
+		ds	10*3,#00				; зарезервировано для будующего расширение
+		include "mouse.h.asm"
+		ds	10*3,#00				; зарезервировано для будующего расширение
 
-_shellStart	push	ix
+_shellStart	ld	(storeIx),ix
 		call	storeWcInt
 		cp	#00					; вызов по расширению
 		jp	z,callFromExt
+;		cp	#01					; вызов при первом запуске
+;		jp	z,callAtStart
 		cp	#03					; вызов из меню запуска плагинов
 		jp	z,callFromMenu
 		jp	wrongExit
 
+;---------------------------------------
+;callAtStart	ld	a,#04
+;		out	(254),a
+;		halt
+;		halt
+;		xor	a
+;		out	(254),a
+;		ret
 ;---------------------------------------
 callFromExt	ld	(fileLength),hl
 		ld	(fileLength+2),de
@@ -189,7 +202,7 @@ mainLoop	halt					; Главный цикл (опрос клавиатуры)
 		ld 	bc,#0000			; reserved
 		call	BUF_UPD
 
-		call	PRINTWW				; печать
+		call	printWW				; печать
 		call	checkKeyEnter
 		call	nz,enterKey
 
@@ -234,12 +247,12 @@ scrollDown	ld	a,#02
 
 ;---------------------------------------
 wrongExit	call	restoreExit
-		pop	ix
+		ld	ix,(storeIx)
 		ld	a,1	 				; файл не опознан, пусть забирают вьюверы/другой плагин
 		ret
 
 pluginExit	call	restoreExit
-		pop	ix
+		ld	ix,(storeIx)
 		xor	a	 				; просто выход
 		ret
 
@@ -623,7 +636,8 @@ rightStop	pop	hl
 
 ;---------------------------------------
 enterKey	ld	a,defaultCol
-		ld	(curEColor),a
+		;ld	(curEColor),a
+		ld	(curColor),a
 		ld	a,(storeKey)
 		call	printEChar
 		call	printEUp
@@ -812,12 +826,48 @@ quoteOk		call	printStr
 		ret
 
 ;---------------------------------------
+checkCallKeys	
+		push	hl
+		ex	de,hl				; hl - адрес таблицы ключей
+							; de - адрес строки с ключами
+		xor	a				; сброс флагов
+		ld	a,(de)
+		cp	"-"
+		jr	nz,exitNoKeys
+checkCallLoop	push	hl
+		call	parser
+		ld	de,(storeAddr)
+		pop	hl
+		cp	#ff
+		jr	z,errorCallExit
+		ld	a,(de)
+		cp	"-"
+		jr	z,checkCallLoop
+
+		pop	af
+		ex	de,hl
+		ret
+
+errorCallExit	ex	hl,de
+		push	hl
+		ld	hl,unknownParamsMsg
+		call	printStr
+		pop	hl
+		call	printSpaceStr
+		ld	hl,restoreMsg
+		call	printStr
+		ld	a,#ff
+
+exitNoKeys	pop	hl
+		ret
+;---------------------------------------
 prepareEntry	push	hl,af
 		ld	hl,entrySearch
 		ld	de,entrySearch+1
 		ld	bc,13
 		xor	a
 		ld	(hl),a
+		ld	(entryQuote+1),a
 		ldir
 		pop	af
 		pop	hl
@@ -827,7 +877,19 @@ entryLoop	ld	(de),a
 		inc	de
 		ld	a,(hl)
 		inc	hl
-		cp	#00
+
+		cp	"\""
+		jr	nz, entrySkip
+
+entryQuote	ld	a,#00
+		cp	#01					; end quote
+		ret	z
+		xor	#01
+		ld	(entryQuote+1),a
+		ld	a,(hl)
+		inc	hl
+
+entrySkip	cp	#00
 		ret	z
 		cp	"/"
 		ret	z
@@ -946,6 +1008,29 @@ helpExit	ld	hl,helpOneLine
 		ret
 
 ;---------------------------------------
+storeHomePath	push	hl,de,bc
+
+		ld	hl,pathHomeString
+		ld	de,pathHomeString+1
+		ld	bc,pathStrSize
+		xor	a
+		ld	(hl),a
+		ldir
+
+		ld	hl,pathString			; store current path to home app path
+		ld	de,pathHomeString
+		call	storeLoop
+		pop	bc,de,hl
+		ret
+
+restoreHomePath	push	hl,de,bc
+		ld	hl,pathHomeString		; restore current path from home app path
+		ld	de,pathString
+		ld	bc,pathStrSize
+		ldir
+		pop	bc,de,hl
+		ret
+;---------------------------------------
 pathWorkDir	ld	hl,pathString
 		call	printStr
 		ret
@@ -957,8 +1042,8 @@ storePath	ld	hl,pathBString
 		ld	(hl),a
 		ldir
 
-		ld	hl,pathString
 		ld	de,pathBString
+storePathCall	ld	hl,pathString
 storeLoop	ld	a,(hl)
 		cp	#00
 		ret	z
@@ -1090,7 +1175,25 @@ sbEnd		call	restorePath
 
 sbCopyName	ld	de,scopeBinAddr
 
-		ld	b,8					; 16384 / 8 = 2048 bin files
+		push	hl
+		push	de
+		ld 	de,#08
+		add	hl,de
+		ld	a,(hl)
+		cp	" "
+		jr	nz,sbSkipFile
+		inc	hl
+		ld	a,(hl)
+		cp	" "
+		jr	nz,sbSkipFile
+		inc	hl
+		ld	a,(hl)
+		cp	" "
+		jr	nz,sbSkipFile
+		pop	de
+		pop	hl
+
+		ld	b,8					; 16384 / 8 = 2048 bin files		
 sbCopy		ld	a,(hl)
 		cp	"A"
 		jr	c,sbPaste
@@ -1105,6 +1208,11 @@ sbPaste		ld	(de),a
 		ld	(sbCopyName+1),de
 		ret
 
+sbSkipFile	pop	de
+		pop	hl
+		ret
+
+
 clearScopeBin	ld	hl,scopeBinAddr
 		ld	de,scopeBinAddr+1
 		ld	bc,palAddr-scopeBinAddr-1
@@ -1116,7 +1224,7 @@ clearScopeBin	ld	hl,scopeBinAddr
 ;---------------------------------------
 systemBroken	ld	a,%10111111
 		ld	(curColor),a
-		ld	(curEColor),a
+		;ld	(curEColor),a
 		call	printClear
 		call	clearTxt
 
@@ -1163,15 +1271,37 @@ cibLoop_00	ld	a,(de)
 		jr	nz,cibNext
 		inc	hl
 		inc	de
-		ld	a,(hl)				; end entered name?
-		cp	#00
-		jr	nz,cibLoop_01
-		ld	a,(de)
-		cp	" "				; end name in table?
-		jr	nz,cibNext
-		jr	cibOk
+		
+ttt		ld	a,(hl)
 
-cibLoop_01	djnz	cibLoop_00			; file found
+		cp	" "				; end entered name?
+		jr	z,cibLoop_01a
+							
+		cp	#00				; end entered name?
+		jr	nz,cibLoop_02
+		
+cibLoop_01	ld	a,(de)
+		cp	" "				; end name in embedded table?
+		jr	z,cibOk
+		
+		cp	#00				; end name in external table?
+		jr	nz,cibNext
+
+		inc	hl
+		ld	a,(hl)
+		cp	" "
+		jr	z,cibOk
+		
+		cp	#00
+		jr	z,cibOk
+
+		jr	cibNext
+
+cibLoop_01a	inc	hl
+		ld	(cibParams+1),hl
+		jr	cibLoop_01
+
+cibLoop_02	djnz	cibLoop_00			; file found
 		jr	cibOk
 
 cibNext		pop	hl
@@ -1185,8 +1315,28 @@ cibNext		pop	hl
 cibOk		pop	hl
 		pop	de
 		ld	de,cibFile
-		ld	bc,8
-		ldir
+		ld	b,8
+
+		xor	a
+		ld	(cibOk_00+1),a
+
+cibOk_00	ld	a,#00
+		cp	#00
+		jr	nz,cibOk_EndName
+		ld	a,(hl)
+		cp	" "
+		jr	nz,cibOk_01
+		ld	a,#01
+		ld	(cibOk_00+1),a
+
+cibOk_EndName	xor	a
+cibOk_01	ld	(de),a
+		inc	hl
+		inc	de
+		djnz	cibOk_00
+
+		;ld	bc,8
+		;ldir
 
 		ld	hl,cdBinPath
 		ld	de,cibPath
@@ -1194,6 +1344,7 @@ cibOk		pop	hl
 		ldir
 
 		ld	de,cibPath
+cibParams	ld	hl,#0000
 		call	executeApp
 		xor	a,#00				; no err
 		ret
@@ -1227,6 +1378,32 @@ gfxBorder	ex	de,hl
 		ret
 
 ;---------------------------------------
+wrongFileSize	ld	hl,wrongFileSizeMsg
+		call	printStr
+		ld	a,#ff				; error
+		ret
+
+;---------------------------------------
+progressWait	ld	a,(progressWPos)
+		ld	b,#00
+		ld	c,a
+		ld	hl,progressWData
+		add	hl,bc
+		ld	a,(hl)
+		inc	hl
+		ld	h,(hl)
+		ld	l,a
+		call	printStr
+		ld	a,(progressWPos)
+		inc	a
+		inc	a
+		cp	#08
+		jr	c,progressWSkip
+		xor	a
+progressWSkip	ld	(progressWPos),a
+		ret
+
+;---------------------------------------
 ;testCmd		; Включаем страницу для приложений
 ;		ld	a,#02
 ;		call	setVideoPage
@@ -1247,6 +1424,7 @@ gfxBorder	ex	de,hl
 ;		db	#00
 
 ;---------------------------------------
+		include "api.asm"
 		include "print.asm"
 		include	"sleep.asm"
 		include	"ls.asm"
@@ -1256,11 +1434,14 @@ gfxBorder	ex	de,hl
 		include "loadPal.asm"
 		include "loadSpr.asm"
 		include "loadFnt.asm"
+;		include "modLoad.asm"
+;		include "neoGS.asm"
 		include "parser.asm"
 		include "str2int.asm"
 		include "int2str.asm"
 		include "int2hex.asm"
 		include "hex2int.asm"
+		include "mouse.asm"
 		include "gli.asm"
 ;---------------------------------------
 		include "messages.asm"
@@ -1268,6 +1449,7 @@ gfxBorder	ex	de,hl
 
 		include "binData.asm"
 
+storeIx		dw	#0000
 pluginEnd
 ;---------------------------------------
 	ENT

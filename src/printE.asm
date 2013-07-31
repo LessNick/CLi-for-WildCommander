@@ -1,10 +1,10 @@
 ;---------------------------------------
 ; Editline print (output) module
 ;---------------------------------------
-editInit	ld	de,#0000					; начальная инициализация
+_editInit	ld	de,#0000				; начальная инициализация
 		ld	(printEX),de
 
-editClear	ld	hl,edit256					; очистка редактируемой строки 256 (ASCII)
+editClear	ld	hl,edit256				; очистка редактируемой строки 256 (ASCII)
 		ld	de,edit256+1
 		ld	bc,127
 		ld	a," "
@@ -21,7 +21,7 @@ editClear	ld	hl,edit256					; очистка редактируемой стро
 
 		ret
 
-printInLine	push	hl
+_printInLine	push	hl
 		ld	hl,#0000
 		ld	(printEX),hl
 		pop	hl
@@ -29,7 +29,7 @@ printInLine	push	hl
 		
 		ld 	hl,edit256
 		ld 	a,#01
-		ld 	bc,#0000			; reserved
+		ld 	bc,#0000				; reserved
 		call	BUF_UPD
 		ret
 ;---------------------------------------
@@ -39,6 +39,16 @@ printEStr	xor	a					; Печать в строке ввода
 printEStr_0	ld	a,(hl)
 		cp	#00
 		jr	z,printEExit
+
+		cp	#09					; Управляющий код: 09 - tab
+		jp	z,codeETab
+		cp	#10					; Управляющий код: 16 - ink
+		jp	z,codeEInk
+		cp	#11					; Управляющий код: 17 - paper
+		jp	z,codeEPaper
+		cp	#14					; Управляющий код: 20 - inverse
+		jp	z,codeEInverse
+
 		push	hl
 		call	printEChar
 		ld	a,(printEX)
@@ -76,7 +86,8 @@ printEChar	ld	hl,edit256				; печать символа в редактиру�
 		add	hl,de
 		ld	(hl),a
 			
-		ld	a,(curEColor)				; печать аттрибутов
+		;ld	a,(curEColor)				; печать аттрибутов
+		ld	a,(curColor)
 		ld	de,128
 		add	hl,de
 		ld	(hl),a
@@ -112,14 +123,17 @@ sc_02		ld	(curTimeOut+1),a
 		ld	a,(hl)
 		and	%00001111
 		ld	c,a
-		ld	a,(curEColor)
+		;ld	a,(curEColor)
+		ld	a,(curColor)
 		and	%11110000
 		or	c
-		ld	(curEColor),a
+		;ld	(curEColor),a
+		ld	(curColor),a
 		ld	a,cursorType
 		call	printEChar
 		ld	a,defaultCol
-		ld	(curEColor),a
+		;ld	(curEColor),a
+		ld	(curColor),a
 		ret
 
 ;---------------------------------------
@@ -166,7 +180,80 @@ buffOverload	pop	af
 		halt
 		call	restBorder
 		ret
+;---------------------------------------
+codeETab	ld	a,(printEX)
+		srl	a					; /2
+		srl	a					; /4
+		srl	a					; /8
+		cp	#09
+		jp	z,printEStr_0
+		inc	a
+		push	hl
+		ld	hl,tabTable
+		ld	b,0
+		ld	c,a
+		add	hl,bc
+		ld	a,(hl)
+		ld	(printEX),a
+		pop	hl
+		inc	hl
+		jp	printEStr_0
+;---------------------------------------
+codeEInk	inc	hl
+		ld	a,(hl)
+		inc	hl
 
+codeEInk_0	cp	16					; 16 ? взять цвет по умолчанию
+		jr	nz,codeEInk_1
+		ld	a,defaultCol
+
+codeEInk_1	and	%00001111
+		ld	c,a
+		ld	a,(curColor)
+		and	%11110000
+		or	c
+		ld	(curColor),a
+		jp	printEStr_0
+
+codeEPaper	inc	hl
+		ld	a,(hl)
+		inc	hl
+
+codeEPaper_0	cp	16					; 16 ? взять цвет по умолчанию
+		jr	nz,codeEPaper_1
+		ld	a,defaultCol
+		and	%11110000
+		jr	codeEPaper_2
+
+codeEPaper_1	and	%00001111
+		sla	a
+		sla	a
+		sla	a
+		sla	a
+codeEPaper_2	ld	c,a
+		ld	a,(curColor)
+		and	%00001111
+		or	c
+		ld	(curColor),a
+		jp	printEStr_0
+
+codeEInverse	inc	hl
+		ld	a,(curColor)
+		and	%00001111
+		sla	a
+		sla	a
+		sla	a
+		sla	a
+		ld	b,a
+		ld	a,(curColor)
+		and	%11110000
+		srl	a
+		srl	a
+		srl	a
+		srl	a
+		or	b
+		ld	(curColor),a
+		jp	printEStr_0
 ;---------------------------------------
 printEX		dw	#0000					; позиция X для печати в edit256
 eStrLen		db	#00

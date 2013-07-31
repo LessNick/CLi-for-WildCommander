@@ -53,6 +53,9 @@ gPalBank	equ	#03				; graphics palette file load memory bank
 appAddr		equ	#c000				; application load address
 appBank		equ	#04				; application load memory bank
 
+tmpAddr		equ	#c000				; temp buffer load address
+tmpBank		equ	#07				; temp buffer load bank
+
 sprAddr		equ	#c000				; sprites load address
 sprBank		equ	#08				; sprites load memory bank
 
@@ -64,25 +67,38 @@ sprBank		equ	#08				; sprites load memory bank
 
 		;include "helloworld.asm"
 		;include "test1.asm"
-		include "boing.asm"
+		;include "boing.asm"
 		;include "test2.asm"
+		;include "test3.asm"
+		;include "test4.asm"
+		;include "type.asm"
+		;include "loadMod.asm"
+		include "miceTest.asm"
 
 		;include "zx.pal.asm"
 		;include "cli.pal.asm"
 		;include "boing.pal.asm"
 
-	DISPLAY "code size:",/A,endCode-startCode
-	;DISPLAY "changeDir addr:",/A,changeDir
-	;DISPLAY "resetToRoot addr:",/A,resetToRoot
-	;DISPLAY "loadGfxPal addr:",/A,loadGfxPal
-	;DISPLAY "loadResource addr:",/A,loadResource
-	DISPLAY "findSprFile addr:",/A,findSprFile
+	;DISPLAY "code size:",/A,endCode-startCode
+	;DISPLAY "waitResponse addr:",/A,waitResponse
+	;DISPLAY "ttt addr:",/A,ttt
+	;DISPLAY "executeApp addr:",/A,executeApp
+	;DISPLAY "checkIsBin addr:",/A,checkIsBin
+	;DISPLAY "pathString addr:",/A,pathString
+	;DISPLAY "checkCallLoop addr:",/A,checkCallLoop
+	
 
 	SAVEBIN "bin/wc/CLI.WMF", startCode, endCode-startCode
 	;SAVEBIN "bin/bin/hello", appStart, appEnd-appStart
 	;SAVEBIN "bin/bin/test1", test1Start, test1End-test1Start
-	SAVEBIN "bin/demo/boing/boing", BoingStart, BoingEnd-BoingStart
-	;SAVEBIN "bin/tmp/test2", test2Start, test2End-test2Start
+	;SAVEBIN "bin/demo/boing/boing", BoingStart, BoingEnd-BoingStart
+	;SAVEBIN "bin/bin/test2", test2Start, test2End-test2Start
+	;SAVEBIN "bin/bin/test3", t3Start, t3End-t3Start
+	;SAVEBIN "bin/bin/test4", t4Start, t4End-t4Start
+	;SAVEBIN "bin/bin/type", typeStart, typeEnd-typeStart
+	;SAVEBIN "bin/bin/loadMod", loadModStart, loadModEnd-loadModStart
+	SAVEBIN "bin/bin/miceTest", miceTestStart, miceTestEnd-miceTestStart
+	
 
 	;SAVEBIN "bin/system/pal/zx.pal", zxPalStart, zxPalEnd-zxPalStart
 	;SAVEBIN "bin/system/pal/cli.pal", cliPalStart, cliPalEnd-cliPalStart

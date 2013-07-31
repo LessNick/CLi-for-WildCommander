@@ -95,6 +95,10 @@ _setDirBegin	ld	a,_GDIR
 _load512bytes	ld	a,_LOAD512
 		jp	wcKernel
 ;---------------------------------------
+_setPosBegin	ld	a,_GIPAGPL
+		jp	wcKernel
+;---------------------------------------
+;---------------------------------------
 _setHOffset	ld	a,_GXoff
 		jp	wcKernel
 ;---------------------------------------
@@ -137,14 +141,33 @@ _clearGfxScreen	call	gfxCls
 		call	setVideoPage
 		ret
 ;---------------------------------------
-_loadResource	push	hl,bc
-		ld	hl,pathBString
-		ld	de,pathBString2
-		ld	bc,pathStrSize
-		ldir
-		pop	bc,hl
+_chToHomePath	push	hl,bc,af
 
-		ex	de,hl
+		ld	hl,pathCString
+		ld	de,pathCString+1
+		ld	bc,pathStrSize
+		xor	a
+		ld	(hl),a
+		ldir
+
+		ld	de,pathCString
+		call	storePathCall
+ 		call	restoreHomePath
+ 		ld	de,pathString
+ 		call	changeDir
+
+		pop	af,bc,hl
+		ret
+;---------------------------------------
+_chToCallPath	push	hl,bc,af
+
+ 		ld	de,pathCString
+ 		call	changeDir
+
+		pop	af,bc,hl
+		ret
+;---------------------------------------
+_loadResource	ex	de,hl
 		ld	hl,exitResource
 		push	hl
 		cp	resPal				; загрузка палитры
@@ -165,10 +188,6 @@ exitResource	push	af
 		ex	af,af'
 		pop	af
 
-		ld	hl,pathBString2
-		ld	de,pathBString
-		ld	bc,pathStrSize
-		ldir
 		ret
 
 ;---------------------------------------
@@ -177,3 +196,6 @@ _printOkStatus	ex	af,af'
 		ret	nz
 		ld	hl,statusOkMsg
 		jp	printString
+
+;---------------------------------------
+

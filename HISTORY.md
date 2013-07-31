@@ -10,6 +10,10 @@
  * add command loadfont
  * fix bugs in resource load
  * add status for loadResource function (ok/error)
+ * add support delete(#0c - one step back/left) for print function
+ * add progress wait indicator
+ * fix restore current path of params for call from /bin
+ * fix /bin list (add only files with empty extention (executable))
 
 ## 0.12 (2012-10-22)
 

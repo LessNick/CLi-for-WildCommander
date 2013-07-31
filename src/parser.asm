@@ -23,7 +23,7 @@ parser		call	eat_space
 parse_start	ld      a,(de)
 		cp	#00				; space means end of buffer
 		jp	z,end_of_command
-		cp	#20				; space means end of command
+		cp	" "				; space means end of command
 		jp	z,end_of_command
 
 		cp	"A"
@@ -68,6 +68,7 @@ end_of_command	call	eat_space
 		inc	hl
 		ld	h,(hl)
 		ld	l,a
+		ld	(storeAddr),de
 		jp	(hl)				; de - addr start params
 
 no_match	pop	af

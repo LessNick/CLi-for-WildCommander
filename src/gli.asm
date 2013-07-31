@@ -1,7 +1,7 @@
 ;---------------------------------------
 ; GLi - Graphics Library interface
 ;---------------------------------------
-createSprite	push	af			
+_createSprite	push	af			
 		call	setSpriteSize		; ширина / 8 px , высота /8 px
 
 		ld	a,h			; l = (#01+1) * ~20 = 40ms на 1 кадр, h - #08 кадров анимации
@@ -17,7 +17,7 @@ createSprite	push	af
 		call	setYBitMap
 		ret
 
-updateSprite	ld	a,(sprTimeout)
+_updateSprite	ld	a,(sprTimeout)
 		dec	a
 		cp	#00
 		jr	nz,updSprite_02
@@ -64,17 +64,17 @@ updSprite_02	ld	(sprTimeout),a
 		out	(c),a
 		ret
 
-enableSprites	ld	a,#01
+_enableSprites	ld	a,#01
 		ld	(showSprEnable),a
-		jr	showSprites
+		jp	showSprites
 
-disableSprites	xor	a
+_disableSprites	xor	a
 		ld	(showSprEnable),a
 			; S_EN	T1_EN	T0_EN	Z80_LP	T1Z_EN	T0Z_EN	T1YS_EN	T0YS_EN
-hideSprites	ld	a,%00000000		; запрещаем отображение спрайтов
+_hideSprites	ld	a,%00000000		; запрещаем отображение спрайтов
 		jr	setTSConfig
 
-showSprites	ld	a,(showSprEnable)
+_showSprites	ld	a,(showSprEnable)
 		cp	#00
 		ret	z
 		ld	a,%10000000		; разрешаем отображение спрайтов
@@ -127,7 +127,7 @@ setSpriteSize	ld	a,e			; ширина ?
 		ld	(sprY1),a
 		ret
 
-setSpriteX	ld	a,e			; координата X
+_setSpriteX	ld	a,e			; координата X
 		ld	(sprX0),a
 
 		ld	a,d
@@ -139,7 +139,7 @@ setSpriteX	ld	a,e			; координата X
 		ld	(sprX1),a
 		ret
 
-setSpriteY	ld	a,e			; координата Y
+_setSpriteY	ld	a,e			; координата Y
 		ld	(sprY0),a
 
 		ld	a,d

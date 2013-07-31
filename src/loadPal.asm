@@ -63,6 +63,16 @@ findPalFile	ld	a,flagFile			; file
 		
 		ld	(fileLength),hl
 		ld	(fileLength+2),de
+		
+		ld	a,d				; #0000
+		or	e
+		jp	nz,wrongFileSize
+		ld	a,h
+		cp	#02				; #0204 = 512b + header
+		jp	nz,wrongFileSize
+		ld	a,l
+		cp	#04
+		jp	nz,wrongFileSize
 
 		call	setFileBegin
 		call	prepareSize

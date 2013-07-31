@@ -15,7 +15,7 @@
 ;              `--'   `--'
 
 versionMsg	db	16,6,"Command Line Interface for WildCommander v0.14",#0d
-		db	16,7,"2012 ",127," Breeze\\\\Fishbone Crew",#0d
+		db	16,7,"2012,2013 ",127," Breeze\\\\Fishbone Crew",#0d
 		db	#00
 
 typeHelpMsg	db	#0d
@@ -81,9 +81,29 @@ wrongPalMsg	db	16,colorError,"Error! Wrong palette file format.",#0d
 		db	16,16
 		db	#00
 
+wrongFileSizeMsg
+		db	16,colorError,"Error! Wrong file size.",#0d
+		db	16,16
+		db	#00
+
+unknownParamsMsg
+		db	16,colorError,"Error! Unknown parameter ",#00
+
 clearingMsg	db	16,colorInfo,"Clearing...",#0d
 		db	16,16
 		db	#00
+
+initMsg	db	16,colorInfo,"Initializing...",#09
+		db	16,16
+		db	#00
+
+loadingMsg	db	16,colorInfo,"Loading...",#09,#00
+
+waitStep_01	db	#0c,"|",#00
+waitStep_02	db	#0c,"/",#00
+waitStep_03	db	#0c,"-",#00
+waitStep_04	db	#0c,"\\\\",#00
+waitEnd		db	#0c," ",#00
 
 brokenMsg	db	16,15
 		ds	6,#0d
@@ -96,4 +116,4 @@ brokenMsg	db	16,15
 		db	#00
 
 statusOkMsg	db	16,16,"[ ",16,colorOk,"  OK  ",16,16," ]",#0d,#00
-statusErrorMsg	db	16,16,"[ ",16,colorError,"ERROR ",16,16," ]",#0d,#00
+statusErrorMsg	db	16,16,"[ ",16,colorError,"ERROR!",16,16," ]",#0d,#00

@@ -48,10 +48,16 @@ findFntFile	ld	a,flagFile			; file
 		
 		ld	(fileLength),hl
 		ld	(fileLength+2),de
-		;ld	a,d
-		;or	e
-		;jr	nz
 
+		ld	a,d				; #0000
+		or	e
+		jp	nz,wrongFileSize
+		ld	a,h
+		cp	#08				; #0800
+		jp	nz,wrongFileSize
+		ld	a,l
+		cp	#00
+		jp	nz,wrongFileSize
 
 		call	setFileBegin
 		call	prepareSize

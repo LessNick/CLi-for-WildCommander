@@ -13,6 +13,10 @@ cibPath		db	"     "
 cibFile		ds	8,0
 		db	#00
 
+progressWPos	db	#00
+progressWData	dw	waitStep_01,waitStep_02,waitStep_03,waitStep_04
+		dw	#0000
+
 tabSize		equ	#08				; tab size
 tabTable	db	tabSize*0, tabSize*1, tabSize*2, tabSize*3, tabSize*4
 		db	tabSize*5, tabSize*6, tabSize*7, tabSize*8, tabSize*9
@@ -27,7 +31,7 @@ iBufferPos	db	#00
 iBuffer		ds	iBufferSize,#00
 
 curColor	db	defaultCol			; paper | ink
-curEColor	db	defaultCol			; paper | ink
+;curEColor	db	defaultCol			; paper | ink
 
 curGfxBorder	db	#00				; graphics mode border color
 
@@ -56,11 +60,13 @@ cliPal		dw	%0000000000000000		; 0.black
 		dw	%0100001000010000		; 8.silver
 		dw	%0000000000011000		; 9.blue
 		dw	%0110000000000000		;10.red
-		dw	%0100000000010000		;11.fuchsia
+		;dw	%0100000000010000		;11.fuchsia
+		dw	%0110000100001000		;11.dark pink
 		dw	%0000001100000000		;12.lime
 ;		dw	%0000001100011000		;13.aqua
 		dw	%0000001000011000		;13.teal
-		dw	%0110001100000000		;14.yellow
+		;dw	%0110001100000000		;14.yellow
+		dw	%0110001100010000		;14.light yellow
 		dw	%0110001100011000		;15.white
 
 nameEmpty	db	"             "
@@ -105,7 +111,10 @@ pathString	ds	pathStrSize,#00
 pathBString	ds	pathStrSize,#00
 		db	#00
 
-pathBString2	ds	pathStrSize,#00
+pathCString	ds	pathStrSize,#00
+		db	#00
+
+pathHomeString	ds	pathStrSize,#00
 		db	#00
 
 echoBuffer	ds	eBufferSize, #00

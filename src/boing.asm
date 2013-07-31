@@ -24,6 +24,8 @@ BoingStart
 		ld	hl,loadPalMsg
 		call	printString
 
+		call	chToHomePath				; установить «домашнюю» директорию
+
 		ld	hl,boingPalFile
 		ld	a,resPal
 		call	loadResource
@@ -38,6 +40,8 @@ BoingStart
 		call	loadResource
 		call	printOkStatus
 
+		call	chToCallPath				; восстановить директорию вызова
+
 		ld	a,1
 		call	setScreen
 
@@ -45,7 +49,7 @@ BoingStart
 		call	printString
 		
 		halt
-		call	PRINTWW				; печать
+		call	printWW				; печать
 
 		call	enableSprites
 
@@ -62,7 +66,7 @@ BoingStart
 sprMove		halt
 
 		call	updateSprite
-		call	PRINTWW	
+		call	printWW	
 
 		ld	hl,(timeCount)
 		inc	hl
@@ -176,18 +180,20 @@ prepareLoop	push	bc
 boingPalFile	db	"boing.pal",#00
 boingSprFile	db	"boing.bin",#00
 
-boingPosMsg	db	"Boing at posX="
+boingPosMsg	db	16,colorOk,"Boing at posX=",16,16
 posXMsg		db	"     "
-		db	", posY="
+		db	16,14,",",16,colorOk," posY=",16,16
 posYMsg		db	"     "
-		db	". Time count="
+		db	16,14,".",16,colorOk," Time count=",16,16
 timeCountMsg	db	"     "
 		db	#00
 
 timeCount	dw	#0000
 
-infoMsg	db	"Amiga Boing (GLi demo) v 0.02",#0d
-		db	"2012 ",#7f," Breeze\\\\Fishbone Crew",#0d,#0d,#00
+infoMsg		db	16,2,"Amiga Boing (GLi demo) v 0.03",#0d
+		db	16,3,"2012,2013 ",#7f," Breeze\\\\Fishbone Crew",#0d,#0d,#00
+
+		;DISPLAY "loadPalMsg=",/A,loadPalMsg
 
 loadPalMsg	db	16,colorInfo,"Loading palette... ",#00
 loadSprMsg	db	16,colorInfo,"Loading sprites... ",#00

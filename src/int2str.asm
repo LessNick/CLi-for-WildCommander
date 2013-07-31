@@ -1,36 +1,50 @@
 ;--------------------------------------------------------------
 ; int2str перевод int в текст (десятичное число)
-; (C) BUDDER/MGN/TOGYAF - 2011.12.26
-;---------------------------------------
-;ВЫВОД 16bit ЧИСЛА:
-int2str
-;i:[HL] - int16
-;  EXX DE - String addres
-;  o:Decimal string(5)
-DECZON2 LD BC,10000
-        CALL DELIT
-        LD (DE),A:INC DE
-DECZ2   LD BC,1000
-        CALL DELIT
-        LD (DE),A:INC DE
-DECZ1   LD BC,100
-        CALL DELIT
-        LD (DE),A:INC DE
-DECZ    LD C,10
-        CALL DELIT
-        LD (DE),A:INC DE
-        LD C,1
-        CALL DELIT
-        LD (DE),A:INC DE
-        RET
-;---------------------------------------
-DELIT   LD A,#FF
-        OR A
-DLIT    INC A
-        SBC HL,BC:JP NC,DLIT
-        ADD HL,BC,A,#30
-        RET
+; (C) BUDDER/MGN - 2011.12.26
+; char2str перевод char(8bit) в текст (десятичное число)
+; Added by breeze
+;--------------------------------------------------------------
+; i:[HL] - int16, EXX DE - String addres
+; o:Decimal string(5)
+_int2str	ld	bc,10000
+		call	delit
+		ld	(de),a
+		inc	de
 
+		ld	bc,1000
+		call	delit
+		ld	(de),a
+		inc	de
+
+; i:[HL] - int8, EXX DE - String addres
+; o:Decimal string(3)
+_char2str	ld	bc,100
+		call	delit
+		ld	(de),a
+		inc	de
+
+; i:[HL] - int4, EXX DE - String addres
+; o:Decimal string(3)
+_fourbit2str	ld	c,10
+		call	delit
+		ld	(de),a
+		inc	de
+		
+		ld	c,1
+		call	delit
+		ld	(de),a
+		ret
+
+delit		ld	a,#ff
+		or	a
+dlit		inc	a
+		sbc	hl,bc
+		jp	nc,dlit
+		add	hl,bc
+		add	a,#30
+		ret
+
+;--------------------------------------------------------------
 word2str
 ;ВЫВОД 32bit ЧИСЛА:
 DECZON4 ;i:[DE,HL] - int32

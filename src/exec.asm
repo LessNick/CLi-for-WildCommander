@@ -1,17 +1,20 @@
 ;---------------------------------------
 ; exec - execute application
 ;---------------------------------------
-executeApp	ex	de,hl
+executeApp	ld	(appParams+1),hl	
+		ex	de,hl
 		ld	a,(hl)
 		cp	#00
 		jp	z,errorPar
 
 		call	checkIsPath
+		call	storeHomePath
+		
 		ex	af,af'
 		cp	#00
 		call	z,exeApp
-		
-		call	restorePath
+
+		;call	restorePath			; restore start path at exit (ok or error)
 		ret
 
 exeApp		ld	a,flagFile			; file
@@ -66,6 +69,10 @@ loadApp		ld	a,appBank
 		jr	nz,wrongApp
 		inc	hl
 
+appParams	ld	hl,#0000
+		push	hl
+		call	restorePath
+		pop	hl
 		jp	appAddr
 
 wrongApp	ld	hl,wrongAppMsg

@@ -34,10 +34,10 @@ fileNotFound	ld	hl,fileNotFoundMsg
 		ld	a,#ff				; error
 		ret
 
-runSh		call	cliInit
+runSh		call	cliInit				; call as extention
 		call	prepareSize
 
-		call	scopeBinary
+		;call	scopeBinary
 
 		call	loadScript
 		jp	pluginExit
@@ -58,7 +58,7 @@ ps_01		ld	bc,(fileLength)
 		jr	nz,ps_02
 		ld	b,#01				; 1 block 512b
 ps_02		cp	#20
-		jr	c,ps_03
+		jr	nc,ps_03
 		ld	b,#20
 
 ps_03		ld	a,c
