@@ -60,7 +60,7 @@ Big thanks to:
 > - Budder/MGN for their help with information, consultations and help with code.
 > - TS-Labs for PentEvo firmware & Unreal Speccy modification.
 > - CHRV & all members of [NedoPC](http://www.nedopc.com/) for PentEvo/ZX Evolution board.
-> - psndjc/triebkraft & pcb for thein help with kempstone mouse driver
+> - psndjc/triebkraft & pcb for thein help with kempston mouse driver
 
 ## License
 Source Copyright © 2012,2013 Breeze Fishbone and contributors. Distributed under the BSD License. See the file LICENCE.

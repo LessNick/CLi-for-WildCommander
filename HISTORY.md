@@ -11,6 +11,7 @@
 * added function callback for application while is switching text/gfx mode (alt+f1/f2)
 * added function setresolution for gfx mode
 * fixed wrong parse external commands with length 8 bytes
+* changed a bit console palette
 
 ## 0.14 (2012-10-31)
 
