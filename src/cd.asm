@@ -33,8 +33,9 @@ changeNow	ex	de,hl
 		ld	a,flagDir			; directory
 		call	prepareEntry
 
-		ld	hl,entrySearch
-		call	searchEntry
+		;ld	hl,entrySearch
+		;call	searchEntry
+		call	eSearch
 		jp	z,cdNotFound-1
 
 		call	setDirBegin
@@ -52,8 +53,9 @@ cdLastCheck	pop	hl
 		ld	a,flagDir			; directory
 		call	prepareEntry
 
-		ld	hl,entrySearch
-		call	searchEntry
+		;ld	hl,entrySearch
+		;call	searchEntry
+		call	eSearch
 		jr	z,cdNotFound
 
 		call	setDirBegin
@@ -62,8 +64,8 @@ cdLastCheck	pop	hl
 
 		jr	cdExitOk
 
-
-setPathString	ld	hl,entrySearch+1
+setPathString	;ld	hl,entrySearch+1
+		ld	hl,entryForSearch+1
 		ld	a,(hl)
 		cp	"."
 		jr	nz,incPath
@@ -106,7 +108,8 @@ incPath		ld	a,(lsPathCount+1)
 		add	hl,bc
 		ex	de,hl
 
-		ld	hl,entrySearch+1
+		;ld	hl,entrySearch+1
+		ld	hl,entryForSearch+1
 cdLoopPath	ld	a,(hl)
 		cp	#00
 		jr	z,cdEndPath

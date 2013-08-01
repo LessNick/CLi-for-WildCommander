@@ -36,12 +36,14 @@ loadModStart
 		ld	a,flagFile			; file
 		call	prepareEntry
 			
-		ld	hl,entrySearch
-		call	searchEntry
+		;ld	hl,entrySearch
+		;call	searchEntry
+		call	eSearch
 		jp	z,fileNotFound
 		
-		ld	(fileLength),hl
-		ld	(fileLength+2),de
+		;ld	(fileLength),hl
+		;ld	(fileLength+2),de
+		call	storeFileLen
 
 		call	setFileBegin
 		call	prepareSize

@@ -13,6 +13,25 @@ cibPath		db	"     "
 cibFile		ds	8,0
 		db	#00
 
+entry		ds	32
+extSh		db	"SH "
+extSpace	db	"   "
+
+currentVMode	db	%11000010			; включение видео режима (разрешение+тип)
+							; i:A' - видео режим
+							;   [7-6]: %00 - 256x192
+							;          %01 - 320x200
+							;          %10 - 320x240
+							;          %11 - 360x288
+							;   [5-2]: %0000
+							;   [1-0]: %00 - ZX
+							;          %01 - 16c
+							;          %10 - 256c
+							;          %11 - txt
+
+callBackApp	dw	callBackRet
+callBackRet	db	201				; RET
+
 progressWPos	db	#00
 progressWData	dw	waitStep_01,waitStep_02,waitStep_03,waitStep_04
 		dw	#0000
@@ -22,8 +41,8 @@ tabTable	db	tabSize*0, tabSize*1, tabSize*2, tabSize*3, tabSize*4
 		db	tabSize*5, tabSize*6, tabSize*7, tabSize*8, tabSize*9
 
 codeBuff	db	"  ",#00
-fileLength
-		dw	#0000,#0000
+
+fileLength	dw	#0000,#0000
 storeKey	db	#00
 
 
@@ -87,7 +106,7 @@ helpOneLine	db	"             "
 		db	"             "
 		db	#0d,#00				; end
 
-entrySearch	ds	255,#00
+entryForSearch	ds	255,#00
 
 rootSearch	db	flagDir,".",#00
 
@@ -119,18 +138,3 @@ pathHomeString	ds	pathStrSize,#00
 
 echoBuffer	ds	eBufferSize, #00
 
-entry		ds	32
-extSh		db	"SH "
-extSpace	db	"   "
-
-currentVMode	db	%10000010			; включение видео режима (разрешение+тип)
-							; i:A' - видео режим
-							;   [7-6]: %00 - 256x192
-							;          %01 - 320x200
-							;          %10 - 320x240
-							;          %11 - 360x288
-							;   [5-2]: %0000
-							;   [1-0]: %00 - ZX
-							;          %01 - 16c
-							;          %10 - 256c
-							;          %11 - txt

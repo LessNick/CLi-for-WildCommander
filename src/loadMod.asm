@@ -46,8 +46,9 @@ gsPresent	ld	hl,loadModMsg_Ok
 		ld	hl,loadModMsg_02
 		call	modPrintString
 
-		ld	ix,(storeIx)			; wc panel status
-		ld	a,(ix+29)
+;		ld	ix,(storeIx)			; wc panel status
+;		ld	a,(ix+29)
+		call	getPanelStatus
 		cp	#02
 		jr	nz,sdUnmounted
 		
@@ -72,12 +73,14 @@ sdUnmounted	ld	hl,loadModMsg_Ok
 		ld	a,flagFile			; file
 		call	prepareEntry
 			
-		ld	hl,entrySearch
-		call	searchEntry
+		;ld	hl,entrySearch
+		;call	searchEntry
+		call	eSearch
 		jr	z,modNotFound
 
-		ld	(fileLength),hl
-		ld	(fileLength+2),de
+		;ld	(fileLength),hl
+		;ld	(fileLength+2),de
+		call	storeFileLen
 
 		ld	l,h				; count mod length in blocks
 		ld	h,e
@@ -119,8 +122,9 @@ enableAutoPlay	ld	a,#00
 		;call	sendGsCmd
 		call	playGs
 
-loadModExit	ld	hl,restoreMsg
-		call	modPrintString
+loadModExit	;ld	hl,restoreMsg
+		;call	modPrintString
+		call	printRestore
 		ret
 
 modNotFound	ld	hl,loadModMsg_Error
@@ -238,11 +242,11 @@ uploadGsLoop	call	uploadGsByte
 		djnz	uploadGsData
 		ret
 
-		include	"neogs.h.asm"
+; 		include	"neogs.h.asm"
 
 modLenBlocks    dw	#0000
 ;------------------------------------------------------------------------
-modVersionMsg	db	16,2,"MOD file loader for (Neo)GS Card v0.01",#0d
+modVersionMsg	db	16,2,"MOD file loader for (Neo)GS Card v0.02",#0d
 		db	16,3,"2013 ",127," Breeze\\\\FBn & Koshi(Budder)/MGN",#0d,#0d
 		db	#00
 

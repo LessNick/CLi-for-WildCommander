@@ -11,6 +11,12 @@ mYPort		equ	#ffdf			; Y-координата (растёт снизу вверх
 ;---------------------------------------
 _mouseInit	ld	(mouseIsRight+1),hl
 		ld	(mouseIsDown+1),de
+		ld	hl,mouseRawDataX
+		ld	de,mouseRawDataX+1
+		ld	bc,11
+		xor	a
+		ld	(hl),a
+		ldir
 		ret
 ;---------------------------------------
 _mouseUpdate	call	mouseButtons

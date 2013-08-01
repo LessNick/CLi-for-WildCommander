@@ -65,19 +65,21 @@ sprBank		equ	#08				; sprites load memory bank
 		include "pluginHead.asm"
 		include "cli.asm"
 
-		;include "helloworld.asm"
+		;include "zx.pal.asm"
+		;include "cli.pal.asm"
+		;include "boing.pal.asm"
+
 		;include "test1.asm"
-		;include "boing.asm"
 		;include "test2.asm"
 		;include "test3.asm"
 		;include "test4.asm"
+
+		;include "helloworld.asm"
+		;include "boing.asm"
 		;include "type.asm"
 		;include "loadMod.asm"
 		include "miceTest.asm"
 
-		;include "zx.pal.asm"
-		;include "cli.pal.asm"
-		;include "boing.pal.asm"
 
 	;DISPLAY "code size:",/A,endCode-startCode
 	;DISPLAY "waitResponse addr:",/A,waitResponse
@@ -86,21 +88,20 @@ sprBank		equ	#08				; sprites load memory bank
 	;DISPLAY "checkIsBin addr:",/A,checkIsBin
 	;DISPLAY "pathString addr:",/A,pathString
 	;DISPLAY "checkCallLoop addr:",/A,checkCallLoop
-	
 
 	SAVEBIN "bin/wc/CLI.WMF", startCode, endCode-startCode
-	;SAVEBIN "bin/bin/hello", appStart, appEnd-appStart
-	;SAVEBIN "bin/bin/test1", test1Start, test1End-test1Start
-	;SAVEBIN "bin/demo/boing/boing", BoingStart, BoingEnd-BoingStart
-	;SAVEBIN "bin/bin/test2", test2Start, test2End-test2Start
-	;SAVEBIN "bin/bin/test3", t3Start, t3End-t3Start
-	;SAVEBIN "bin/bin/test4", t4Start, t4End-t4Start
-	;SAVEBIN "bin/bin/type", typeStart, typeEnd-typeStart
-	;SAVEBIN "bin/bin/loadMod", loadModStart, loadModEnd-loadModStart
-	SAVEBIN "bin/bin/miceTest", miceTestStart, miceTestEnd-miceTestStart
-	
 
 	;SAVEBIN "bin/system/pal/zx.pal", zxPalStart, zxPalEnd-zxPalStart
 	;SAVEBIN "bin/system/pal/cli.pal", cliPalStart, cliPalEnd-cliPalStart
 	;SAVEBIN "bin/demo/boing/boing.pal", boingPalStart, boingPalEnd-boingPalStart
 
+	;SAVEBIN "bin/bin/test1", test1Start, test1End-test1Start
+	;SAVEBIN "bin/bin/test2", test2Start, test2End-test2Start
+	;SAVEBIN "bin/bin/test3", t3Start, t3End-t3Start
+	;SAVEBIN "bin/bin/test4", t4Start, t4End-t4Start
+	
+	;SAVEBIN "bin/bin/hello", appStart, appEnd-appStart
+	;SAVEBIN "bin/demo/boing/boing", BoingStart, BoingEnd-BoingStart
+	;SAVEBIN "bin/bin/type", typeStart, typeEnd-typeStart
+	;SAVEBIN "bin/bin/loadMod", loadModStart, loadModEnd-loadModStart
+	SAVEBIN "bin/bin/miceTest", miceTestStart, miceTestEnd-miceTestStart

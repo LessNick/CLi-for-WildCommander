@@ -42,14 +42,16 @@ BoingStart
 
 		call	chToCallPath				; восстановить директорию вызова
 
-		ld	a,1
-		call	setScreen
-
 		ld	hl,appRunMsg
 		call	printString
 		
 		halt
-		call	printWW				; печать
+		call	printWW					; печать
+
+		ld	a,#02
+		call	setCliGfxResol
+		ld	a,#01
+		call	setScreen
 
 		call	enableSprites
 

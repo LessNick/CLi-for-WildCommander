@@ -24,6 +24,9 @@ miceTestStart
 		ld	de,239
 		call	mouseInit
 
+		ld	hl,miceCallBack
+		call	setAppCallBack
+
 miceLoop	halt
 
 		call	updateCursor
@@ -155,11 +158,25 @@ miceStop	call	editInit
 		ld	hl,miceExitMsg
 		call	printString
 
-		ld	hl,restoreMsg
-		call	printString
+		;ld	hl,restoreMsg
+		;call	printString
+		call	printRestore
 
 		xor	a			; no error, clean exit!
 		ret
+
+miceCallBack	cp	#01			; txt-mode
+		jr	z,miceCallGfx
+		ld	hl,319			; txt-mode
+		ld	de,239
+		call	mouseInit
+		jp	updateCursor
+
+miceCallGfx	ld	hl,359			; gfx-mode
+		ld	de,287
+		call	mouseInit
+		jp	updateCursor
+
 ;-----------------------------------------------------------------------------------------------------------------------------------------------------------
 prepareCursor	ld	bc,RAMPage0		; Подключаем страницу sprBank адреса #0000
 		ld	a,sprBank
@@ -213,7 +230,7 @@ updateCursor	ld	bc,FMAddr
 
 		ret
 ;---------------------------------------
-miceInfoMsg	db	16,2,"Kempstone mouse test v 0.01",#0d
+miceInfoMsg	db	16,2,"Kempstone mouse test v 0.02",#0d
 		db	16,3,"2013 ",#7f," Breeze\\\\Fishbone Crew",#0d,#0d,#00
 
 miceRunMsg	db	16,colorInfo

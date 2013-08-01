@@ -57,12 +57,14 @@ loadPal		ex	de,hl
 findPalFile	ld	a,flagFile			; file
 		call	prepareEntry
 			
-		ld	hl,entrySearch
-		call	searchEntry
+		;ld	hl,entrySearch
+		;call	searchEntry
+		call	eSearch
 		jp	z,fileNotFound
 		
-		ld	(fileLength),hl
-		ld	(fileLength+2),de
+		;ld	(fileLength),hl
+		;ld	(fileLength+2),de
+		call	storeFileLen
 		
 		ld	a,d				; #0000
 		or	e

@@ -15,17 +15,20 @@ executeApp	ld	(appParams+1),hl
 		call	z,exeApp
 
 		;call	restorePath			; restore start path at exit (ok or error)
+		call	initCallBack
 		ret
 
 exeApp		ld	a,flagFile			; file
 		call	prepareEntry
 			
-		ld	hl,entrySearch
-		call	searchEntry
+		;ld	hl,entrySearch
+		;call	searchEntry
+		call	eSearch
 		jp	z,fileNotFound
 
-		ld	(fileLength),hl
-		ld	(fileLength+2),de
+		;ld	(fileLength),hl
+		;ld	(fileLength+2),de
+		call	storeFileLen
 
 		call	setFileBegin
 		call	prepareSize

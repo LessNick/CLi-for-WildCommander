@@ -22,8 +22,9 @@ sleep_00	ld	a,l
 		jr	sleep_02
 
 sleep_01	push	af
-		ld	hl,restoreMsg
-		call	printStr
+		;ld	hl,restoreMsg
+		;call	printStr
+		call	printRestore
 		pop	af
 		ld	b,a
 

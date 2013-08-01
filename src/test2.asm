@@ -14,8 +14,9 @@ test2Loop	halt
 		jr	nz,test2Exit
 		jr	test2Loop
 test2Exit
-		ld	hl,restoreMsg
-		call	printString
+		;ld	hl,restoreMsg
+		;call	printString
+		call	printRestore
 		xor	a					; no error, clean exit!
 		ret
 	

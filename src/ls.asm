@@ -125,8 +125,9 @@ lsEnd_00	ld	hl,nameEmpty
 		ld	hl,fileOneLine
 		call	printStr
 			
-lsEnd_01	ld	hl,restoreMsg
-		call	printStr
+lsEnd_01	;ld	hl,restoreMsg
+		;call	printStr
+		call	printRestore
 		ret
 
 lsLoadNext	xor	a

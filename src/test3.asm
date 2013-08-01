@@ -28,12 +28,14 @@ t3Start
 		ld	a,flagFile			; file
 		call	prepareEntry
 			
-		ld	hl,entrySearch
-		call	searchEntry
+		;ld	hl,entrySearch
+		;call	searchEntry
+		call	eSearch
 		jp	z,fileNotFound
 		
-		ld	(fileLength),hl
-		ld	(fileLength+2),de
+		;ld	(fileLength),hl
+		;ld	(fileLength+2),de
+		call	storeFileLen
 
 ;		ld	hl,t3Msg_02
 ;		call	printString
@@ -108,8 +110,9 @@ _finalize	in	b,(c)
 		ld	a,#31				; #31 - play module
 		call	sendCmd
 
-		ld	hl,restoreMsg
-		call	printString
+		;ld	hl,restoreMsg
+		;call	printString
+		call	printRestore
 		xor	a				; no error, clean exit!
 		ret
 

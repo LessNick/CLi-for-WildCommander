@@ -7,11 +7,15 @@
 ; Начало основного кода плагина
 
 pluginStart	include "api.h.asm"
-		ds	50*3,#00				; зарезервировано для будующего расширение
+		ds	10*3,#00				; зарезервировано для будующего расширение
 		include "gli.h.asm"
-		ds	10*3,#00				; зарезервировано для будующего расширение
+		ds	5*3,#00					; зарезервировано для будующего расширение
 		include "mouse.h.asm"
-		ds	10*3,#00				; зарезервировано для будующего расширение
+		ds	5*3,#00					; зарезервировано для будующего расширение
+		include	"neogs.h.asm"
+		ds	5*3,#00					; зарезервировано для будующего расширение
+
+		;ds	10,#00
 
 _shellStart	ld	(storeIx),ix
 		call	storeWcInt
@@ -32,8 +36,9 @@ _shellStart	ld	(storeIx),ix
 ;		out	(254),a
 ;		ret
 ;---------------------------------------
-callFromExt	ld	(fileLength),hl
-		ld	(fileLength+2),de
+callFromExt	;ld	(fileLength),hl
+		;ld	(fileLength+2),de
+		call	storeFileLen
 
 		call	checkExtention
 		jp	z,runSh
@@ -120,6 +125,14 @@ cliInit		ld	hl,cliPal
 
 		; Инициализируем переменные для печати в консоли
 		call	printInit
+
+		call	initCallBack
+
+		call	clearGfxScreen			; очищаем графический экран
+
+		ld	a,#03				; устанавливаем режим 360x288
+		call	setCliGfxResol
+
 		ret
 
 cliInitDev	call	initPath
@@ -331,15 +344,18 @@ setVideo0	call	hideSprites
 		ld	a,appBank
 		call	setVideoPage
 
-		ret
+		xor	a
+		ld	hl,(callBackApp)
+		jp	(hl)
 
 setVideo1	call	showSprites
 		; Переключаем видео на графический режим
 		ld	a,#02					; #02 - 2й видео буфер (16 страниц)
 		call	setVideoBuffer
 
-		; Переключаем графический режим (по умолчанию 320x240 256c)
+		; Переключаем графический режим (по умолчанию 360x288 256c)
 		ld	a,(currentVMode)
+		;ld	a,%11000010
 		call	setVideoMode
 
 		ld	a,(curGfxBorder)
@@ -353,7 +369,10 @@ setVideo1	call	showSprites
 
 		ld	a,appBank
 		call	setVideoPage
-		ret
+		
+		ld	a,#01
+		ld	hl,(callBackApp)
+		jp	(hl)
 
 ;---------------------------------------
 txtModeInit	; Включаем страницу со страндартным фонтом WC
@@ -394,9 +413,13 @@ gfxCls		ld	a,#10					; Включаем страницу с нашим граф�
 		ld	a,#ff
 		call	callDma					; ожидаем готовности DMA
 
-		ld	hl,0					; BHL - Source
-		ld	de,2					; CDE - Destination
 		ld	bc,#1010				;
+		call	gfxClsDma
+
+		ld	bc,#1111				;		
+
+gfxClsDma	ld	hl,0					; BHL - Source
+		ld	de,2					; CDE - Destination
 		ld	a,#00					; Инициализация источника(Source) и приёмника(Destination)
 		call	callDma
 
@@ -820,13 +843,14 @@ quoteFlag	ld	a,#00
 		jr	nz,quoteOk
 		ld	hl,wrongQuote
 quoteOk		call	printStr
-		ld	hl,restoreMsg
-		call	printStr
+		;ld	hl,restoreMsg
+		;call	printStr
+		call	printRestore
 		call	clearIBuffer
 		ret
 
 ;---------------------------------------
-checkCallKeys	
+_checkCallKeys	
 		push	hl
 		ex	de,hl				; hl - адрес таблицы ключей
 							; de - адрес строки с ключами
@@ -854,16 +878,19 @@ errorCallExit	ex	hl,de
 		call	printStr
 		pop	hl
 		call	printSpaceStr
-		ld	hl,restoreMsg
-		call	printStr
+		;ld	hl,restoreMsg
+		;call	printStr
+		call	printRestore
 		ld	a,#ff
 
 exitNoKeys	pop	hl
 		ret
 ;---------------------------------------
-prepareEntry	push	hl,af
-		ld	hl,entrySearch
-		ld	de,entrySearch+1
+_prepareEntry	push	hl,af
+		;ld	hl,entrySearch
+		;ld	de,entrySearch+1
+		ld	hl,entryForSearch
+		ld	de,entryForSearch+1
 		ld	bc,13
 		xor	a
 		ld	(hl),a
@@ -871,7 +898,8 @@ prepareEntry	push	hl,af
 		ldir
 		pop	af
 		pop	hl
-		ld	de,entrySearch
+		;ld	de,entrySearch
+		ld	de,entryForSearch
 
 entryLoop	ld	(de),a
 		inc	de
@@ -1058,7 +1086,7 @@ restorePath	ld	de,pathBString
 		jp	changeDir
 
 ;---------------------------------------
-checkIsPath	push	hl
+_checkIsPath	push	hl
 		xor	a
 		ld	(needCd+1),a
 		ld	(pathCd+1),hl
@@ -1434,8 +1462,6 @@ progressWSkip	ld	(progressWPos),a
 		include "loadPal.asm"
 		include "loadSpr.asm"
 		include "loadFnt.asm"
-;		include "modLoad.asm"
-;		include "neoGS.asm"
 		include "parser.asm"
 		include "str2int.asm"
 		include "int2str.asm"

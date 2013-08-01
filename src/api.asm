@@ -198,4 +198,38 @@ _printOkStatus	ex	af,af'
 		jp	printString
 
 ;---------------------------------------
+_getPanelStatus	ld	ix,(storeIx)			; wc panel status
+		ld	a,(ix+29)
+		ret
 
+;---------------------------------------
+_eSearch	ld	hl,entryForSearch
+		jp	searchEntry
+
+;---------------------------------------
+_storeFileLen	ld	(fileLength),hl
+		ld	(fileLength+2),de
+		ret
+
+;---------------------------------------
+_printRestore	ld	hl,restoreMsg
+		jp	printString
+
+;---------------------------------------
+_setCliResol						; reserved
+		ret
+
+_setCliGfxResol	and	%00000011
+		rrca
+		rrca
+		ld	c,a
+		ld	a,(currentVMode)
+		and	%00000011
+		or	c
+		ld	(currentVMode),a
+		ret
+;---------------------------------------
+initCallBack	ld	hl,callBackRet			; инициализирует callBack при переключении ALT+F1/F2
+_setAppCallBack	ld	(callBackApp),hl
+		ret
+;---------------------------------------
