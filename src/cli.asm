@@ -1251,13 +1251,15 @@ clearScopeBin	ld	hl,scopeBinAddr
 		ret
 
 ;---------------------------------------
-systemBroken	ld	a,%10111111
+systemBroken	;ld	a,%10111111
+		ld	a,%00011111
 		ld	(curColor),a
 		;ld	(curEColor),a
 		call	printClear
 		call	clearTxt
 
-		ld	a,%00001011
+		;ld	a,%00001011
+		ld	a,%00000001
 		call	setBorder
 
 		call	clearScreen
