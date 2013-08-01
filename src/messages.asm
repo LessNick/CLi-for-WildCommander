@@ -14,7 +14,7 @@
 ;              )  |  \  `.___________|/
 ;              `--'   `--'
 
-versionMsg	db	16,6,"Command Line Interface for WildCommander v0.14a",#0d
+versionMsg	db	16,6,"Command Line Interface for WildCommander v0.14b",#0d
 		db	16,7,"2012,2013 ",127," Breeze\\\\Fishbone Crew",#0d
 		db	#00
 

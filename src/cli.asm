@@ -15,7 +15,7 @@ pluginStart	include "api.h.asm"
 		include	"neogs.h.asm"
 		ds	5*3,#00					; зарезервировано для будующего расширение
 
-		;ds	10,#00
+		ds	10,#00
 
 _shellStart	ld	(storeIx),ix
 		call	storeWcInt
@@ -1286,42 +1286,49 @@ checkIsBin	push	de
 		call	eat_space
 		ex	de,hl
 
-		ld	de,scopeBinAddr
+		ld	de,scopeBinAddr			; hl - файл, de- таблица
 cibLoop		ld	b,8
 		push	de
 		push	hl
+
 cibLoop_00	ld	a,(de)
 		cp	#00
-		jr	z,cibError
+		jr	z,cibError			; конец таблицы
+		
 		ld	c,a
 		ld	a,(hl)
 		cp	c
-		jr	nz,cibNext
+		jr	nz,cibNext			; если не равны следующий в таблице
+
 		inc	hl
 		inc	de
 		
-ttt		ld	a,(hl)
+		ld	a,(hl)
 
-		cp	" "				; end entered name?
+		cp	" "				; конец имени файла
 		jr	z,cibLoop_01a
 							
-		cp	#00				; end entered name?
+		cp	#00				; конец имени файла
 		jr	nz,cibLoop_02
 		
 cibLoop_01	ld	a,(de)
-		cp	" "				; end name in embedded table?
+		cp	" "				; конец файла в таблице = ок
 		jr	z,cibOk
 		
-		cp	#00				; end name in external table?
-		jr	nz,cibNext
+		ld	a,b
+		cp	#01				; конец файла в таблице по длине (8-1) = ок
+		jr	z,cibOk
 
-		inc	hl
-		ld	a,(hl)
-		cp	" "
-		jr	z,cibOk
+; 		cp	#00				; конец таблицы = ошибка
+; 		jr	nz,cibNext
+
+; 		inc	hl
+; 		ld	a,(hl)
+; 		cp	" "
+; 		jr	z,cibOk
 		
-		cp	#00
-		jr	z,cibOk
+; 		cp	#00
+; 		jr	z,cibOk
 
 		jr	cibNext
 
@@ -1473,9 +1480,8 @@ progressWSkip	ld	(progressWPos),a
 		include "messages.asm"
 		include "commands.asm"
 
-		include "binData.asm"
-
 storeIx		dw	#0000
+		include "binData.asm"
 pluginEnd
 ;---------------------------------------
 	ENT

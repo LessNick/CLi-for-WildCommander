@@ -146,14 +146,14 @@ miceMSet	ld	(middleButtonMsg),a
 		call	printInLine
 
 		jp	miceLoop
-
+;---------------
 miceStop	call	editInit
 
-		call	disableSprites
 
 		xor	a
 		call	setScreen
 		;call	clearGfxScreen
+		call	disableSprites
 		
 		ld	hl,miceExitMsg
 		call	printString

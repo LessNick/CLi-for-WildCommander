@@ -7,7 +7,7 @@ typeStart
 
 		ld	a,h
 		or	l
-		jp	z,errorPar
+		jp	z,typeInfo
 
 		call	checkIsPath
 
@@ -49,7 +49,17 @@ typeLoop	push	bc
 		call	printString
 		ret
 
+typeInfo	ld	hl,typeVersionMsg
+		call	printString
+		ret
+
 ;-------
+typeVersionMsg	db	16,2,"Type (Displays the contents of a text file) v0.02",#0d
+		db	16,3,"2013 ",127," Breeze\\\\FBn",#0d,#0d
+		
+		db	16,12,"Usage: type filename.txt",#0d,#0d
+		db	16,16,#00
+
 typeBuffer	ds	512,#00
 		db	#00,#00
 typeBufferEnd	db	#0d,#00

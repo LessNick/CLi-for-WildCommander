@@ -76,9 +76,9 @@ sprBank		equ	#08				; sprites load memory bank
 
 		;include "helloworld.asm"
 		;include "boing.asm"
-		;include "type.asm"
+		include "type.asm"
 		;include "loadMod.asm"
-		include "miceTest.asm"
+		;include "miceTest.asm"
 
 
 	;DISPLAY "code size:",/A,endCode-startCode
@@ -102,6 +102,6 @@ sprBank		equ	#08				; sprites load memory bank
 	
 	;SAVEBIN "bin/bin/hello", appStart, appEnd-appStart
 	;SAVEBIN "bin/demo/boing/boing", BoingStart, BoingEnd-BoingStart
-	;SAVEBIN "bin/bin/type", typeStart, typeEnd-typeStart
+	SAVEBIN "bin/bin/type", typeStart, typeEnd-typeStart
 	;SAVEBIN "bin/bin/loadMod", loadModStart, loadModEnd-loadModStart
-	SAVEBIN "bin/bin/miceTest", miceTestStart, miceTestEnd-miceTestStart
+	;SAVEBIN "bin/bin/miceTest", miceTestStart, miceTestEnd-miceTestStart
