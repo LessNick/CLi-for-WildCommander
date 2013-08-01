@@ -62,4 +62,4 @@ Big thanks to:
 > - CHRV & all members of [NedoPC](http://www.nedopc.com/) for PentEvo/ZX Evolution board.
 
 ## License
-Source Copyright © 2012 Breeze Fishbone and contributors. Distributed under the BSD License. See the file LICENCE.
+Source Copyright © 2012,2013 Breeze Fishbone and contributors. Distributed under the BSD License. See the file LICENCE.

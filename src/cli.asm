@@ -15,7 +15,7 @@ pluginStart	include "api.h.asm"
 		include	"neogs.h.asm"
 		ds	5*3,#00					; зарезервировано для будующего расширение
 
-		ds	10,#00
+		;ds	10,#00
 
 _shellStart	ld	(storeIx),ix
 		call	storeWcInt
@@ -1033,6 +1033,7 @@ helpSkip2	inc	de
 
 helpExit	ld	hl,helpOneLine
 		call	printStr
+		call	printRestore
 		ret
 
 ;---------------------------------------
